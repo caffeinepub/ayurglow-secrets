@@ -1,0 +1,12 @@
+{
+  "kind": "spec_vs_diff_report",
+  "version": "1.0",
+  "generatedAt": "2026-02-21T08:16:35.230Z",
+  "summary": "BuildRequest specifies a retry of previous deployment with no changes. The diff shows only a version increment in project_state.json (projectStateVersion: 19), which is consistent with a deployment retry tracking mechanism. No actual code, feature, or content changes detected.",
+  "missing_requirements": [],
+  "hallucinated_features": [],
+  "confidence": 0.95,
+  "changed_files": [
+    "project_state.json"
+  ]
+}

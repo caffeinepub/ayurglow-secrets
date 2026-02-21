@@ -1,0 +1,18 @@
+{
+  "kind": "build_request",
+  "title": "Retry previous deployment",
+  "priority": "normal",
+  "requirements": [],
+  "constraints": [
+    "No changes requested - retry previous build as-is"
+  ],
+  "nonGoals": [
+    "Adding new features",
+    "Modifying existing code",
+    "Changing design or styling"
+  ],
+  "imageRequirements": {
+    "required": [],
+    "edits": []
+  }
+}
