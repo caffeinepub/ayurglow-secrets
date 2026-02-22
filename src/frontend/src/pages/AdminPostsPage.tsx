@@ -1,8 +1,10 @@
-import { useNavigate } from '@tanstack/react-router';
-import { useGetAllPosts, useDeletePost } from '../hooks/useQueries';
+import { useGetAllPosts, useDeletePost } from '@/hooks/useQueries';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { Pencil, Trash2, Plus, Loader2, AlertCircle } from 'lucide-react';
+import { useNavigate } from '@tanstack/react-router';
+import { useState } from 'react';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -12,89 +14,103 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-  AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
-import { Plus, Edit, Trash2, Loader2 } from 'lucide-react';
-import { useState } from 'react';
 
 export default function AdminPostsPage() {
   const navigate = useNavigate();
-  const { data: posts, isLoading } = useGetAllPosts();
+  const { data: posts, isLoading, error, refetch } = useGetAllPosts();
   const deletePost = useDeletePost();
-  const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [postToDelete, setPostToDelete] = useState<string | null>(null);
 
-  const handleDelete = async (id: string) => {
-    setDeletingId(id);
+  const handleDelete = async () => {
+    if (!postToDelete) return;
+
     try {
-      await deletePost.mutateAsync(id);
+      await deletePost.mutateAsync(postToDelete);
+      setDeleteDialogOpen(false);
+      setPostToDelete(null);
     } catch (error) {
-      console.error('Error deleting post:', error);
-      alert('Failed to delete post. Please try again.');
-    } finally {
-      setDeletingId(null);
+      console.error('Failed to delete post:', error);
     }
   };
 
-  const formatDate = (timestamp: bigint) => {
-    const date = new Date(Number(timestamp));
-    return date.toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-    });
+  const openDeleteDialog = (postId: string) => {
+    setPostToDelete(postId);
+    setDeleteDialogOpen(true);
   };
 
   if (isLoading) {
     return (
-      <div className="w-full min-h-screen bg-cream flex items-center justify-center">
-        <div className="text-center">
-          <Loader2 className="h-12 w-12 animate-spin text-earth-green mx-auto mb-4" />
-          <p className="text-warm-brown">Loading posts...</p>
+      <div className="container mx-auto px-4 py-12">
+        <div className="flex items-center justify-center min-h-[400px]">
+          <Loader2 className="w-8 h-8 animate-spin text-earth-green" />
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="container mx-auto px-4 py-12">
+        <div className="max-w-2xl mx-auto">
+          <Card className="border-destructive">
+            <CardContent className="pt-6">
+              <div className="flex items-center gap-3 text-destructive mb-4">
+                <AlertCircle className="w-6 h-6" />
+                <h3 className="text-lg font-semibold">Error Loading Posts</h3>
+              </div>
+              <p className="text-muted-foreground mb-4">
+                Failed to load blog posts. Please try again.
+              </p>
+              <Button onClick={() => refetch()} variant="outline">
+                Retry
+              </Button>
+            </CardContent>
+          </Card>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="w-full min-h-screen bg-cream py-12">
-      <div className="container mx-auto px-4 max-w-7xl">
+    <div className="container mx-auto px-4 py-12">
+      <div className="max-w-6xl mx-auto">
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h1 className="text-4xl font-bold text-earth-green font-serif mb-2">
-              Blog Posts Admin
+            <h1 className="text-4xl font-bold text-earth-green mb-2 font-serif">
+              Manage Blog Posts
             </h1>
             <p className="text-warm-brown/70">
-              Manage your blog posts and content
+              Create, edit, and manage all your blog posts
             </p>
           </div>
           <Button
-            onClick={() => navigate({ to: '/blog/create' })}
+            onClick={() => navigate({ to: '/admin/create-post' })}
             className="bg-earth-green hover:bg-earth-green/90 text-cream"
           >
-            <Plus className="mr-2 h-4 w-4" />
+            <Plus className="w-4 h-4 mr-2" />
             Create New Post
           </Button>
         </div>
 
         {!posts || posts.length === 0 ? (
-          <Card className="border-2 border-sage-green/30">
-            <CardContent className="p-12 text-center">
-              <img
-                src="/assets/generated/icon-wellness.dim_128x128.png"
-                alt="No posts"
-                className="w-24 h-24 mx-auto mb-6 opacity-50"
-              />
-              <h2 className="text-2xl font-serif text-earth-green mb-4">
-                No Posts Yet
-              </h2>
+          <Card className="border-2 border-dashed border-sage-green/30">
+            <CardContent className="pt-12 pb-12 text-center">
+              <div className="w-16 h-16 rounded-full bg-sage-green/10 flex items-center justify-center mx-auto mb-4">
+                <Plus className="w-8 h-8 text-earth-green" />
+              </div>
+              <h3 className="text-xl font-semibold text-earth-green mb-2">
+                No blog posts yet
+              </h3>
               <p className="text-warm-brown/70 mb-6">
-                Start creating your first blog post to share Ayurvedic wisdom
+                Get started by creating your first blog post
               </p>
               <Button
-                onClick={() => navigate({ to: '/blog/create' })}
+                onClick={() => navigate({ to: '/admin/create-post' })}
                 className="bg-earth-green hover:bg-earth-green/90 text-cream"
               >
-                <Plus className="mr-2 h-4 w-4" />
+                <Plus className="w-4 h-4 mr-2" />
                 Create Your First Post
               </Button>
             </CardContent>
@@ -102,95 +118,92 @@ export default function AdminPostsPage() {
         ) : (
           <div className="grid gap-6">
             {posts.map((post) => (
-              <Card
-                key={post.id}
-                className="border-2 border-sage-green/30 hover:border-earth-green transition-all"
-              >
-                <CardContent className="p-6">
-                  <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+              <Card key={post.id} className="border-2 border-sage-green/30 hover:shadow-lg transition-shadow">
+                <CardHeader>
+                  <div className="flex items-start justify-between">
                     <div className="flex-1">
                       <div className="flex items-center gap-3 mb-2">
-                        <h3 className="text-xl font-semibold text-earth-green font-serif">
+                        <CardTitle className="text-2xl text-earth-green font-serif">
                           {post.title}
-                        </h3>
+                        </CardTitle>
                         <Badge
                           variant={post.isPublished ? 'default' : 'secondary'}
                           className={
                             post.isPublished
-                              ? 'bg-green-500/10 text-green-700 hover:bg-green-500/20'
-                              : 'bg-amber-500/10 text-amber-700 hover:bg-amber-500/20'
+                              ? 'bg-earth-green text-cream'
+                              : 'bg-warm-brown/20 text-warm-brown'
                           }
                         >
                           {post.isPublished ? 'Published' : 'Draft'}
                         </Badge>
                       </div>
-                      <p className="text-warm-brown/70 text-sm mb-3 line-clamp-2">
-                        {post.excerpt}
+                      <p className="text-sm text-warm-brown/70">
+                        {post.category} • {post.readTime.toString()} min read • By {post.author}
                       </p>
-                      <div className="flex flex-wrap items-center gap-4 text-xs text-warm-brown/60">
-                        <span className="font-medium">{post.category}</span>
-                        <span>•</span>
-                        <span>{formatDate(post.publishedDate)}</span>
-                        <span>•</span>
-                        <span>{Number(post.readTime)} min read</span>
-                        <span>•</span>
-                        <span>By {post.author}</span>
-                      </div>
                     </div>
-                    <div className="flex items-center gap-2">
+                    <div className="flex gap-2">
                       <Button
                         variant="outline"
                         size="sm"
-                        onClick={() => navigate({ to: `/blog/edit/${post.id}` })}
-                        className="border-sage-green/30 text-earth-green hover:bg-sage-green/10"
+                        onClick={() => navigate({ to: `/admin/edit-post/${post.id}` })}
+                        className="border-earth-green text-earth-green hover:bg-earth-green hover:text-cream"
                       >
-                        <Edit className="h-4 w-4 mr-1" />
-                        Edit
+                        <Pencil className="w-4 h-4" />
                       </Button>
-                      <AlertDialog>
-                        <AlertDialogTrigger asChild>
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            disabled={deletingId === post.id}
-                            className="border-red-300 text-red-600 hover:bg-red-50"
-                          >
-                            {deletingId === post.id ? (
-                              <Loader2 className="h-4 w-4 animate-spin" />
-                            ) : (
-                              <>
-                                <Trash2 className="h-4 w-4 mr-1" />
-                                Delete
-                              </>
-                            )}
-                          </Button>
-                        </AlertDialogTrigger>
-                        <AlertDialogContent>
-                          <AlertDialogHeader>
-                            <AlertDialogTitle>Delete Post?</AlertDialogTitle>
-                            <AlertDialogDescription>
-                              Are you sure you want to delete "{post.title}"? This action
-                              cannot be undone.
-                            </AlertDialogDescription>
-                          </AlertDialogHeader>
-                          <AlertDialogFooter>
-                            <AlertDialogCancel>Cancel</AlertDialogCancel>
-                            <AlertDialogAction
-                              onClick={() => handleDelete(post.id)}
-                              className="bg-red-600 hover:bg-red-700"
-                            >
-                              Delete
-                            </AlertDialogAction>
-                          </AlertDialogFooter>
-                        </AlertDialogContent>
-                      </AlertDialog>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => openDeleteDialog(post.id)}
+                        className="border-destructive text-destructive hover:bg-destructive hover:text-destructive-foreground"
+                        disabled={deletePost.isPending}
+                      >
+                        {deletePost.isPending && postToDelete === post.id ? (
+                          <Loader2 className="w-4 h-4 animate-spin" />
+                        ) : (
+                          <Trash2 className="w-4 h-4" />
+                        )}
+                      </Button>
                     </div>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-warm-brown/80 mb-4">{post.excerpt}</p>
+                  <div className="flex flex-wrap gap-2">
+                    {post.tags.map((tag, index) => (
+                      <Badge
+                        key={index}
+                        variant="outline"
+                        className="border-sage-green text-earth-green"
+                      >
+                        {tag}
+                      </Badge>
+                    ))}
                   </div>
                 </CardContent>
               </Card>
             ))}
           </div>
         )}
+
+        <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+              <AlertDialogDescription>
+                This action cannot be undone. This will permanently delete the blog post.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction
+                onClick={handleDelete}
+                className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+              >
+                Delete
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </div>
     </div>
   );

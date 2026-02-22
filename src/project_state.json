@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.0.0",
-  "projectStateVersion": 19,
+  "projectStateVersion": 29,
   "summary": "AyurGlow Secrets - An Ayurvedic wellness website featuring health remedies, skin care tips, and hair care solutions. The site includes a hero section, service offerings, about page, three main content categories (Health Remedies, Skin Care, Hair Care), and a blog section with 10 initial SEO-optimized topics. Long-term monetization through AdSense, affiliate marketing, and digital products.",
   "architectural_notes": [
     "Content-focused wellness website with category-based navigation",
@@ -298,6 +298,62 @@
         "REQ-38"
       ],
       "version": 1
+    },
+    {
+      "id": "feature-remove-the-built-with-using-caffeine-ai-text-and-link-from-the-footer-component-while-preserving-all-other-footer-content-including-the-copyright-notice-quick-links-section-about-health-remedies-skin-care-hair-care-blog-privacy-policy-terms-of-service-and-social-media-icons-section-instagram-facebook-youtube",
+      "title": "Remove the 'Built with ❤️ using caffeine.ai' text and link from the Footer component while preserving all other footer content including the copyright notice, quick links section (About, Health Remedies, Skin Care, Hair Care, Blog, Privacy Policy, Terms of Service), and social media icons section (Instagram, Facebook, YouTube)",
+      "reqIds": [
+        "REQ-39"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-debug-and-fix-blogpage-tsx-to-properly-fetch-and-display-blog-posts-from-the-backend-using-the-usegetpublishedposts-hook-ensuring-the-posts-array-is-correctly-mapped-to-the-existing-card-layout-with-category-badges-read-time-dates-and-navigation-to-detail-pages",
+      "title": "Debug and fix BlogPage.tsx to properly fetch and display blog posts from the backend using the useGetPublishedPosts hook, ensuring the posts array is correctly mapped to the existing card layout with category badges, read time, dates, and navigation to detail pages",
+      "reqIds": [
+        "REQ-40"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-verify-the-usegetpublishedposts-react-query-hook-in-usequeries-ts-correctly-calls-the-backend-actor-s-getpublishedposts-method-and-transforms-the-response-into-the-expected-format-for-the-frontend-blogpost-interface",
+      "title": "Verify the useGetPublishedPosts React Query hook in useQueries.ts correctly calls the backend actor's getPublishedPosts method and transforms the response into the expected format for the frontend BlogPost interface",
+      "reqIds": [
+        "REQ-42"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-debug-and-fix-the-blog-post-data-fetching-and-rendering-logic-in-blogpage-tsx-to-ensure-health-category-articles-are-properly-displayed-in-the-blog-listing-with-correct-category-badges-titles-excerpts-read-times-and-published-dates",
+      "title": "Debug and fix the blog post data fetching and rendering logic in BlogPage.tsx to ensure health category articles are properly displayed in the blog listing with correct category badges, titles, excerpts, read times, and published dates",
+      "reqIds": [
+        "REQ-43"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-debug-and-fix-the-blog-post-data-fetching-and-rendering-logic-in-adminpostspage-tsx-to-ensure-health-category-articles-are-properly-displayed-in-the-admin-posts-list-with-all-required-columns-title-category-status-published-date-and-action-buttons-edit-delete",
+      "title": "Debug and fix the blog post data fetching and rendering logic in AdminPostsPage.tsx to ensure health category articles are properly displayed in the admin posts list with all required columns (title, category, status, published date) and action buttons (edit, delete)",
+      "reqIds": [
+        "REQ-44"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-verify-the-usegetpublishedposts-and-usegetallposts-react-query-hooks-in-usequeries-ts-correctly-transform-backend-responses-for-health-category-posts-into-the-frontend-blogpost-interface-format-ensuring-proper-handling-of-category-filtering-and-date-formatting",
+      "title": "Verify the useGetPublishedPosts and useGetAllPosts React Query hooks in useQueries.ts correctly transform backend responses for health category posts into the frontend BlogPost interface format, ensuring proper handling of category filtering and date formatting",
+      "reqIds": [
+        "REQ-46"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-remove-the-why-choose-ayurvedic-health-remedies-section-from-the-healthremediespage-tsx-component-while-preserving-the-hero-section-and-the-five-subcategory-cards-immunity-boosting-digestion-gut-health-weight-management-diabetes-bp-support-stress-sleep-solutions",
+      "title": "Remove the 'Why Choose Ayurvedic Health Remedies?' section from the HealthRemediesPage.tsx component while preserving the hero section and the five subcategory cards (Immunity Boosting, Digestion & Gut Health, Weight Management, Diabetes & BP Support, Stress & Sleep Solutions)",
+      "reqIds": [
+        "REQ-47"
+      ],
+      "version": 1
     }
   ],
   "new_feature_requests": [
@@ -380,6 +436,28 @@
     {
       "id": "AR-13",
       "summary": "Add Privacy Policy and Terms of Service pages required for Google AdSense compliance",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-15",
+      "summary": "Verify backend getPublishedPosts function in main.mo correctly filters and returns only posts where isPublished is true, ensuring the data structure matches the frontend BlogPost type expectations",
+      "reqIds": [
+        "REQ-41"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-18",
+      "summary": "Verify the backend getPublishedPosts and getAllPosts functions in main.mo correctly retrieve and return health category blog posts with all required fields (id, title, slug, category, content, excerpt, readTime, author, publishedDate, tags, isPublished)",
+      "reqIds": [
+        "REQ-45"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-19",
+      "summary": "Remove 'Why Choose Ayurvedic Health Remedies?' section from Health Remedies page",
       "reqIds": [],
       "status": "pending"
     }

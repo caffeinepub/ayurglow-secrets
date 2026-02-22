@@ -1,6 +1,25 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Retry previous deployment",
-  "requirements": []
+  "title": "Remove 'Why Choose Ayurvedic Health Remedies?' section from Health Remedies page",
+  "requirements": [
+    {
+      "id": "REQ-47",
+      "summary": "Remove the 'Why Choose Ayurvedic Health Remedies?' section from HealthRemediesPage.tsx while preserving the hero section and five subcategory cards",
+      "acceptanceCriteria": [
+        "The 'Why Choose Ayurvedic Health Remedies?' section is completely removed from HealthRemediesPage.tsx",
+        "The hero section with heading and description remains visible",
+        "All five subcategory cards remain functional and clickable",
+        "The page layout remains visually balanced after section removal",
+        "No console errors or broken styling after the removal"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/pages/HealthRemediesPage.tsx",
+          "operation": "modify",
+          "description": "Remove the 'Why Choose Ayurvedic Health Remedies?' section from the component while preserving the hero section at the top and the five subcategory cards (Immunity Boosting, Digestion & Gut Health, Weight Management, Diabetes & BP Support, Stress & Sleep Solutions). Ensure the remaining layout maintains proper spacing and visual balance. Verify that all navigation links to the subcategory pages remain functional after the removal."
+        }
+      ]
+    }
+  ]
 }

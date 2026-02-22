@@ -1,16 +1,15 @@
-import { Link, useRouterState, useNavigate } from '@tanstack/react-router';
+import { Link, useRouterState } from '@tanstack/react-router';
 import { Menu, X } from 'lucide-react';
 import { useState, useEffect, useRef } from 'react';
 import SearchBar from './SearchBar';
 import SearchResults from './SearchResults';
-import { filterRemedies } from '@/hooks/useRemedySearch';
+import { useRemedySearch } from '@/hooks/useRemedySearch';
 
 export default function Navigation() {
   const [isOpen, setIsOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
+  const { searchQuery, setSearchQuery, filteredRemedies } = useRemedySearch();
   const [showResults, setShowResults] = useState(false);
   const router = useRouterState();
-  const navigate = useNavigate();
   const currentPath = router.location.pathname;
   const searchContainerRef = useRef<HTMLDivElement>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
@@ -24,8 +23,6 @@ export default function Navigation() {
     { path: '/blog', label: 'Blog' },
     { path: '/admin/posts', label: 'Admin' },
   ];
-
-  const filteredResults = filterRemedies(searchQuery);
 
   useEffect(() => {
     setShowResults(searchQuery.length > 0);
@@ -51,24 +48,6 @@ export default function Navigation() {
     searchInputRef.current?.blur();
   };
 
-  const handleEnterKey = () => {
-    if (filteredResults.length > 0) {
-      navigate({ to: filteredResults[0].path });
-      handleClearSearch();
-    }
-  };
-
-  const handleEscape = () => {
-    setShowResults(false);
-    searchInputRef.current?.blur();
-  };
-
-  const handleArrowDown = () => {
-    if (filteredResults.length > 0) {
-      setShowResults(true);
-    }
-  };
-
   const handleCloseResults = () => {
     setShowResults(false);
     setSearchQuery('');
@@ -82,82 +61,104 @@ export default function Navigation() {
           <Link to="/" className="flex items-center gap-3 group">
             <img 
               src="/assets/generated/ayur-leaf.dim_64x64.png" 
-              alt="AyurGlow Leaf" 
-              className="w-10 h-10 transition-transform group-hover:scale-110"
+              alt="AyurGlow Secrets Logo" 
+              className="w-12 h-12 group-hover:scale-110 transition-transform"
             />
-            <div>
-              <h1 className="text-2xl font-bold text-earth-green font-serif">AyurGlow Secrets</h1>
-              <p className="text-xs text-warm-brown/70 hidden sm:block">Ancient Ayurvedic Wisdom</p>
+            <div className="flex flex-col">
+              <span className="text-xl font-bold text-earth-green font-serif">AyurGlow Secrets</span>
+              <span className="text-xs text-warm-brown/70">Ancient Wisdom, Modern Wellness</span>
             </div>
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center gap-1">
-            {navLinks.map((link) => (
-              <Link
-                key={link.path}
-                to={link.path}
-                className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
-                  currentPath === link.path
-                    ? 'bg-earth-green text-cream shadow-md'
-                    : 'text-warm-brown hover:bg-sage-green/20 hover:text-earth-green'
-                }`}
-              >
-                {link.label}
-              </Link>
-            ))}
+          <div className="hidden lg:flex items-center gap-8">
+            <div className="flex items-center gap-6">
+              {navLinks.map((link) => (
+                <Link
+                  key={link.path}
+                  to={link.path}
+                  className={`text-sm font-medium transition-colors hover:text-earth-green ${
+                    currentPath === link.path
+                      ? 'text-earth-green border-b-2 border-earth-green'
+                      : 'text-warm-brown/80'
+                  }`}
+                >
+                  {link.label}
+                </Link>
+              ))}
+            </div>
+
+            {/* Search Bar */}
+            <div ref={searchContainerRef} className="relative">
+              <SearchBar
+                ref={searchInputRef}
+                value={searchQuery}
+                onChange={setSearchQuery}
+                onClear={handleClearSearch}
+                onEscape={() => setShowResults(false)}
+                onArrowDown={() => setShowResults(true)}
+              />
+              <SearchResults
+                results={filteredRemedies}
+                isVisible={showResults}
+                query={searchQuery}
+                onClose={handleCloseResults}
+              />
+            </div>
           </div>
 
           {/* Mobile Menu Button */}
           <button
             onClick={() => setIsOpen(!isOpen)}
-            className="md:hidden p-2 rounded-lg hover:bg-sage-green/20 text-earth-green"
+            className="lg:hidden p-2 text-earth-green hover:bg-sage-green/20 rounded-lg transition-colors"
             aria-label="Toggle menu"
           >
-            {isOpen ? <X size={24} /> : <Menu size={24} />}
+            {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>
         </div>
 
         {/* Mobile Navigation */}
         {isOpen && (
-          <div className="md:hidden py-4 border-t border-earth-green/20">
-            {navLinks.map((link) => (
-              <Link
-                key={link.path}
-                to={link.path}
-                onClick={() => setIsOpen(false)}
-                className={`block px-4 py-3 rounded-lg text-sm font-medium transition-all ${
-                  currentPath === link.path
-                    ? 'bg-earth-green text-cream'
-                    : 'text-warm-brown hover:bg-sage-green/20'
-                }`}
-              >
-                {link.label}
-              </Link>
-            ))}
+          <div className="lg:hidden py-4 border-t border-earth-green/20">
+            <div className="flex flex-col gap-4">
+              {/* Mobile Search */}
+              <div ref={searchContainerRef} className="relative">
+                <SearchBar
+                  ref={searchInputRef}
+                  value={searchQuery}
+                  onChange={setSearchQuery}
+                  onClear={handleClearSearch}
+                  onEscape={() => setShowResults(false)}
+                  onArrowDown={() => setShowResults(true)}
+                />
+                <SearchResults
+                  results={filteredRemedies}
+                  isVisible={showResults}
+                  query={searchQuery}
+                  onClose={() => {
+                    handleCloseResults();
+                    setIsOpen(false);
+                  }}
+                />
+              </div>
+
+              {navLinks.map((link) => (
+                <Link
+                  key={link.path}
+                  to={link.path}
+                  onClick={() => setIsOpen(false)}
+                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                    currentPath === link.path
+                      ? 'bg-earth-green text-cream'
+                      : 'text-warm-brown/80 hover:bg-sage-green/20'
+                  }`}
+                >
+                  {link.label}
+                </Link>
+              ))}
+            </div>
           </div>
         )}
-
-        {/* Search Bar Section */}
-        <div className="py-4 border-t border-earth-green/20" ref={searchContainerRef}>
-          <div className="relative">
-            <SearchBar
-              ref={searchInputRef}
-              value={searchQuery}
-              onChange={setSearchQuery}
-              onClear={handleClearSearch}
-              onEnterKey={handleEnterKey}
-              onEscape={handleEscape}
-              onArrowDown={handleArrowDown}
-            />
-            <SearchResults
-              results={filteredResults}
-              isVisible={showResults}
-              query={searchQuery}
-              onClose={handleCloseResults}
-            />
-          </div>
-        </div>
       </div>
     </nav>
   );

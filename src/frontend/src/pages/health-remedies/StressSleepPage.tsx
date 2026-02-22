@@ -1,61 +1,58 @@
-import { Sparkles, Leaf, Droplet, Sun } from "lucide-react";
+import { Leaf, Droplet, Flame, Moon } from "lucide-react";
 
-export default function AntiAgingPage() {
+export default function StressSleepPage() {
   const remedies = [
     {
-      title: "Almond-Saffron Youth Serum",
-      icon: <Sparkles className="w-8 h-8 text-gold" />,
-      ingredients: ["10 soaked almonds", "4-5 saffron strands", "2 tbsp milk", "1 tsp honey", "Few drops vitamin E oil"],
+      title: "Ashwagandha Moon Milk",
+      icon: <Moon className="w-8 h-8 text-sage-green" />,
+      ingredients: ["1 cup warm milk", "1 tsp ashwagandha powder", "1/4 tsp nutmeg powder", "1 tsp honey", "Pinch of cardamom"],
       application: [
-        "Blend soaked almonds with milk",
-        "Add saffron soaked in warm milk",
-        "Mix in honey and vitamin E",
-        "Apply and massage gently for 5 minutes",
-        "Leave for 20 minutes, then rinse"
+        "Warm milk gently (do not boil)",
+        "Add ashwagandha and nutmeg",
+        "Stir well and let steep for 2 minutes",
+        "Add honey and cardamom before drinking"
       ],
-      benefits: "Almonds nourish deeply, saffron brightens, and vitamin E fights free radicals for youthful skin.",
-      frequency: "3 times per week"
+      benefits: "Ashwagandha is a powerful adaptogen that reduces cortisol, calms the mind, and promotes deep sleep.",
+      frequency: "Daily 30 minutes before bedtime"
     },
     {
-      title: "Avocado-Honey Collagen Boost Mask",
+      title: "Brahmi-Tulsi Stress Relief Tea",
       icon: <Leaf className="w-8 h-8 text-earth-green" />,
-      ingredients: ["1/2 ripe avocado", "1 tbsp honey", "1 tsp olive oil", "Few drops lemon juice"],
+      ingredients: ["1 tsp dried brahmi leaves", "8-10 fresh tulsi leaves", "2 cups water", "1 tsp honey", "Few drops lemon"],
       application: [
-        "Mash avocado into smooth paste",
-        "Mix with honey and olive oil",
-        "Add lemon juice",
-        "Apply thick layer on face and neck",
-        "Rinse after 20-25 minutes"
+        "Boil water with brahmi and tulsi",
+        "Simmer for 5-7 minutes",
+        "Strain into a cup",
+        "Add honey and lemon"
       ],
-      benefits: "Avocado's healthy fats plump skin, honey hydrates, and antioxidants reduce fine lines.",
-      frequency: "Twice weekly"
+      benefits: "Brahmi enhances cognitive function and reduces anxiety. Tulsi balances stress hormones.",
+      frequency: "Twice daily, morning and evening"
     },
     {
-      title: "Rose Water-Glycerin Hydration Tonic",
+      title: "Chamomile-Lavender Sleep Blend",
       icon: <Droplet className="w-8 h-8 text-sage-green" />,
-      ingredients: ["3 tbsp rose water", "1 tbsp vegetable glycerin", "Few drops frankincense oil"],
+      ingredients: ["1 chamomile tea bag", "1 tsp dried lavender flowers", "1 cup hot water", "1 tsp honey"],
       application: [
-        "Mix rose water with glycerin",
-        "Add frankincense oil",
-        "Store in spray bottle",
-        "Spritz on face morning and night"
+        "Steep chamomile and lavender in hot water",
+        "Cover and let infuse for 10 minutes",
+        "Strain and add honey",
+        "Sip slowly before bed"
       ],
-      benefits: "Deeply hydrates, plumps skin, and reduces appearance of wrinkles with regular use.",
-      frequency: "Daily, morning and evening"
+      benefits: "Chamomile and lavender have natural sedative properties that promote relaxation and restful sleep.",
+      frequency: "Every night 30-60 minutes before sleep"
     },
     {
-      title: "Papaya-Yogurt Enzyme Renewal Mask",
-      icon: <Sun className="w-8 h-8 text-gold" />,
-      ingredients: ["1/4 cup mashed papaya", "2 tbsp yogurt", "1 tsp honey", "1 tsp aloe vera gel"],
+      title: "Warm Almond-Saffron Milk",
+      icon: <Flame className="w-8 h-8 text-warm-brown" />,
+      ingredients: ["10 soaked almonds", "1 cup warm milk", "2-3 saffron strands", "1/4 tsp cardamom powder", "1 tsp honey"],
       application: [
-        "Blend papaya into smooth pulp",
-        "Mix with yogurt, honey, and aloe",
-        "Apply evenly avoiding eye area",
-        "Leave for 15-20 minutes",
-        "Rinse with lukewarm water"
+        "Blend soaked almonds with little milk",
+        "Heat remaining milk with saffron",
+        "Mix almond paste into warm milk",
+        "Add cardamom and honey"
       ],
-      benefits: "Papaya enzymes exfoliate dead cells, revealing fresher, younger-looking skin.",
-      frequency: "Once weekly"
+      benefits: "Almonds contain magnesium for relaxation. Saffron elevates mood and promotes quality sleep.",
+      frequency: "Daily before bedtime"
     }
   ];
 
@@ -63,9 +60,9 @@ export default function AntiAgingPage() {
     <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-12">
         <div className="max-w-4xl mx-auto">
-          <h1 className="text-4xl font-bold text-foreground mb-4">Anti-Aging Remedies</h1>
+          <h1 className="text-4xl font-bold text-foreground mb-4">Stress Relief & Better Sleep</h1>
           <p className="text-lg text-muted-foreground mb-8">
-            Turn back time naturally with these Ayurvedic anti-aging treatments that nourish and rejuvenate.
+            Find calm and restful sleep with these soothing Ayurvedic remedies for stress management.
           </p>
 
           <div className="space-y-8">

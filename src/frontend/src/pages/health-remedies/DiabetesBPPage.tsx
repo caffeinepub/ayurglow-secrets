@@ -1,57 +1,57 @@
 import { Leaf, Droplet, Flame, Sun } from "lucide-react";
 
-export default function WeightManagementPage() {
+export default function DiabetesBPPage() {
   const remedies = [
     {
-      title: "Warm Lemon-Honey Water",
-      icon: <Sun className="w-8 h-8 text-gold" />,
-      ingredients: ["1 cup warm water", "1/2 lemon juice", "1 tsp raw honey", "Pinch of cinnamon powder"],
-      application: [
-        "Heat water until warm (not boiling)",
-        "Squeeze fresh lemon juice",
-        "Add honey and cinnamon",
-        "Stir well and drink immediately"
-      ],
-      benefits: "Boosts metabolism, aids fat burning, and detoxifies the body naturally.",
-      frequency: "Every morning on empty stomach"
-    },
-    {
-      title: "Triphala-Guggul Formula",
-      icon: <Leaf className="w-8 h-8 text-earth-green" />,
-      ingredients: ["1 tsp Triphala powder", "500mg Guggul extract", "1 cup warm water"],
-      application: [
-        "Mix Triphala powder in warm water",
-        "Take Guggul tablet with the mixture",
-        "Consume before bedtime"
-      ],
-      benefits: "Supports healthy metabolism, reduces cholesterol, and promotes fat metabolism.",
-      frequency: "Once daily before sleep"
-    },
-    {
-      title: "Ginger-Green Tea Metabolism Booster",
-      icon: <Flame className="w-8 h-8 text-warm-brown" />,
-      ingredients: ["1 green tea bag", "1-inch fresh ginger", "1 cup hot water", "Few mint leaves", "1/2 tsp honey"],
-      application: [
-        "Grate ginger and add to hot water",
-        "Add green tea bag and mint leaves",
-        "Steep for 5 minutes",
-        "Strain, add honey, and drink"
-      ],
-      benefits: "Increases thermogenesis, burns calories, and reduces appetite naturally.",
-      frequency: "2-3 times daily between meals"
-    },
-    {
-      title: "Cabbage-Carrot Detox Juice",
+      title: "Fenugreek Seed Water",
       icon: <Droplet className="w-8 h-8 text-sage-green" />,
-      ingredients: ["1 cup chopped cabbage", "1 medium carrot", "1/2 cucumber", "1/2 lemon juice", "Pinch of black salt"],
+      ingredients: ["1 tbsp fenugreek seeds", "1 cup water"],
       application: [
-        "Blend all vegetables with little water",
-        "Strain if desired",
-        "Add lemon juice and black salt",
+        "Soak fenugreek seeds in water overnight",
+        "Drink the water on empty stomach",
+        "Chew the soaked seeds if desired"
+      ],
+      benefits: "Helps regulate blood sugar levels and improves insulin sensitivity naturally.",
+      frequency: "Daily in the morning on empty stomach"
+    },
+    {
+      title: "Bitter Gourd Juice",
+      icon: <Leaf className="w-8 h-8 text-earth-green" />,
+      ingredients: ["1 small bitter gourd", "1/2 cup water", "Pinch of rock salt", "Few drops lemon juice"],
+      application: [
+        "Wash and chop bitter gourd",
+        "Blend with water",
+        "Strain and add salt and lemon",
         "Drink fresh immediately"
       ],
-      benefits: "Low in calories, high in fiber. Promotes satiety and supports healthy weight loss.",
-      frequency: "Once daily as meal replacement or before meals"
+      benefits: "Contains insulin-like compounds that help lower blood glucose levels effectively.",
+      frequency: "Once daily in the morning"
+    },
+    {
+      title: "Cinnamon-Honey Tonic",
+      icon: <Flame className="w-8 h-8 text-warm-brown" />,
+      ingredients: ["1 tsp cinnamon powder", "1 tsp honey", "1 cup warm water"],
+      application: [
+        "Mix cinnamon powder in warm water",
+        "Let it steep for 10 minutes",
+        "Add honey and stir well",
+        "Drink before meals"
+      ],
+      benefits: "Improves insulin sensitivity and helps maintain healthy blood sugar levels.",
+      frequency: "Twice daily before main meals"
+    },
+    {
+      title: "Garlic-Lemon BP Control",
+      icon: <Sun className="w-8 h-8 text-gold" />,
+      ingredients: ["2-3 garlic cloves", "1/2 lemon juice", "1 cup warm water"],
+      application: [
+        "Crush garlic cloves",
+        "Mix with lemon juice",
+        "Add to warm water",
+        "Drink on empty stomach"
+      ],
+      benefits: "Helps lower blood pressure naturally and supports cardiovascular health.",
+      frequency: "Daily in the morning"
     }
   ];
 
@@ -59,10 +59,16 @@ export default function WeightManagementPage() {
     <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-12">
         <div className="max-w-4xl mx-auto">
-          <h1 className="text-4xl font-bold text-foreground mb-4">Weight Management Remedies</h1>
+          <h1 className="text-4xl font-bold text-foreground mb-4">Diabetes & Blood Pressure Management</h1>
           <p className="text-lg text-muted-foreground mb-8">
-            Achieve healthy weight balance naturally with these Ayurvedic metabolism-boosting remedies.
+            Support healthy blood sugar and blood pressure levels with these natural Ayurvedic remedies.
           </p>
+
+          <div className="bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800 rounded-lg p-4 mb-8">
+            <p className="text-sm text-amber-800 dark:text-amber-200">
+              <strong>Important:</strong> These remedies are complementary to medical treatment. Always consult your healthcare provider before making changes to your diabetes or blood pressure management plan.
+            </p>
+          </div>
 
           <div className="space-y-8">
             {remedies.map((remedy, index) => (

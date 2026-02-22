@@ -100,28 +100,6 @@ export default function HealthRemediesPage() {
           </div>
         </div>
       </section>
-
-      {/* Info Section */}
-      <section className="py-16 bg-sage-green/10">
-        <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto text-center">
-            <h2 className="text-3xl md:text-4xl font-bold text-earth-green mb-6 font-serif">
-              Why Choose Ayurvedic Health Remedies?
-            </h2>
-            <p className="text-lg text-warm-brown/80 leading-relaxed mb-8">
-              Ayurveda treats the root cause of health issues, not just symptoms. Our remedies work 
-              in harmony with your body's natural healing processes, providing lasting results without 
-              harmful side effects.
-            </p>
-            <a 
-              href="/blog" 
-              className="inline-block px-8 py-3 bg-earth-green text-cream rounded-full font-semibold hover:bg-earth-green/90 transition-colors shadow-lg"
-            >
-              Read Health Articles
-            </a>
-          </div>
-        </div>
-      </section>
     </div>
   );
 }

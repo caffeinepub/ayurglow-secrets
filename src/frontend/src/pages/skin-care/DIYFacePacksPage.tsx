@@ -1,194 +1,137 @@
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Flower2, ArrowLeft } from 'lucide-react';
-import { Link } from '@tanstack/react-router';
+import { Sparkles, Leaf, Droplet, Sun } from "lucide-react";
 
 export default function DIYFacePacksPage() {
   const facePacks = [
     {
-      title: 'Multani Mitti (Fuller\'s Earth) Pack',
-      ingredients: ['2 tbsp multani mitti', '1 tbsp rose water', '1 tsp honey', '1 tsp lemon juice'],
-      skinType: 'Oily and Acne-Prone Skin',
+      title: "Multani Mitti Deep Cleanse Pack",
+      icon: <Leaf className="w-8 h-8 text-earth-green" />,
+      skinType: "Oily & Combination",
+      ingredients: ["2 tbsp multani mitti (Fuller's earth)", "1 tbsp rose water", "1 tsp lemon juice", "1 tsp honey"],
       application: [
-        'Mix multani mitti with rose water',
-        'Add honey and lemon juice',
-        'Make a smooth paste',
-        'Apply evenly on face',
-        'Let dry completely (15-20 minutes)',
-        'Wash off with lukewarm water'
+        "Mix multani mitti with rose water",
+        "Add lemon juice and honey",
+        "Apply evenly on face",
+        "Let dry completely (15-20 min)",
+        "Rinse with lukewarm water"
       ],
-      benefits: ['Absorbs excess oil', 'Tightens pores', 'Removes impurities', 'Prevents acne'],
-      frequency: 'Use 2 times per week'
+      benefits: "Absorbs excess oil, unclogs pores, removes impurities, and tightens skin naturally.",
+      frequency: "Twice weekly"
     },
     {
-      title: 'Sandalwood-Turmeric Glow Pack',
-      ingredients: ['2 tbsp sandalwood powder', '1 tsp turmeric', '3 tbsp milk or yogurt', '1 tsp honey'],
-      skinType: 'All Skin Types',
+      title: "Besan-Turmeric Brightening Pack",
+      icon: <Sun className="w-8 h-8 text-gold" />,
+      skinType: "All Skin Types",
+      ingredients: ["2 tbsp gram flour (besan)", "1/2 tsp turmeric", "2 tbsp milk or yogurt", "1 tsp honey"],
       application: [
-        'Mix sandalwood and turmeric powder',
-        'Add milk or yogurt',
-        'Mix in honey',
-        'Apply on face and neck',
-        'Leave for 20 minutes',
-        'Rinse with cool water'
+        "Mix besan with turmeric",
+        "Add milk/yogurt to make paste",
+        "Mix in honey",
+        "Apply and leave for 15 minutes",
+        "Scrub gently while rinsing"
       ],
-      benefits: ['Brightens complexion', 'Reduces blemishes', 'Cooling effect', 'Natural glow'],
-      frequency: 'Apply 2-3 times weekly'
+      benefits: "Brightens complexion, removes tan, exfoliates dead skin, and gives instant glow.",
+      frequency: "2-3 times per week"
     },
     {
-      title: 'Oatmeal-Honey Soothing Pack',
-      ingredients: ['2 tbsp ground oatmeal', '1 tbsp honey', '2 tbsp yogurt', '1 tsp aloe vera gel'],
-      skinType: 'Sensitive and Dry Skin',
+      title: "Oatmeal-Honey Soothing Pack",
+      icon: <Droplet className="w-8 h-8 text-sage-green" />,
+      skinType: "Sensitive & Dry",
+      ingredients: ["2 tbsp ground oatmeal", "1 tbsp honey", "1 tbsp yogurt", "Few drops almond oil"],
       application: [
-        'Grind oatmeal into fine powder',
-        'Mix with honey and yogurt',
-        'Add aloe vera gel',
-        'Apply gently on face',
-        'Leave for 15-20 minutes',
-        'Wash off with lukewarm water'
+        "Grind oatmeal into fine powder",
+        "Mix with honey and yogurt",
+        "Add almond oil",
+        "Apply gently on face",
+        "Rinse after 15-20 minutes"
       ],
-      benefits: ['Soothes irritation', 'Moisturizes deeply', 'Gentle exfoliation', 'Reduces redness'],
-      frequency: 'Use 2-3 times per week'
+      benefits: "Soothes irritation, deeply moisturizes, reduces redness, and calms sensitive skin.",
+      frequency: "2-3 times weekly"
     },
     {
-      title: 'Banana-Honey Nourishing Pack',
-      ingredients: ['1 ripe banana', '1 tbsp honey', '1 tsp coconut oil', '1 tsp lemon juice'],
-      skinType: 'Dry and Mature Skin',
+      title: "Sandalwood-Rose Cooling Pack",
+      icon: <Sparkles className="w-8 h-8 text-gold" />,
+      skinType: "All Skin Types",
+      ingredients: ["2 tbsp sandalwood powder", "3 tbsp rose water", "1 tsp honey", "Pinch of turmeric"],
       application: [
-        'Mash banana until smooth',
-        'Mix with honey and coconut oil',
-        'Add lemon juice',
-        'Apply thick layer on face',
-        'Leave for 20-25 minutes',
-        'Rinse with warm water'
+        "Mix sandalwood with rose water",
+        "Add honey and turmeric",
+        "Apply evenly on face and neck",
+        "Leave until completely dry",
+        "Rinse with cool water"
       ],
-      benefits: ['Deep nourishment', 'Anti-aging properties', 'Softens skin', 'Improves elasticity'],
-      frequency: 'Apply 2 times weekly'
+      benefits: "Cools and soothes skin, reduces inflammation, evens tone, and provides natural glow.",
+      frequency: "2-3 times per week"
     },
     {
-      title: 'Neem-Tulsi Purifying Pack',
-      ingredients: ['10 neem leaves', '10 tulsi leaves', '2 tbsp yogurt', '1 tsp turmeric', '1 tsp honey'],
-      skinType: 'Acne-Prone and Oily Skin',
+      title: "Banana-Honey Nourishing Pack",
+      icon: <Sun className="w-8 h-8 text-gold" />,
+      skinType: "Dry & Mature",
+      ingredients: ["1/2 ripe banana", "1 tbsp honey", "1 tsp olive oil", "Few drops lemon juice"],
       application: [
-        'Grind neem and tulsi leaves',
-        'Mix with yogurt',
-        'Add turmeric and honey',
-        'Apply on affected areas',
-        'Leave for 15-20 minutes',
-        'Wash off with cool water'
+        "Mash banana into smooth paste",
+        "Mix with honey and olive oil",
+        "Add lemon juice",
+        "Apply thick layer",
+        "Wash off after 20 minutes"
       ],
-      benefits: ['Antibacterial action', 'Purifies skin', 'Prevents breakouts', 'Heals acne'],
-      frequency: 'Use 3 times per week'
+      benefits: "Deeply nourishes, hydrates dry skin, reduces fine lines, and restores elasticity.",
+      frequency: "Twice weekly"
     }
   ];
 
   return (
-    <div className="w-full">
-      {/* Hero Section */}
-      <section className="py-16 bg-gradient-to-b from-green-500/10 to-cream">
-        <div className="container mx-auto px-4">
-          <Link 
-            to="/skin-care"
-            className="inline-flex items-center gap-2 text-earth-green hover:text-earth-green/80 mb-6 transition-colors"
-          >
-            <ArrowLeft className="w-5 h-5" />
-            <span>Back to Skin Care</span>
-          </Link>
-          <div className="text-center max-w-4xl mx-auto">
-            <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-green-500/20 to-emerald-500/20 flex items-center justify-center mx-auto mb-6">
-              <Flower2 className="w-10 h-10 text-earth-green" />
-            </div>
-            <h1 className="text-4xl md:text-5xl font-bold text-earth-green mb-4 font-serif">
-              DIY Herbal Face Packs
-            </h1>
-            <p className="text-lg text-warm-brown/80 leading-relaxed">
-              Create effective face masks at home using natural Ayurvedic ingredients
-            </p>
-          </div>
-        </div>
-      </section>
+    <div className="min-h-screen bg-background">
+      <div className="container mx-auto px-4 py-12">
+        <div className="max-w-4xl mx-auto">
+          <h1 className="text-4xl font-bold text-foreground mb-4">DIY Face Packs</h1>
+          <p className="text-lg text-muted-foreground mb-8">
+            Create spa-quality face packs at home with these simple, natural Ayurvedic recipes for every skin type.
+          </p>
 
-      {/* Face Packs Section */}
-      <section className="py-16 bg-cream">
-        <div className="container mx-auto px-4">
-          <div className="max-w-5xl mx-auto space-y-8">
+          <div className="space-y-8">
             {facePacks.map((pack, index) => (
-              <Card key={index} className="border-2 border-sage-green/30 bg-white shadow-lg">
-                <CardHeader className="bg-sage-green/10">
-                  <CardTitle className="text-2xl text-earth-green font-serif flex items-center gap-3">
-                    <img 
-                      src="/assets/generated/ayur-leaf.dim_64x64.png" 
-                      alt="Leaf" 
-                      className="w-8 h-8"
-                    />
-                    {pack.title}
-                  </CardTitle>
-                  <p className="text-sm text-warm-brown/70 mt-2">
-                    <strong>Best for:</strong> {pack.skinType}
-                  </p>
-                </CardHeader>
-                <CardContent className="p-6 space-y-6">
+              <div key={index} className="bg-card rounded-lg p-6 shadow-sm border border-border">
+                <div className="flex items-center gap-3 mb-2">
+                  {pack.icon}
+                  <h2 className="text-2xl font-semibold text-card-foreground">{pack.title}</h2>
+                </div>
+                <p className="text-sm text-muted-foreground mb-4 ml-11">
+                  <span className="font-semibold">Best for:</span> {pack.skinType}
+                </p>
+
+                <div className="grid md:grid-cols-2 gap-6">
                   <div>
-                    <h3 className="text-lg font-semibold text-earth-green mb-3">Ingredients:</h3>
-                    <ul className="list-disc list-inside space-y-1 text-warm-brown/80">
+                    <h3 className="font-semibold text-card-foreground mb-2">Ingredients:</h3>
+                    <ul className="list-disc list-inside space-y-1 text-muted-foreground">
                       {pack.ingredients.map((ingredient, i) => (
                         <li key={i}>{ingredient}</li>
                       ))}
                     </ul>
                   </div>
-                  
+
                   <div>
-                    <h3 className="text-lg font-semibold text-earth-green mb-3">Application:</h3>
-                    <ol className="list-decimal list-inside space-y-2 text-warm-brown/80">
+                    <h3 className="font-semibold text-card-foreground mb-2">Application:</h3>
+                    <ol className="list-decimal list-inside space-y-1 text-muted-foreground">
                       {pack.application.map((step, i) => (
                         <li key={i}>{step}</li>
                       ))}
                     </ol>
                   </div>
-                  
-                  <div>
-                    <h3 className="text-lg font-semibold text-earth-green mb-3">Benefits:</h3>
-                    <ul className="list-disc list-inside space-y-1 text-warm-brown/80">
-                      {pack.benefits.map((benefit, i) => (
-                        <li key={i}>{benefit}</li>
-                      ))}
-                    </ul>
-                  </div>
-                  
-                  <div className="bg-gold/10 p-4 rounded-lg border border-gold/30">
-                    <h3 className="text-lg font-semibold text-earth-green mb-2">Frequency:</h3>
-                    <p className="text-warm-brown/80">{pack.frequency}</p>
-                  </div>
-                </CardContent>
-              </Card>
+                </div>
+
+                <div className="mt-4 pt-4 border-t border-border">
+                  <p className="text-muted-foreground mb-2">
+                    <span className="font-semibold text-card-foreground">Benefits:</span> {pack.benefits}
+                  </p>
+                  <p className="text-muted-foreground">
+                    <span className="font-semibold text-card-foreground">Frequency:</span> {pack.frequency}
+                  </p>
+                </div>
+              </div>
             ))}
           </div>
         </div>
-      </section>
-
-      {/* Additional Tips */}
-      <section className="py-16 bg-sage-green/10">
-        <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto text-center">
-            <h2 className="text-3xl font-bold text-earth-green mb-6 font-serif">
-              Tips for Best Results
-            </h2>
-            <div className="grid md:grid-cols-3 gap-6 text-left">
-              <div className="bg-white p-6 rounded-lg border-2 border-sage-green/30">
-                <h3 className="font-semibold text-earth-green mb-2">Fresh Ingredients</h3>
-                <p className="text-warm-brown/80 text-sm">Always use fresh, natural ingredients for maximum benefits</p>
-              </div>
-              <div className="bg-white p-6 rounded-lg border-2 border-sage-green/30">
-                <h3 className="font-semibold text-earth-green mb-2">Patch Test</h3>
-                <p className="text-warm-brown/80 text-sm">Test on small skin area first to check for allergies</p>
-              </div>
-              <div className="bg-white p-6 rounded-lg border-2 border-sage-green/30">
-                <h3 className="font-semibold text-earth-green mb-2">Consistency</h3>
-                <p className="text-warm-brown/80 text-sm">Regular use shows better and lasting results</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+      </div>
     </div>
   );
 }

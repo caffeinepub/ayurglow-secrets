@@ -1,12 +1,8 @@
 import { SiFacebook, SiInstagram, SiX, SiYoutube } from 'react-icons/si';
 import { Link } from '@tanstack/react-router';
-import { Heart } from 'lucide-react';
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
-  const appIdentifier = typeof window !== 'undefined' 
-    ? encodeURIComponent(window.location.hostname) 
-    : 'ayurglow-secrets';
 
   return (
     <footer className="bg-earth-green text-cream mt-20">
@@ -114,19 +110,8 @@ export default function Footer() {
         </div>
 
         {/* Bottom Bar */}
-        <div className="border-t border-cream/20 pt-6 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-cream/70">
+        <div className="border-t border-cream/20 pt-6 text-center text-sm text-cream/70">
           <p>© {currentYear} AyurGlow Secrets. All rights reserved.</p>
-          <p className="flex items-center gap-1">
-            Built with <Heart className="w-4 h-4 text-gold fill-gold" /> using{' '}
-            <a 
-              href={`https://caffeine.ai/?utm_source=Caffeine-footer&utm_medium=referral&utm_content=${appIdentifier}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-cream hover:text-gold transition-colors underline"
-            >
-              caffeine.ai
-            </a>
-          </p>
         </div>
       </div>
     </footer>

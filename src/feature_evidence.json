@@ -1,4 +1,23 @@
 {
   "kind": "feature_evidence_report",
-  "features": []
+  "features": [
+    {
+      "featureId": "feature-remove-the-why-choose-ayurvedic-health-remedies-section-from-the-healthremediespage-tsx-component-while-preserving-the-hero-section-and-the-five-subcategory-cards-immunity-boosting-digestion-gut-health-weight-management-diabetes-bp-support-stress-sleep-solutions",
+      "featureTitle": "Remove the 'Why Choose Ayurvedic Health Remedies?' section from the HealthRemediesPage.tsx component while preserving the hero section and the five subcategory cards (Immunity Boosting, Digestion & Gut Health, Weight Management, Diabetes & BP Support, Stress & Sleep Solutions)",
+      "files": [
+        "frontend/src/pages/HealthRemediesPage.tsx"
+      ],
+      "components": [
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-47"
+      ],
+      "confidence": "high"
+    }
+  ]
 }

@@ -10,9 +10,12 @@ export function useGetAllPosts() {
     queryKey: ['allPosts'],
     queryFn: async () => {
       if (!actor) return [];
-      return actor.getAllPosts();
+      const posts = await actor.getAllPosts();
+      return posts;
     },
     enabled: !!actor && !isFetching,
+    staleTime: 0,
+    refetchOnMount: true,
   });
 }
 
@@ -24,9 +27,12 @@ export function useGetPublishedPosts() {
     queryKey: ['publishedPosts'],
     queryFn: async () => {
       if (!actor) return [];
-      return actor.getPublishedPosts();
+      const posts = await actor.getPublishedPosts();
+      return posts;
     },
     enabled: !!actor && !isFetching,
+    staleTime: 0,
+    refetchOnMount: true,
   });
 }
 

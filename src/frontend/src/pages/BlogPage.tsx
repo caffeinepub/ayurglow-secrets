@@ -2,10 +2,11 @@ import { useNavigate } from '@tanstack/react-router';
 import { useGetPublishedPosts } from '../hooks/useQueries';
 import { Card, CardContent } from '@/components/ui/card';
 import { Calendar, Clock, ArrowRight, Loader2 } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 export default function BlogPage() {
   const navigate = useNavigate();
-  const { data: posts, isLoading } = useGetPublishedPosts();
+  const { data: posts, isLoading, error } = useGetPublishedPosts();
 
   const getCategoryColor = (category: string) => {
     const colors: Record<string, string> = {
@@ -56,6 +57,26 @@ export default function BlogPage() {
               <Loader2 className="h-12 w-12 animate-spin text-earth-green mx-auto mb-4" />
               <p className="text-warm-brown">Loading posts...</p>
             </div>
+          ) : error ? (
+            <div className="text-center py-12 max-w-2xl mx-auto">
+              <img
+                src="/assets/generated/icon-wellness.dim_128x128.png"
+                alt="Error"
+                className="w-24 h-24 mx-auto mb-6 opacity-50"
+              />
+              <h2 className="text-3xl font-serif text-earth-green mb-4">
+                Unable to Load Posts
+              </h2>
+              <p className="text-warm-brown/70 mb-6">
+                There was an error loading the blog posts. Please try again later.
+              </p>
+              <Button
+                onClick={() => window.location.reload()}
+                className="bg-earth-green hover:bg-earth-green/90 text-cream"
+              >
+                Retry
+              </Button>
+            </div>
           ) : !posts || posts.length === 0 ? (
             <div className="text-center py-12 max-w-2xl mx-auto">
               <img
@@ -66,9 +87,15 @@ export default function BlogPage() {
               <h2 className="text-3xl font-serif text-earth-green mb-4">
                 No Posts Yet
               </h2>
-              <p className="text-warm-brown/70">
+              <p className="text-warm-brown/70 mb-6">
                 Check back soon for Ayurvedic wisdom and wellness tips
               </p>
+              <Button
+                onClick={() => navigate({ to: '/admin/posts' })}
+                className="bg-earth-green hover:bg-earth-green/90 text-cream"
+              >
+                Go to Admin Dashboard
+              </Button>
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">

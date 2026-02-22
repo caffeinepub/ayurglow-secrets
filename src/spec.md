@@ -1,9 +1,10 @@
 # Specification
 
 ## Summary
-**Goal:** Retry the previous deployment without any changes.
+**Goal:** Remove the "Why Choose Ayurvedic Health Remedies?" section from the Health Remedies page.
 
 **Planned changes:**
-- None
+- Delete the "Why Choose Ayurvedic Health Remedies?" section from HealthRemediesPage.tsx
+- Keep the hero section and all five subcategory cards intact
 
-**User-visible outcome:** The application will be redeployed in its current state with no modifications.
+**User-visible outcome:** The Health Remedies page displays the hero section and subcategory cards without the informational "Why Choose" section, creating a more streamlined layout.

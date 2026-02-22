@@ -1,6 +1,7 @@
 import Text "mo:core/Text";
 import Map "mo:core/Map";
 import Nat "mo:core/Nat";
+import Int "mo:core/Int";
 import Iter "mo:core/Iter";
 
 actor {
@@ -20,7 +21,19 @@ actor {
 
   let blogPosts = Map.empty<Text, BlogPost>();
 
-  public shared ({ caller }) func createPost(id : Text, title : Text, slug : Text, category : Text, content : Text, excerpt : Text, readTime : Nat, author : Text, publishedDate : Int, tags : [Text], isPublished : Bool) : async () {
+  public shared ({ caller }) func createPost(
+    id : Text,
+    title : Text,
+    slug : Text,
+    category : Text,
+    content : Text,
+    excerpt : Text,
+    readTime : Nat,
+    author : Text,
+    publishedDate : Int,
+    tags : [Text],
+    isPublished : Bool,
+  ) : async () {
     let newPost : BlogPost = {
       id;
       title;
@@ -37,7 +50,19 @@ actor {
     blogPosts.add(id, newPost);
   };
 
-  public shared ({ caller }) func updatePost(id : Text, title : Text, slug : Text, category : Text, content : Text, excerpt : Text, readTime : Nat, author : Text, publishedDate : Int, tags : [Text], isPublished : Bool) : async () {
+  public shared ({ caller }) func updatePost(
+    id : Text,
+    title : Text,
+    slug : Text,
+    category : Text,
+    content : Text,
+    excerpt : Text,
+    readTime : Nat,
+    author : Text,
+    publishedDate : Int,
+    tags : [Text],
+    isPublished : Bool,
+  ) : async () {
     let updatedPost : BlogPost = {
       id;
       title;

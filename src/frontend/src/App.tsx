@@ -1,45 +1,47 @@
-import { createRouter, createRoute, createRootRoute, RouterProvider, Outlet } from '@tanstack/react-router';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import Layout from './components/Layout';
-import HomePage from './pages/HomePage';
-import AboutPage from './pages/AboutPage';
-import HealthRemediesPage from './pages/HealthRemediesPage';
-import SkinCarePage from './pages/SkinCarePage';
-import HairCarePage from './pages/HairCarePage';
-import BlogPage from './pages/BlogPage';
-import CreateBlogPostPage from './pages/CreateBlogPostPage';
-import EditBlogPostPage from './pages/EditBlogPostPage';
-import AdminPostsPage from './pages/AdminPostsPage';
-import BlogPostDetailPage from './pages/BlogPostDetailPage';
-import PrivacyPolicyPage from './pages/PrivacyPolicyPage';
-import TermsOfServicePage from './pages/TermsOfServicePage';
+import { RouterProvider, createRouter, createRoute, createRootRoute, Outlet } from "@tanstack/react-router";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import Layout from "./components/Layout";
+import HomePage from "./pages/HomePage";
+import AboutPage from "./pages/AboutPage";
+import HealthRemediesPage from "./pages/HealthRemediesPage";
+import SkinCarePage from "./pages/SkinCarePage";
+import HairCarePage from "./pages/HairCarePage";
+import BlogPage from "./pages/BlogPage";
+import BlogPostDetailPage from "./pages/BlogPostDetailPage";
+import CreateBlogPostPage from "./pages/CreateBlogPostPage";
+import EditBlogPostPage from "./pages/EditBlogPostPage";
+import AdminPostsPage from "./pages/AdminPostsPage";
+import PrivacyPolicyPage from "./pages/PrivacyPolicyPage";
+import TermsOfServicePage from "./pages/TermsOfServicePage";
 
-// Health Remedies Detail Pages
-import ImmunityBoostingPage from './pages/health-remedies/ImmunityBoostingPage';
-import DigestionGutHealthPage from './pages/health-remedies/DigestionGutHealthPage';
-import WeightManagementPage from './pages/health-remedies/WeightManagementPage';
-import DiabetesBPSupportPage from './pages/health-remedies/DiabetesBPSupportPage';
-import StressSleepSolutionsPage from './pages/health-remedies/StressSleepSolutionsPage';
+// Health Remedies subcategory pages
+import ImmunityBoostPage from "./pages/health-remedies/ImmunityBoostPage";
+import DigestionPage from "./pages/health-remedies/DigestionPage";
+import WeightManagementPage from "./pages/health-remedies/WeightManagementPage";
+import DiabetesBPPage from "./pages/health-remedies/DiabetesBPPage";
+import StressSleepPage from "./pages/health-remedies/StressSleepPage";
 
-// Skin Care Detail Pages
-import NaturalGlowPage from './pages/skin-care/NaturalGlowPage';
-import AcnePimplesPage from './pages/skin-care/AcnePimplesPage';
-import PigmentationDarkSpotsPage from './pages/skin-care/PigmentationDarkSpotsPage';
-import AntiAgingPage from './pages/skin-care/AntiAgingPage';
-import DIYFacePacksPage from './pages/skin-care/DIYFacePacksPage';
+// Skin Care subcategory pages
+import NaturalGlowPage from "./pages/skin-care/NaturalGlowPage";
+import AcneTreatmentPage from "./pages/skin-care/AcneTreatmentPage";
+import PigmentationPage from "./pages/skin-care/PigmentationPage";
+import AntiAgingPage from "./pages/skin-care/AntiAgingPage";
+import DIYFacePacksPage from "./pages/skin-care/DIYFacePacksPage";
 
-// Hair Care Detail Pages
-import HairFallTreatmentPage from './pages/hair-care/HairFallTreatmentPage';
-import HairGrowthPage from './pages/hair-care/HairGrowthPage';
-import DandruffScalpCarePage from './pages/hair-care/DandruffScalpCarePage';
-import GreyHairSolutionsPage from './pages/hair-care/GreyHairSolutionsPage';
-import OilsMasksPage from './pages/hair-care/OilsMasksPage';
+// Hair Care subcategory pages
+import HairFallTreatmentPage from "./pages/hair-care/HairFallTreatmentPage";
+import HairGrowthPage from "./pages/hair-care/HairGrowthPage";
+import DandruffScalpCarePage from "./pages/hair-care/DandruffScalpCarePage";
+import GreyHairSolutionsPage from "./pages/hair-care/GreyHairSolutionsPage";
+import OilsMasksPage from "./pages/hair-care/OilsMasksPage";
 
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      staleTime: 1000 * 60 * 5, // 5 minutes
+      staleTime: 0,
+      refetchOnMount: true,
       refetchOnWindowFocus: false,
+      retry: 1,
     },
   },
 });
@@ -54,216 +56,208 @@ const rootRoute = createRootRoute({
 
 const indexRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: '/',
+  path: "/",
   component: HomePage,
 });
 
 const aboutRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: '/about',
+  path: "/about",
   component: AboutPage,
 });
 
 const healthRemediesRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: '/health-remedies',
+  path: "/health-remedies",
   component: HealthRemediesPage,
 });
 
-const skinCareRoute = createRoute({
+const immunityBoostRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: '/skin-care',
-  component: SkinCarePage,
+  path: "/health-remedies/immunity-boost",
+  component: ImmunityBoostPage,
 });
 
-const hairCareRoute = createRoute({
+const digestionRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: '/hair-care',
-  component: HairCarePage,
-});
-
-const blogRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: '/blog',
-  component: BlogPage,
-});
-
-const createBlogPostRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: '/blog/create',
-  component: CreateBlogPostPage,
-});
-
-const editBlogPostRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: '/blog/edit/$id',
-  component: EditBlogPostPage,
-});
-
-const blogPostDetailRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: '/blog/$slug',
-  component: BlogPostDetailPage,
-});
-
-const adminPostsRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: '/admin/posts',
-  component: AdminPostsPage,
-});
-
-const privacyPolicyRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: '/privacy-policy',
-  component: PrivacyPolicyPage,
-});
-
-const termsOfServiceRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: '/terms-of-service',
-  component: TermsOfServicePage,
-});
-
-// Health Remedies Detail Routes
-const immunityBoostingRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: '/health-remedies/immunity-boosting',
-  component: ImmunityBoostingPage,
-});
-
-const digestionGutHealthRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: '/health-remedies/digestion-gut-health',
-  component: DigestionGutHealthPage,
+  path: "/health-remedies/digestion",
+  component: DigestionPage,
 });
 
 const weightManagementRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: '/health-remedies/weight-management',
+  path: "/health-remedies/weight-management",
   component: WeightManagementPage,
 });
 
-const diabetesBPSupportRoute = createRoute({
+const diabetesBPRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: '/health-remedies/diabetes-bp-support',
-  component: DiabetesBPSupportPage,
+  path: "/health-remedies/diabetes-bp",
+  component: DiabetesBPPage,
 });
 
-const stressSleepSolutionsRoute = createRoute({
+const stressSleepRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: '/health-remedies/stress-sleep-solutions',
-  component: StressSleepSolutionsPage,
+  path: "/health-remedies/stress-sleep",
+  component: StressSleepPage,
 });
 
-// Skin Care Detail Routes
+const skinCareRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/skin-care",
+  component: SkinCarePage,
+});
+
 const naturalGlowRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: '/skin-care/natural-glow',
+  path: "/skin-care/natural-glow",
   component: NaturalGlowPage,
 });
 
-const acnePimplesRoute = createRoute({
+const acneTreatmentRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: '/skin-care/acne-pimples',
-  component: AcnePimplesPage,
+  path: "/skin-care/acne-treatment",
+  component: AcneTreatmentPage,
 });
 
-const pigmentationDarkSpotsRoute = createRoute({
+const pigmentationRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: '/skin-care/pigmentation-dark-spots',
-  component: PigmentationDarkSpotsPage,
+  path: "/skin-care/pigmentation",
+  component: PigmentationPage,
 });
 
 const antiAgingRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: '/skin-care/anti-aging',
+  path: "/skin-care/anti-aging",
   component: AntiAgingPage,
 });
 
 const diyFacePacksRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: '/skin-care/diy-face-packs',
+  path: "/skin-care/diy-face-packs",
   component: DIYFacePacksPage,
 });
 
-// Hair Care Detail Routes
+const hairCareRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/hair-care",
+  component: HairCarePage,
+});
+
 const hairFallTreatmentRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: '/hair-care/hair-fall-treatment',
+  path: "/hair-care/hair-fall-treatment",
   component: HairFallTreatmentPage,
 });
 
 const hairGrowthRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: '/hair-care/hair-growth',
+  path: "/hair-care/hair-growth",
   component: HairGrowthPage,
 });
 
 const dandruffScalpCareRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: '/hair-care/dandruff-scalp-care',
+  path: "/hair-care/dandruff-scalp-care",
   component: DandruffScalpCarePage,
 });
 
 const greyHairSolutionsRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: '/hair-care/grey-hair-solutions',
+  path: "/hair-care/grey-hair-solutions",
   component: GreyHairSolutionsPage,
 });
 
 const oilsMasksRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: '/hair-care/oils-masks',
+  path: "/hair-care/oils-masks",
   component: OilsMasksPage,
+});
+
+const blogRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/blog",
+  component: BlogPage,
+});
+
+const blogPostDetailRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/blog/$slug",
+  component: BlogPostDetailPage,
+});
+
+const createBlogPostRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/admin/create-post",
+  component: CreateBlogPostPage,
+});
+
+const editBlogPostRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/admin/edit-post/$id",
+  component: EditBlogPostPage,
+});
+
+const adminPostsRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/admin/posts",
+  component: AdminPostsPage,
+});
+
+const privacyPolicyRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/privacy-policy",
+  component: PrivacyPolicyPage,
+});
+
+const termsOfServiceRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/terms-of-service",
+  component: TermsOfServicePage,
 });
 
 const routeTree = rootRoute.addChildren([
   indexRoute,
   aboutRoute,
   healthRemediesRoute,
-  skinCareRoute,
-  hairCareRoute,
-  blogRoute,
-  createBlogPostRoute,
-  editBlogPostRoute,
-  blogPostDetailRoute,
-  adminPostsRoute,
-  privacyPolicyRoute,
-  termsOfServiceRoute,
-  // Health Remedies Detail Routes
-  immunityBoostingRoute,
-  digestionGutHealthRoute,
+  immunityBoostRoute,
+  digestionRoute,
   weightManagementRoute,
-  diabetesBPSupportRoute,
-  stressSleepSolutionsRoute,
-  // Skin Care Detail Routes
+  diabetesBPRoute,
+  stressSleepRoute,
+  skinCareRoute,
   naturalGlowRoute,
-  acnePimplesRoute,
-  pigmentationDarkSpotsRoute,
+  acneTreatmentRoute,
+  pigmentationRoute,
   antiAgingRoute,
   diyFacePacksRoute,
-  // Hair Care Detail Routes
+  hairCareRoute,
   hairFallTreatmentRoute,
   hairGrowthRoute,
   dandruffScalpCareRoute,
   greyHairSolutionsRoute,
   oilsMasksRoute,
+  blogRoute,
+  blogPostDetailRoute,
+  createBlogPostRoute,
+  editBlogPostRoute,
+  adminPostsRoute,
+  privacyPolicyRoute,
+  termsOfServiceRoute,
 ]);
 
 const router = createRouter({ routeTree });
 
-declare module '@tanstack/react-router' {
+declare module "@tanstack/react-router" {
   interface Register {
     router: typeof router;
   }
 }
 
-function App() {
+export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <RouterProvider router={router} />
     </QueryClientProvider>
   );
 }
-
-export default App;

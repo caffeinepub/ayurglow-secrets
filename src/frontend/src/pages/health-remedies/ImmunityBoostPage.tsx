@@ -1,57 +1,56 @@
 import { Leaf, Droplet, Flame, Sun } from "lucide-react";
 
-export default function WeightManagementPage() {
+export default function ImmunityBoostPage() {
   const remedies = [
     {
-      title: "Warm Lemon-Honey Water",
+      title: "Turmeric Golden Milk",
       icon: <Sun className="w-8 h-8 text-gold" />,
-      ingredients: ["1 cup warm water", "1/2 lemon juice", "1 tsp raw honey", "Pinch of cinnamon powder"],
+      ingredients: ["1 cup warm milk", "1 tsp turmeric powder", "1/2 tsp cinnamon", "Pinch of black pepper", "1 tsp honey"],
       application: [
-        "Heat water until warm (not boiling)",
-        "Squeeze fresh lemon juice",
-        "Add honey and cinnamon",
-        "Stir well and drink immediately"
+        "Heat milk until warm (not boiling)",
+        "Add turmeric, cinnamon, and black pepper",
+        "Stir well and let steep for 2 minutes",
+        "Add honey before drinking"
       ],
-      benefits: "Boosts metabolism, aids fat burning, and detoxifies the body naturally.",
-      frequency: "Every morning on empty stomach"
+      benefits: "Powerful anti-inflammatory and immune-boosting properties. Curcumin in turmeric enhances antibody responses.",
+      frequency: "Daily before bedtime"
     },
     {
-      title: "Triphala-Guggul Formula",
+      title: "Tulsi-Ginger Tea",
       icon: <Leaf className="w-8 h-8 text-earth-green" />,
-      ingredients: ["1 tsp Triphala powder", "500mg Guggul extract", "1 cup warm water"],
+      ingredients: ["10-12 fresh tulsi leaves", "1-inch ginger root", "2 cups water", "1 tsp honey", "Few drops lemon juice"],
       application: [
-        "Mix Triphala powder in warm water",
-        "Take Guggul tablet with the mixture",
-        "Consume before bedtime"
+        "Crush tulsi leaves and grate ginger",
+        "Boil water and add tulsi and ginger",
+        "Simmer for 5-7 minutes",
+        "Strain, add honey and lemon"
       ],
-      benefits: "Supports healthy metabolism, reduces cholesterol, and promotes fat metabolism.",
-      frequency: "Once daily before sleep"
+      benefits: "Tulsi is an adaptogen that strengthens immunity. Ginger adds antimicrobial properties.",
+      frequency: "Twice daily, morning and evening"
     },
     {
-      title: "Ginger-Green Tea Metabolism Booster",
+      title: "Chyawanprash Tonic",
       icon: <Flame className="w-8 h-8 text-warm-brown" />,
-      ingredients: ["1 green tea bag", "1-inch fresh ginger", "1 cup hot water", "Few mint leaves", "1/2 tsp honey"],
+      ingredients: ["1 tbsp Chyawanprash", "1 cup warm milk or water"],
       application: [
-        "Grate ginger and add to hot water",
-        "Add green tea bag and mint leaves",
-        "Steep for 5 minutes",
-        "Strain, add honey, and drink"
+        "Take 1 tablespoon of Chyawanprash",
+        "Mix with warm milk or water",
+        "Consume on empty stomach"
       ],
-      benefits: "Increases thermogenesis, burns calories, and reduces appetite naturally.",
-      frequency: "2-3 times daily between meals"
+      benefits: "Traditional Ayurvedic formula with 40+ herbs. Boosts immunity, energy, and vitality.",
+      frequency: "Once daily in the morning"
     },
     {
-      title: "Cabbage-Carrot Detox Juice",
+      title: "Amla-Honey Immunity Shot",
       icon: <Droplet className="w-8 h-8 text-sage-green" />,
-      ingredients: ["1 cup chopped cabbage", "1 medium carrot", "1/2 cucumber", "1/2 lemon juice", "Pinch of black salt"],
+      ingredients: ["2 fresh amla (Indian gooseberry)", "1 tsp honey", "Pinch of rock salt"],
       application: [
-        "Blend all vegetables with little water",
-        "Strain if desired",
-        "Add lemon juice and black salt",
-        "Drink fresh immediately"
+        "Extract juice from fresh amla",
+        "Mix with honey and rock salt",
+        "Consume immediately"
       ],
-      benefits: "Low in calories, high in fiber. Promotes satiety and supports healthy weight loss.",
-      frequency: "Once daily as meal replacement or before meals"
+      benefits: "Amla is richest source of Vitamin C. Enhances white blood cell production and antioxidant defense.",
+      frequency: "Daily on empty stomach"
     }
   ];
 
@@ -59,9 +58,9 @@ export default function WeightManagementPage() {
     <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-12">
         <div className="max-w-4xl mx-auto">
-          <h1 className="text-4xl font-bold text-foreground mb-4">Weight Management Remedies</h1>
+          <h1 className="text-4xl font-bold text-foreground mb-4">Immunity Boosting Remedies</h1>
           <p className="text-lg text-muted-foreground mb-8">
-            Achieve healthy weight balance naturally with these Ayurvedic metabolism-boosting remedies.
+            Strengthen your body's natural defense system with these powerful Ayurvedic immunity boosters.
           </p>
 
           <div className="space-y-8">

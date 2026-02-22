@@ -1,15 +1,39 @@
 {
   "kind": "build_request",
-  "title": "Retry previous deployment",
+  "title": "Remove 'Why Choose Ayurvedic Health Remedies?' section from Health Remedies page",
+  "projectName": "AyurGlow Secrets",
   "priority": "normal",
-  "requirements": [],
+  "requirements": [
+    {
+      "id": "REQ-47",
+      "text": "Remove the 'Why Choose Ayurvedic Health Remedies?' section from the HealthRemediesPage.tsx component while preserving the hero section and the five subcategory cards (Immunity Boosting, Digestion & Gut Health, Weight Management, Diabetes & BP Support, Stress & Sleep Solutions)",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-latest"
+        ],
+        "quotes": [
+          "can remove the part\nWhy Choose Ayurvedic Health Remedies?"
+        ]
+      },
+      "acceptanceCriteria": [
+        "The 'Why Choose Ayurvedic Health Remedies?' section is completely removed from HealthRemediesPage.tsx",
+        "The hero section with heading and description remains visible",
+        "All five subcategory cards remain functional and clickable",
+        "The page layout remains visually balanced after section removal",
+        "No console errors or broken styling after the removal"
+      ]
+    }
+  ],
   "constraints": [
-    "No changes requested - retry previous build as-is"
+    "Do not modify the subcategory cards or their navigation functionality",
+    "Preserve the hero section at the top of the page",
+    "Maintain the Ayurvedic design theme and styling consistency"
   ],
   "nonGoals": [
-    "Adding new features",
-    "Modifying existing code",
-    "Changing design or styling"
+    "Removing similar sections from other category pages (Skin Care, Hair Care)",
+    "Adding new content to replace the removed section",
+    "Modifying the subcategory routing or detail pages"
   ],
   "imageRequirements": {
     "required": [],

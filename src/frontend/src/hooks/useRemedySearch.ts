@@ -1,120 +1,127 @@
+import { useState, useMemo } from "react";
+
 export interface RemedyPage {
-  path: string;
   title: string;
+  path: string;
   category: string;
   keywords: string[];
 }
 
-export const remedyPages: RemedyPage[] = [
+const remedyPages: RemedyPage[] = [
   // Health Remedies
   {
-    path: '/health-remedies/immunity-boosting',
-    title: 'Immunity Boosting Remedies',
-    category: 'Health',
-    keywords: ['immunity', 'immune', 'defense', 'health', 'boost', 'strengthen', 'protection', 'wellness'],
+    title: "Immunity Boosting",
+    path: "/health-remedies/immunity-boost",
+    category: "Health Remedies",
+    keywords: ["immunity", "immune", "defense", "turmeric", "tulsi", "chyawanprash", "amla", "vitamin c"],
   },
   {
-    path: '/health-remedies/digestion-gut-health',
-    title: 'Digestion & Gut Health',
-    category: 'Health',
-    keywords: ['digestion', 'gut', 'stomach', 'agni', 'digestive', 'health', 'intestine', 'bloating'],
+    title: "Digestive Health",
+    path: "/health-remedies/digestion",
+    category: "Health Remedies",
+    keywords: ["digestion", "digestive", "stomach", "triphala", "ginger", "cumin", "ajwain", "bloating", "gas"],
   },
   {
-    path: '/health-remedies/weight-management',
-    title: 'Weight Management',
-    category: 'Health',
-    keywords: ['weight', 'loss', 'management', 'diet', 'fat', 'slim', 'healthy', 'balance'],
+    title: "Weight Management",
+    path: "/health-remedies/weight-management",
+    category: "Health Remedies",
+    keywords: ["weight", "loss", "metabolism", "fat", "lemon", "honey", "green tea", "detox"],
   },
   {
-    path: '/health-remedies/diabetes-bp-support',
-    title: 'Diabetes & BP Support',
-    category: 'Health',
-    keywords: ['diabetes', 'blood pressure', 'bp', 'sugar', 'glucose', 'hypertension', 'health'],
+    title: "Diabetes & Blood Pressure",
+    path: "/health-remedies/diabetes-bp",
+    category: "Health Remedies",
+    keywords: ["diabetes", "blood sugar", "blood pressure", "bp", "fenugreek", "bitter gourd", "cinnamon", "garlic"],
   },
   {
-    path: '/health-remedies/stress-sleep-solutions',
-    title: 'Stress & Sleep Solutions',
-    category: 'Health',
-    keywords: ['stress', 'sleep', 'insomnia', 'anxiety', 'relaxation', 'calm', 'rest', 'peace'],
+    title: "Stress & Sleep",
+    path: "/health-remedies/stress-sleep",
+    category: "Health Remedies",
+    keywords: ["stress", "sleep", "anxiety", "insomnia", "ashwagandha", "brahmi", "chamomile", "lavender", "relaxation"],
   },
   // Skin Care
   {
-    path: '/skin-care/natural-glow',
-    title: 'Natural Glow Remedies',
-    category: 'Skin Care',
-    keywords: ['glow', 'radiant', 'skin', 'beauty', 'luminous', 'bright', 'complexion', 'face'],
+    title: "Natural Glow",
+    path: "/skin-care/natural-glow",
+    category: "Skin Care",
+    keywords: ["glow", "radiant", "bright", "turmeric", "saffron", "aloe vera", "papaya", "face mask"],
   },
   {
-    path: '/skin-care/acne-pimples',
-    title: 'Acne & Pimples',
-    category: 'Skin Care',
-    keywords: ['acne', 'pimples', 'breakout', 'clear', 'skin', 'blemish', 'spots', 'face'],
+    title: "Acne Treatment",
+    path: "/skin-care/acne-treatment",
+    category: "Skin Care",
+    keywords: ["acne", "pimples", "breakout", "neem", "tea tree", "sandalwood", "antibacterial"],
   },
   {
-    path: '/skin-care/pigmentation-dark-spots',
-    title: 'Pigmentation & Dark Spots',
-    category: 'Skin Care',
-    keywords: ['pigmentation', 'dark spots', 'spots', 'skin', 'even tone', 'fade', 'discoloration'],
+    title: "Pigmentation Reduction",
+    path: "/skin-care/pigmentation",
+    category: "Skin Care",
+    keywords: ["pigmentation", "dark spots", "melasma", "brightening", "lemon", "potato", "vitamin c"],
   },
   {
-    path: '/skin-care/anti-aging',
-    title: 'Anti-Aging Ayurveda',
-    category: 'Skin Care',
-    keywords: ['anti-aging', 'wrinkles', 'aging', 'youthful', 'skin', 'fine lines', 'rejuvenation'],
+    title: "Anti-Aging",
+    path: "/skin-care/anti-aging",
+    category: "Skin Care",
+    keywords: ["anti-aging", "wrinkles", "fine lines", "collagen", "almond", "avocado", "rose water"],
   },
   {
-    path: '/skin-care/diy-face-packs',
-    title: 'DIY Herbal Face Packs',
-    category: 'Skin Care',
-    keywords: ['face pack', 'mask', 'diy', 'herbal', 'skin', 'homemade', 'natural', 'treatment'],
+    title: "DIY Face Packs",
+    path: "/skin-care/diy-face-packs",
+    category: "Skin Care",
+    keywords: ["face pack", "face mask", "multani mitti", "besan", "oatmeal", "sandalwood", "diy"],
   },
   // Hair Care
   {
-    path: '/hair-care/hair-fall-treatment',
-    title: 'Hair Fall Treatment',
-    category: 'Hair Care',
-    keywords: ['hair fall', 'hair loss', 'shedding', 'hair', 'treatment', 'stop', 'prevent'],
+    title: "Hair Fall Treatment",
+    path: "/hair-care/hair-fall-treatment",
+    category: "Hair Care",
+    keywords: ["hair fall", "hair loss", "thinning", "onion", "fenugreek", "curry leaves", "amla"],
   },
   {
-    path: '/hair-care/hair-growth',
-    title: 'Hair Growth Remedies',
-    category: 'Hair Care',
-    keywords: ['hair growth', 'grow', 'hair', 'stimulate', 'thick', 'long', 'healthy'],
+    title: "Hair Growth",
+    path: "/hair-care/hair-growth",
+    category: "Hair Care",
+    keywords: ["hair growth", "long hair", "thick hair", "castor oil", "hibiscus", "bhringraj"],
   },
   {
-    path: '/hair-care/dandruff-scalp-care',
-    title: 'Dandruff & Scalp Care',
-    category: 'Hair Care',
-    keywords: ['dandruff', 'scalp', 'flakes', 'itchy', 'hair', 'care', 'treatment', 'healthy'],
+    title: "Dandruff & Scalp Care",
+    path: "/hair-care/dandruff-scalp-care",
+    category: "Hair Care",
+    keywords: ["dandruff", "scalp", "itchy", "flakes", "neem", "tea tree", "lemon", "yogurt"],
   },
   {
-    path: '/hair-care/grey-hair-solutions',
-    title: 'Grey Hair Solutions',
-    category: 'Hair Care',
-    keywords: ['grey hair', 'gray', 'premature', 'greying', 'hair', 'prevent', 'reverse', 'darken'],
+    title: "Grey Hair Solutions",
+    path: "/hair-care/grey-hair-solutions",
+    category: "Hair Care",
+    keywords: ["grey hair", "gray hair", "white hair", "premature greying", "henna", "amla", "curry leaves"],
   },
   {
-    path: '/hair-care/oils-masks',
-    title: 'Ayurvedic Oils & Masks',
-    category: 'Hair Care',
-    keywords: ['oil', 'mask', 'hair', 'treatment', 'nourish', 'conditioning', 'ayurvedic', 'blend'],
+    title: "Ayurvedic Oils & Masks",
+    path: "/hair-care/oils-masks",
+    category: "Hair Care",
+    keywords: ["hair oil", "hair mask", "coconut oil", "castor oil", "almond oil", "deep conditioning"],
   },
 ];
 
-export function filterRemedies(query: string): RemedyPage[] {
-  if (!query.trim()) {
-    return [];
-  }
+export function useRemedySearch() {
+  const [searchQuery, setSearchQuery] = useState("");
 
-  const searchTerm = query.toLowerCase().trim();
+  const filteredRemedies = useMemo(() => {
+    if (!searchQuery.trim()) return [];
 
-  return remedyPages.filter((page) => {
-    const titleMatch = page.title.toLowerCase().includes(searchTerm);
-    const categoryMatch = page.category.toLowerCase().includes(searchTerm);
-    const keywordMatch = page.keywords.some((keyword) =>
-      keyword.toLowerCase().includes(searchTerm)
+    const query = searchQuery.toLowerCase();
+    return remedyPages.filter(
+      (remedy) =>
+        remedy.title.toLowerCase().includes(query) ||
+        remedy.category.toLowerCase().includes(query) ||
+        remedy.keywords.some((keyword) => keyword.includes(query))
     );
+  }, [searchQuery]);
 
-    return titleMatch || categoryMatch || keywordMatch;
-  });
+  return {
+    searchQuery,
+    setSearchQuery,
+    filteredRemedies,
+    allRemedies: remedyPages,
+  };
 }
