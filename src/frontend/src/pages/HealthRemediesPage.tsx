@@ -9,14 +9,14 @@ export default function HealthRemediesPage() {
       title: 'Immunity Boosting Remedies',
       description: 'Strengthen your natural defenses with powerful Ayurvedic herbs and practices.',
       color: 'from-green-500/20 to-emerald-500/20',
-      path: '/health-remedies/immunity-boosting',
+      path: '/health-remedies/immunity-boost',
     },
     {
       icon: Apple,
       title: 'Digestion & Gut Health',
       description: 'Improve digestive fire (Agni) and maintain optimal gut health naturally.',
       color: 'from-orange-500/20 to-amber-500/20',
-      path: '/health-remedies/digestion-gut-health',
+      path: '/health-remedies/digestion',
     },
     {
       icon: Scale,
@@ -30,14 +30,14 @@ export default function HealthRemediesPage() {
       title: 'Diabetes & BP Support',
       description: 'Natural remedies to help manage blood sugar and blood pressure levels.',
       color: 'from-red-500/20 to-rose-500/20',
-      path: '/health-remedies/diabetes-bp-support',
+      path: '/health-remedies/diabetes-bp',
     },
     {
       icon: Moon,
       title: 'Stress & Sleep Solutions',
       description: 'Find peace and restful sleep with calming Ayurvedic herbs and techniques.',
       color: 'from-purple-500/20 to-indigo-500/20',
-      path: '/health-remedies/stress-sleep-solutions',
+      path: '/health-remedies/stress-sleep',
     },
   ];
 

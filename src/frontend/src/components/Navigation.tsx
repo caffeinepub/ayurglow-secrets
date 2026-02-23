@@ -1,4 +1,4 @@
-import { Link, useRouterState } from '@tanstack/react-router';
+import { Link, useRouterState, useNavigate } from '@tanstack/react-router';
 import { Menu, X, ChevronDown } from 'lucide-react';
 import { useState } from 'react';
 import {
@@ -10,6 +10,7 @@ import {
 
 export default function Navigation() {
   const [isOpen, setIsOpen] = useState(false);
+  const navigate = useNavigate();
   const router = useRouterState();
   const currentPath = router.location.pathname;
 
@@ -65,13 +66,12 @@ export default function Navigation() {
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-48">
                 {categoryLinks.map((link) => (
-                  <DropdownMenuItem key={link.path} asChild>
-                    <Link
-                      to={link.path}
-                      className="cursor-pointer"
-                    >
-                      {link.label}
-                    </Link>
+                  <DropdownMenuItem 
+                    key={link.path}
+                    onClick={() => navigate({ to: link.path })}
+                    className="cursor-pointer"
+                  >
+                    {link.label}
                   </DropdownMenuItem>
                 ))}
               </DropdownMenuContent>

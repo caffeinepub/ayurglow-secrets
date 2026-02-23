@@ -16,14 +16,14 @@ export default function SkinCarePage() {
       title: 'Acne & Pimples',
       description: 'Clear skin naturally with herbal treatments that balance your doshas.',
       color: 'from-blue-500/20 to-cyan-500/20',
-      path: '/skin-care/acne-pimples',
+      path: '/skin-care/acne-treatment',
     },
     {
       icon: Sun,
       title: 'Pigmentation & Dark Spots',
       description: 'Fade dark spots and even skin tone with powerful natural ingredients.',
       color: 'from-orange-500/20 to-rose-500/20',
-      path: '/skin-care/pigmentation-dark-spots',
+      path: '/skin-care/pigmentation',
     },
     {
       icon: Clock,

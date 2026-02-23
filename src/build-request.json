@@ -1,90 +1,58 @@
 {
   "kind": "build_request",
-  "title": "Add comment section to blog posts and image upload for blog posts",
+  "title": "Apply blue and green color scheme to entire website",
+  "projectName": "AyurGlow Secrets",
   "priority": "normal",
   "requirements": [
     {
       "id": "REQ-1",
-      "text": "Add a comment section at the bottom of each blog post detail page that allows users to view and share comments",
-      "target": "both",
+      "text": "Update the CSS color palette in frontend/src/index.css to use blue and green as the primary color combination, replacing the current vibrant color system (electric-blue, coral-pink, lime-green, sunshine-yellow, vivid-orange) with harmonious blue and green tones",
+      "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-10"
+          "msg-recent-1"
         ],
         "quotes": [
-          "share your comment section in bottom of blog post part"
+          "please use blue and green colour combination for my entire website"
         ]
       },
       "acceptanceCriteria": [
-        "Comment section appears below the blog post content on BlogPostDetailPage",
-        "Users can submit new comments with their name and comment text",
-        "All comments for a post are displayed in chronological order",
-        "Comments persist across page refreshes"
+        "Primary colors use blue shades",
+        "Secondary/accent colors use green shades",
+        "Color palette maintains sufficient contrast for accessibility",
+        "Both light and dark mode variants are updated with blue-green theme"
       ]
     },
     {
       "id": "REQ-2",
-      "text": "Add image upload capability to the blog post creation and editing forms, allowing authors to upload custom images instead of using image descriptions",
-      "target": "both",
+      "text": "Apply the new blue and green color scheme consistently across all components including navigation, cards, buttons, links, hero sections, and interactive elements",
+      "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-10"
+          "msg-recent-1"
         ],
         "quotes": [
-          "add image including option in blog post section"
+          "please use blue and green colour combination for my entire website"
         ]
       },
       "acceptanceCriteria": [
-        "CreateBlogPostPage includes an image upload input field",
-        "EditBlogPostPage includes an image upload input field with current image preview",
-        "Uploaded images are stored and retrievable from the backend",
-        "Blog posts display the uploaded images on the detail page and in post cards"
-      ]
-    },
-    {
-      "id": "REQ-3",
-      "text": "Update the backend BlogPost data model to support storing comments with author name, comment text, and timestamp",
-      "target": "backend",
-      "source": {
-        "messageIds": [
-          "msg-10"
-        ]
-      },
-      "acceptanceCriteria": [
-        "BlogPost type includes a comments array field",
-        "Backend provides methods to add comments to a post",
-        "Backend provides methods to retrieve all comments for a post",
-        "Comments are returned with the blog post data"
-      ]
-    },
-    {
-      "id": "REQ-4",
-      "text": "Update the backend to handle image file uploads and storage for blog posts",
-      "target": "backend",
-      "source": {
-        "messageIds": [
-          "msg-10"
-        ]
-      },
-      "acceptanceCriteria": [
-        "Backend accepts image file uploads via HTTP",
-        "Uploaded images are stored as assets accessible via URL",
-        "BlogPost type stores the uploaded image URL or asset ID",
-        "Image retrieval methods return the correct image for each post"
+        "All pages reflect the blue and green color theme",
+        "Navigation bar uses blue and green colors",
+        "Buttons and interactive elements follow the new color scheme",
+        "Hero sections and feature cards maintain visual consistency with the theme"
       ]
     }
   ],
   "constraints": [
-    "Maintain the single-actor architecture in backend/main.mo",
-    "Do not modify immutable frontend paths: useInternetIdentity.ts, useInternetIdentity.tsx, useActor.ts, main.tsx, or components/ui",
-    "Keep existing blog post CRUD functionality intact"
+    "Maintain the existing OKLCH color system structure in index.css",
+    "Preserve accessibility standards for color contrast ratios",
+    "Do not modify immutable paths: frontend/src/hooks/useInternetIdentity.ts, frontend/src/hooks/useActor.ts, frontend/src/main.tsx, frontend/src/components/ui"
   ],
   "nonGoals": [
-    "Comment moderation or spam filtering",
-    "User authentication for commenting (anonymous commenting is acceptable)",
-    "Image editing or transformation capabilities",
-    "Comment threading or replies",
-    "Real-time comment updates"
+    "Changing the technology stack or framework",
+    "Modifying backend functionality",
+    "Restructuring component architecture",
+    "Adding new features beyond color scheme changes"
   ],
   "imageRequirements": {
     "required": [],

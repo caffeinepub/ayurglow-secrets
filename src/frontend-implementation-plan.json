@@ -1,69 +1,39 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Add comment section to blog posts and image upload for blog posts",
+  "title": "Apply blue and green color scheme to entire website",
   "requirements": [
     {
       "id": "REQ-1",
-      "summary": "Add a comment section at the bottom of each blog post detail page that allows users to view and share comments",
+      "summary": "Update the CSS color palette in frontend/src/index.css to use blue and green as the primary color combination, replacing the current vibrant color system with harmonious blue and green tones",
       "acceptanceCriteria": [
-        "Comment section appears below the blog post content on BlogPostDetailPage",
-        "Users can submit new comments with their name and comment text",
-        "All comments for a post are displayed in chronological order",
-        "Comments persist across page refreshes"
+        "Primary colors use blue shades",
+        "Secondary/accent colors use green shades",
+        "Color palette maintains sufficient contrast for accessibility",
+        "Both light and dark mode variants are updated with blue-green theme"
       ],
       "file_operations": [
         {
-          "path": "frontend/src/components/CommentSection.tsx",
-          "operation": "create",
-          "description": "Create a CommentSection component that displays existing comments and provides a form for submitting new comments. The component accepts a postId prop, fetches comments using the backend's getComments method, and submits new comments via the addComment method. Display comments in chronological order with author name, content, and formatted timestamp. Include form validation for required fields (name and comment text)."
-        },
-        {
-          "path": "frontend/src/hooks/useQueries.ts",
+          "path": "frontend/src/index.css",
           "operation": "modify",
-          "description": "Add React Query hooks for comment operations: useGetComments hook to fetch comments for a specific post, and useAddComment mutation hook to submit new comments. The useAddComment mutation should invalidate the comments query for the post after successful submission to refresh the comment list."
-        },
-        {
-          "path": "frontend/src/pages/BlogPostDetailPage.tsx",
-          "operation": "modify",
-          "description": "Import and render the CommentSection component below the blog post content and sidebar section. Pass the current post's id as the postId prop to the CommentSection component. Position the comment section with appropriate spacing after the main content area."
+          "description": "Replace the current vibrant color system (electric-blue, coral-pink, lime-green, sunshine-yellow, vivid-orange) with harmonious blue and green tones using the OKLCH color space. Update CSS custom properties for both light and dark themes including --primary (blue shades), --secondary (green shades), --accent (complementary blue-green), and other color variables while maintaining the existing OKLCH structure and accessibility contrast ratios."
         }
       ]
     },
     {
       "id": "REQ-2",
-      "summary": "Add image upload capability to the blog post creation and editing forms, allowing authors to upload custom images instead of using image descriptions",
+      "summary": "Apply the new blue and green color scheme consistently across all components including navigation, cards, buttons, links, hero sections, and interactive elements",
       "acceptanceCriteria": [
-        "CreateBlogPostPage includes an image upload input field",
-        "EditBlogPostPage includes an image upload input field with current image preview",
-        "Uploaded images are stored and retrievable from the backend",
-        "Blog posts display the uploaded images on the detail page and in post cards"
+        "All pages reflect the blue and green color theme",
+        "Navigation bar uses blue and green colors",
+        "Buttons and interactive elements follow the new color scheme",
+        "Hero sections and feature cards maintain visual consistency with the theme"
       ],
       "file_operations": [
         {
-          "path": "frontend/src/pages/CreateBlogPostPage.tsx",
+          "path": "frontend/tailwind.config.js",
           "operation": "modify",
-          "description": "Replace the image description select field with a file upload input that accepts image files (jpg, png, webp). Use the blob-storage component's ExternalBlob.fromBytes method to handle the uploaded file. Display upload progress using withUploadProgress. Remove the imageDescriptionToFilename mapping logic. Update the form submission to pass the ExternalBlob instance (or null if no image uploaded) to the createPost mutation. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/pages/EditBlogPostPage.tsx",
-          "operation": "modify",
-          "description": "Replace the image description select field with a file upload input. If the post has an existing image, display a preview using the ExternalBlob's getDirectURL method. Allow users to replace the existing image by uploading a new file. Use ExternalBlob.fromBytes for new uploads with progress tracking via withUploadProgress. Update the form submission to pass the ExternalBlob instance (existing or new) or null to the updatePost mutation. Remove the imageDescriptionToFilename mapping logic. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/pages/BlogPostDetailPage.tsx",
-          "operation": "modify",
-          "description": "Update the featured image rendering to use the post's image field (ExternalBlob type) instead of the previous image URL. Use the getDirectURL method to obtain the image URL for the img src attribute. Handle cases where the image field may be undefined or null with appropriate fallback rendering."
-        },
-        {
-          "path": "frontend/src/components/PostCard.tsx",
-          "operation": "modify",
-          "description": "Update the image rendering in the PostCard component to use the post's image field (ExternalBlob type). Use the getDirectURL method to obtain the image URL for display. Handle cases where the image field may be undefined or null by showing a placeholder or default image."
-        },
-        {
-          "path": "frontend/src/components/FeaturedPost.tsx",
-          "operation": "modify",
-          "description": "Update the featured post image rendering to use the post's image field (ExternalBlob type). Use the getDirectURL method to obtain the image URL for the background or img element. Handle cases where the image field may be undefined or null with appropriate fallback rendering."
+          "description": "Review and ensure Tailwind configuration properly extends the new blue-green color system from CSS variables, verifying that all custom color utilities reference the updated OKLCH variables from index.css for consistent theming across components."
         }
       ]
     }

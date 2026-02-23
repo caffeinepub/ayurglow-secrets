@@ -2,12 +2,10 @@
   "kind": "feature_evidence_report",
   "features": [
     {
-      "featureId": "feature-add-a-comment-section-at-the-bottom-of-each-blog-post-detail-page-that-allows-users-to-view-and-share-comments",
-      "featureTitle": "Add a comment section at the bottom of each blog post detail page that allows users to view and share comments",
+      "featureId": "feature-update-the-css-color-palette-in-frontend-src-index-css-to-use-blue-and-green-as-the-primary-color-combination-replacing-the-current-vibrant-color-system-electric-blue-coral-pink-lime-green-sunshine-yellow-vivid-orange-with-harmonious-blue-and-green-tones",
+      "featureTitle": "Update the CSS color palette in frontend/src/index.css to use blue and green as the primary color combination, replacing the current vibrant color system (electric-blue, coral-pink, lime-green, sunshine-yellow, vivid-orange) with harmonious blue and green tones",
       "files": [
-        "frontend/src/components/CommentSection.tsx",
-        "frontend/src/hooks/useQueries.ts",
-        "frontend/src/pages/BlogPostDetailPage.tsx"
+        "frontend/src/index.css"
       ],
       "components": [
         "core-infrastructure@1.0.2",
@@ -23,14 +21,10 @@
       "confidence": "high"
     },
     {
-      "featureId": "feature-add-image-upload-capability-to-the-blog-post-creation-and-editing-forms-allowing-authors-to-upload-custom-images-instead-of-using-image-descriptions",
-      "featureTitle": "Add image upload capability to the blog post creation and editing forms, allowing authors to upload custom images instead of using image descriptions",
+      "featureId": "feature-apply-the-new-blue-and-green-color-scheme-consistently-across-all-components-including-navigation-cards-buttons-links-hero-sections-and-interactive-elements",
+      "featureTitle": "Apply the new blue and green color scheme consistently across all components including navigation, cards, buttons, links, hero sections, and interactive elements",
       "files": [
-        "frontend/src/components/FeaturedPost.tsx",
-        "frontend/src/components/PostCard.tsx",
-        "frontend/src/pages/BlogPostDetailPage.tsx",
-        "frontend/src/pages/CreateBlogPostPage.tsx",
-        "frontend/src/pages/EditBlogPostPage.tsx"
+        "frontend/tailwind.config.js"
       ],
       "components": [
         "core-infrastructure@1.0.2",
