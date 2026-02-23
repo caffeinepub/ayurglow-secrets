@@ -1,34 +1,87 @@
 {
   "kind": "coverage_report",
   "version": "1.0",
-  "generatedAt": "2026-02-21T09:18:56.870Z",
+  "generatedAt": "2026-02-23T17:36:16.427Z",
   "sources": {
     "buildRequest": true,
     "implementationPlan": true
   },
   "requirements": {
-    "total": 1,
-    "implemented": 1,
+    "total": 4,
+    "implemented": 2,
     "items": [
       {
-        "id": "REQ-47",
-        "summary": "Remove the 'Why Choose Ayurvedic Health Remedies?' section from the HealthRemediesPage.tsx component while preserving the hero section and the five subcategory cards (Immunity Boosting, Digestion & Gut Health, Weight Management, Diabetes & BP Support, Stress & Sleep Solutions)",
+        "id": "REQ-1",
+        "summary": "Add a comment section at the bottom of each blog post detail page that allows users to view and share comments",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/pages/HealthRemediesPage.tsx"
+          "frontend/src/components/CommentSection.tsx",
+          "frontend/src/hooks/useQueries.ts",
+          "frontend/src/pages/BlogPostDetailPage.tsx"
         ],
         "matchedFiles": [
-          "frontend/src/pages/HealthRemediesPage.tsx"
+          "frontend/src/components/CommentSection.tsx",
+          "frontend/src/hooks/useQueries.ts",
+          "frontend/src/pages/BlogPostDetailPage.tsx"
         ]
+      },
+      {
+        "id": "REQ-2",
+        "summary": "Add image upload capability to the blog post creation and editing forms, allowing authors to upload custom images instead of using image descriptions",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/pages/CreateBlogPostPage.tsx",
+          "frontend/src/pages/EditBlogPostPage.tsx",
+          "frontend/src/pages/BlogPostDetailPage.tsx",
+          "frontend/src/components/PostCard.tsx",
+          "frontend/src/components/FeaturedPost.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/pages/CreateBlogPostPage.tsx",
+          "frontend/src/pages/EditBlogPostPage.tsx",
+          "frontend/src/pages/BlogPostDetailPage.tsx",
+          "frontend/src/components/PostCard.tsx",
+          "frontend/src/components/FeaturedPost.tsx"
+        ]
+      },
+      {
+        "id": "REQ-3",
+        "summary": "Update the backend BlogPost data model to support storing comments with author name, comment text, and timestamp",
+        "status": "unknown",
+        "plannedFiles": [],
+        "matchedFiles": []
+      },
+      {
+        "id": "REQ-4",
+        "summary": "Update the backend to handle image file uploads and storage for blog posts",
+        "status": "unknown",
+        "plannedFiles": [],
+        "matchedFiles": []
       }
     ]
   },
   "changedFiles": [
+    "backend/blob-storage/Mixin.mo",
+    "backend/blob-storage/Storage.mo",
+    "backend/main.mo",
+    "backend/migration.mo",
     "build-request.json",
+    "caffeine.lock.json",
     "feature_evidence.json",
     "frontend-file-summaries.txt",
     "frontend-implementation-plan.json",
-    "frontend/src/pages/HealthRemediesPage.tsx",
+    "frontend/src/backend.d.ts",
+    "frontend/src/backend.ts",
+    "frontend/src/components/BlogSidebar.tsx",
+    "frontend/src/components/CommentSection.tsx",
+    "frontend/src/components/FeaturedPost.tsx",
+    "frontend/src/components/PostCard.tsx",
+    "frontend/src/declarations/backend.did.d.ts",
+    "frontend/src/declarations/backend.did.js",
+    "frontend/src/hooks/useQueries.ts",
+    "frontend/src/pages/BlogPostDetailPage.tsx",
+    "frontend/src/pages/CreateBlogPostPage.tsx",
+    "frontend/src/pages/EditBlogPostPage.tsx",
     "project_state.json",
     "scratch/component-selection.json",
     "spec.md",

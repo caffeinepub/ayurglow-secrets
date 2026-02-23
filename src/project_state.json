@@ -1,357 +1,24 @@
 {
   "schemaVersion": "1.0.0",
-  "projectStateVersion": 29,
-  "summary": "AyurGlow Secrets - An Ayurvedic wellness website featuring health remedies, skin care tips, and hair care solutions. The site includes a hero section, service offerings, about page, three main content categories (Health Remedies, Skin Care, Hair Care), and a blog section with 10 initial SEO-optimized topics. Long-term monetization through AdSense, affiliate marketing, and digital products.",
-  "architectural_notes": [
-    "Content-focused wellness website with category-based navigation",
-    "SEO-optimized blog structure for health and beauty keywords",
-    "Future monetization: AdSense, affiliate links, digital products",
-    "Privacy Policy and Terms pages required for AdSense approval"
-  ],
+  "projectStateVersion": 3,
+  "summary": "Blog platform with health remedies, skin care, and hair care sections, featuring blog posts with image upload capability and comment sharing functionality",
+  "architectural_notes": [],
   "known_issues": [],
   "isFixRequest": false,
   "existing_features": [
     {
-      "id": "feature-create-a-homepage-with-a-hero-section-displaying-the-heading-welcome-to-ayurglow-secrets-tagline-ancient-ayurvedic-wisdom-for-healthy-body-glowing-skin-strong-hair-and-description-discover-time-tested-ayurvedic-remedies-for-overall-health-radiant-skin-and-strong-healthy-hair-we-bring-you-natural-chemical-free-solutions-rooted-in-ancient-indian-wisdom-and-backed-by-modern-understanding",
-      "title": "Create a homepage with a hero section displaying the heading 'Welcome to AyurGlow Secrets', tagline 'Ancient Ayurvedic Wisdom for Healthy Body, Glowing Skin & Strong Hair', and description 'Discover time-tested Ayurvedic remedies for overall health, radiant skin, and strong, healthy hair. We bring you natural, chemical-free solutions rooted in ancient Indian wisdom and backed by modern understanding.'",
+      "id": "feature-add-a-comment-section-at-the-bottom-of-each-blog-post-detail-page-that-allows-users-to-view-and-share-comments",
+      "title": "Add a comment section at the bottom of each blog post detail page that allows users to view and share comments",
       "reqIds": [
         "REQ-1"
       ],
       "version": 1
     },
     {
-      "id": "feature-add-a-what-we-offer-section-on-the-homepage-listing-four-services-natural-ayurvedic-health-remedies-skin-care-tips-for-natural-glow-hair-fall-hair-growth-treatments-and-holistic-lifestyle-wellness-advice",
-      "title": "Add a 'What We Offer' section on the homepage listing four services: Natural Ayurvedic Health Remedies (🌿), Skin Care Tips for Natural Glow (💆), Hair Fall & Hair Growth Treatments (💇), and Holistic Lifestyle & Wellness Advice (🧘)",
+      "id": "feature-add-image-upload-capability-to-the-blog-post-creation-and-editing-forms-allowing-authors-to-upload-custom-images-instead-of-using-image-descriptions",
+      "title": "Add image upload capability to the blog post creation and editing forms, allowing authors to upload custom images instead of using image descriptions",
       "reqIds": [
         "REQ-2"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-add-a-why-ayurglow-secrets-section-on-the-homepage-highlighting-four-benefits-100-natural-ayurvedic-approach-simple-home-remedies-safe-affordable-and-effective-suitable-for-all-age-groups",
-      "title": "Add a 'Why AyurGlow Secrets?' section on the homepage highlighting four benefits: 100% natural & Ayurvedic approach, Simple home remedies, Safe, affordable, and effective, Suitable for all age groups",
-      "reqIds": [
-        "REQ-3"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-create-an-about-us-page-with-the-heading-about-us-and-content-describing-ayurglow-secrets-as-a-wellness-platform-dedicated-to-sharing-the-healing-power-of-ayurveda-inspired-by-ancient-ayurvedic-texts-and-traditional-indian-home-remedies-include-the-philosophy-we-believe-true-beauty-and-health-begin-from-within-through-balanced-nutrition-herbal-remedies-and-mindful-living-ayurveda-offers-sustainable-healing-without-side-effects-our-content-is-carefully-researched-and-simplified-to-help-you-easily-follow-ayurvedic-practices-in-your-daily-life",
-      "title": "Create an About Us page with the heading 'About Us' and content describing AyurGlow Secrets as a wellness platform dedicated to sharing the healing power of Ayurveda, inspired by ancient Ayurvedic texts and traditional Indian home remedies. Include the philosophy: 'We believe true beauty and health begin from within. Through balanced nutrition, herbal remedies, and mindful living, Ayurveda offers sustainable healing without side effects. Our content is carefully researched and simplified to help you easily follow Ayurvedic practices in your daily life.'",
-      "reqIds": [
-        "REQ-4"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-create-a-health-remedies-category-page-listing-five-subcategories-immunity-boosting-remedies-digestion-gut-health-weight-management-diabetes-bp-support-and-stress-sleep-solutions",
-      "title": "Create a Health Remedies category page listing five subcategories: Immunity boosting remedies, Digestion & gut health, Weight management, Diabetes & BP support, and Stress & sleep solutions",
-      "reqIds": [
-        "REQ-5"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-create-a-skin-care-category-page-listing-five-subcategories-natural-glow-remedies-acne-pimples-pigmentation-dark-spots-anti-aging-ayurveda-and-diy-herbal-face-packs",
-      "title": "Create a Skin Care category page listing five subcategories: Natural glow remedies, Acne & pimples, Pigmentation & dark spots, Anti-aging Ayurveda, and DIY herbal face packs",
-      "reqIds": [
-        "REQ-6"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-create-a-hair-care-category-page-listing-five-subcategories-hair-fall-treatment-hair-growth-remedies-dandruff-scalp-care-grey-hair-solutions-and-ayurvedic-oils-masks",
-      "title": "Create a Hair Care category page listing five subcategories: Hair fall treatment, Hair growth remedies, Dandruff & scalp care, Grey hair solutions, and Ayurvedic oils & masks",
-      "reqIds": [
-        "REQ-7"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-create-a-blog-section-displaying-10-initial-seo-optimized-articles-with-these-exact-titles-ayurvedic-remedies-to-stop-hair-fall-naturally-best-ayurvedic-herbs-for-glowing-skin-how-to-reduce-hair-fall-due-to-stress-ayurvedic-guide-triphala-benefits-for-skin-hair-digestion-home-remedies-for-pimples-using-ayurveda-ayurvedic-diet-for-healthy-hair-growth-aloe-vera-benefits-for-skin-and-hair-in-ayurveda-causes-of-hair-fall-in-women-and-ayurvedic-solutions-daily-ayurvedic-routine-for-healthy-body-mind-and-best-ayurvedic-oils-for-hair-growth-and-thickness",
-      "title": "Create a Blog section displaying 10 initial SEO-optimized articles with these exact titles: 'Ayurvedic Remedies to Stop Hair Fall Naturally', 'Best Ayurvedic Herbs for Glowing Skin', 'How to Reduce Hair Fall Due to Stress – Ayurvedic Guide', 'Triphala Benefits for Skin, Hair & Digestion', 'Home Remedies for Pimples Using Ayurveda', 'Ayurvedic Diet for Healthy Hair Growth', 'Aloe Vera Benefits for Skin and Hair in Ayurveda', 'Causes of Hair Fall in Women and Ayurvedic Solutions', 'Daily Ayurvedic Routine for Healthy Body & Mind', and 'Best Ayurvedic Oils for Hair Growth and Thickness'",
-      "reqIds": [
-        "REQ-8"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-implement-a-visual-design-theme-inspired-by-ayurvedic-and-natural-wellness-aesthetics-using-earthy-tones-greens-browns-warm-neutrals-organic-shapes-and-calming-typography-the-design-should-evoke-trust-natural-healing-and-holistic-wellness-include-subtle-botanical-or-herbal-motifs-where-appropriate-ensure-the-design-is-cohesive-across-all-pages-and-emphasizes-readability-for-wellness-content",
-      "title": "Implement a visual design theme inspired by Ayurvedic and natural wellness aesthetics, using earthy tones (greens, browns, warm neutrals), organic shapes, and calming typography. The design should evoke trust, natural healing, and holistic wellness. Include subtle botanical or herbal motifs where appropriate. Ensure the design is cohesive across all pages and emphasizes readability for wellness content.",
-      "reqIds": [
-        "REQ-9"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-render-generated-hero-background-image-ayurvedic-leaf-herb-decorative-elements-and-category-icons-as-static-assets-in-frontend-public-assets-generated",
-      "title": "Render generated hero background image, Ayurvedic leaf/herb decorative elements, and category icons as static assets in frontend/public/assets/generated",
-      "reqIds": [
-        "REQ-10"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-create-a-blog-post-creation-form-page-at-route-blog-create-with-input-fields-for-title-category-dropdown-hair-care-skin-care-health-beauty-lifestyle-content-textarea-with-rich-text-support-excerpt-textarea-read-time-input-author-input-and-tags-input-plus-a-publish-draft-toggle-and-submit-button",
-      "title": "Create a blog post creation form page at route /blog/create with input fields for title, category dropdown (Hair Care, Skin Care, Health, Beauty, Lifestyle), content textarea with rich text support, excerpt textarea, read time input, author input, and tags input, plus a publish/draft toggle and submit button",
-      "reqIds": [
-        "REQ-13"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-create-a-blog-post-edit-page-at-route-blog-edit-id-that-loads-existing-post-data-and-allows-updating-all-fields-title-category-content-excerpt-read-time-author-tags-publish-status",
-      "title": "Create a blog post edit page at route /blog/edit/:id that loads existing post data and allows updating all fields (title, category, content, excerpt, read time, author, tags, publish status)",
-      "reqIds": [
-        "REQ-14"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-add-an-admin-dashboard-page-at-route-admin-posts-listing-all-blog-posts-both-published-and-drafts-with-columns-for-title-category-status-published-date-and-action-buttons-for-edit-and-delete",
-      "title": "Add an admin dashboard page at route /admin/posts listing all blog posts (both published and drafts) with columns for title, category, status, published date, and action buttons for edit and delete",
-      "reqIds": [
-        "REQ-15"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-update-blogpage-tsx-to-fetch-and-display-blog-posts-from-the-backend-instead-of-using-hardcoded-data-maintaining-the-existing-card-layout-with-category-badges-read-time-and-dates",
-      "title": "Update BlogPage.tsx to fetch and display blog posts from the backend instead of using hardcoded data, maintaining the existing card layout with category badges, read time, and dates",
-      "reqIds": [
-        "REQ-16"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-create-a-blog-post-detail-page-at-route-blog-slug-displaying-the-full-post-content-title-author-published-date-category-read-time-and-tags",
-      "title": "Create a blog post detail page at route /blog/:slug displaying the full post content, title, author, published date, category, read time, and tags",
-      "reqIds": [
-        "REQ-17"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-update-navigation-tsx-to-add-an-admin-link-in-the-navigation-menu-that-routes-to-admin-posts",
-      "title": "Update Navigation.tsx to add an 'Admin' link in the navigation menu that routes to /admin/posts",
-      "reqIds": [
-        "REQ-18"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-update-app-tsx-router-configuration-to-add-routes-for-blog-create-blog-edit-id-blog-slug-and-admin-posts",
-      "title": "Update App.tsx router configuration to add routes for /blog/create, /blog/edit/:id, /blog/:slug, and /admin/posts",
-      "reqIds": [
-        "REQ-19"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-create-react-query-hooks-in-usequeries-ts-for-blog-post-operations-usecreatepost-useupdatepost-usedeletepost-usegetpost-usegetallposts-and-usegetpublishedposts",
-      "title": "Create React Query hooks in useQueries.ts for blog post operations: useCreatePost, useUpdatePost, useDeletePost, useGetPost, useGetAllPosts, and useGetPublishedPosts",
-      "reqIds": [
-        "REQ-20"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-remove-the-built-with-using-caffeine-ai-text-from-the-footer-component-while-preserving-all-other-footer-content-including-quick-links-social-media-icons-and-copyright-notice",
-      "title": "Remove the 'Built with using caffeine.ai' text from the Footer component while preserving all other footer content including quick links, social media icons, and copyright notice",
-      "reqIds": [
-        "REQ-21"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-update-footer-tsx-to-add-clickable-social-media-links-instagram-facebook-youtube-in-the-connect-with-us-section-with-appropriate-icons-and-hover-effects-matching-the-ayurvedic-design-theme",
-      "title": "Update Footer.tsx to add clickable social media links (Instagram, Facebook, YouTube) in the 'Connect With Us' section with appropriate icons and hover effects matching the Ayurvedic design theme",
-      "reqIds": [
-        "REQ-22"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-create-individual-remedy-detail-pages-for-the-five-health-remedies-subcategories-immunity-boosting-remedies-digestion-gut-health-weight-management-diabetes-bp-support-and-stress-sleep-solutions-each-page-should-display-comprehensive-ayurvedic-remedy-content-with-ingredients-preparation-methods-benefits-and-usage-instructions",
-      "title": "Create individual remedy detail pages for the five Health Remedies subcategories: Immunity Boosting Remedies, Digestion & Gut Health, Weight Management, Diabetes & BP Support, and Stress & Sleep Solutions. Each page should display comprehensive Ayurvedic remedy content with ingredients, preparation methods, benefits, and usage instructions.",
-      "reqIds": [
-        "REQ-23"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-create-individual-remedy-detail-pages-for-the-five-skin-care-subcategories-natural-glow-remedies-acne-pimples-pigmentation-dark-spots-anti-aging-ayurveda-and-diy-herbal-face-packs-each-page-should-display-comprehensive-ayurvedic-skin-care-solutions-with-natural-ingredients-application-methods-benefits-and-precautions",
-      "title": "Create individual remedy detail pages for the five Skin Care subcategories: Natural Glow Remedies, Acne & Pimples, Pigmentation & Dark Spots, Anti-Aging Ayurveda, and DIY Herbal Face Packs. Each page should display comprehensive Ayurvedic skin care solutions with natural ingredients, application methods, benefits, and precautions.",
-      "reqIds": [
-        "REQ-24"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-create-individual-remedy-detail-pages-for-the-five-hair-care-subcategories-hair-fall-treatment-hair-growth-remedies-dandruff-scalp-care-grey-hair-solutions-and-ayurvedic-oils-masks-each-page-should-display-comprehensive-ayurvedic-hair-care-treatments-with-natural-ingredients-application-methods-benefits-and-frequency-of-use",
-      "title": "Create individual remedy detail pages for the five Hair Care subcategories: Hair Fall Treatment, Hair Growth Remedies, Dandruff & Scalp Care, Grey Hair Solutions, and Ayurvedic Oils & Masks. Each page should display comprehensive Ayurvedic hair care treatments with natural ingredients, application methods, benefits, and frequency of use.",
-      "reqIds": [
-        "REQ-25"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-update-healthremediespage-tsx-to-make-all-five-subcategory-cards-clickable-routing-to-their-respective-remedy-detail-pages-at-routes-like-health-remedies-immunity-boosting-health-remedies-digestion-gut-health-health-remedies-weight-management-health-remedies-diabetes-bp-support-and-health-remedies-stress-sleep-solutions",
-      "title": "Update HealthRemediesPage.tsx to make all five subcategory cards clickable, routing to their respective remedy detail pages at routes like /health-remedies/immunity-boosting, /health-remedies/digestion-gut-health, /health-remedies/weight-management, /health-remedies/diabetes-bp-support, and /health-remedies/stress-sleep-solutions.",
-      "reqIds": [
-        "REQ-26"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-update-skincarepage-tsx-to-make-all-five-subcategory-cards-clickable-routing-to-their-respective-remedy-detail-pages-at-routes-like-skin-care-natural-glow-skin-care-acne-pimples-skin-care-pigmentation-dark-spots-skin-care-anti-aging-and-skin-care-diy-face-packs",
-      "title": "Update SkinCarePage.tsx to make all five subcategory cards clickable, routing to their respective remedy detail pages at routes like /skin-care/natural-glow, /skin-care/acne-pimples, /skin-care/pigmentation-dark-spots, /skin-care/anti-aging, and /skin-care/diy-face-packs.",
-      "reqIds": [
-        "REQ-27"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-update-haircarepage-tsx-to-make-all-five-subcategory-cards-clickable-routing-to-their-respective-remedy-detail-pages-at-routes-like-hair-care-hair-fall-treatment-hair-care-hair-growth-hair-care-dandruff-scalp-care-hair-care-grey-hair-solutions-and-hair-care-oils-masks",
-      "title": "Update HairCarePage.tsx to make all five subcategory cards clickable, routing to their respective remedy detail pages at routes like /hair-care/hair-fall-treatment, /hair-care/hair-growth, /hair-care/dandruff-scalp-care, /hair-care/grey-hair-solutions, and /hair-care/oils-masks.",
-      "reqIds": [
-        "REQ-28"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-update-app-tsx-router-configuration-to-add-routes-for-all-fifteen-remedy-detail-pages-five-health-remedy-routes-health-remedies-five-skin-care-routes-skin-care-and-five-hair-care-routes-hair-care",
-      "title": "Update App.tsx router configuration to add routes for all fifteen remedy detail pages: five health remedy routes (/health-remedies/*), five skin care routes (/skin-care/*), and five hair care routes (/hair-care/*).",
-      "reqIds": [
-        "REQ-29"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-remove-the-built-with-using-caffeine-ai-text-from-the-footer-component-while-preserving-all-other-footer-content-including-the-copyright-notice-quick-links-section-and-social-media-icons-section",
-      "title": "Remove the 'Built with ❤️ using caffeine.ai' text from the Footer component while preserving all other footer content including the copyright notice, quick links section, and social media icons section",
-      "reqIds": [
-        "REQ-30"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-create-a-searchbar-component-in-frontend-src-components-with-an-input-field-for-search-queries-a-search-icon-and-clear-button-style-it-with-the-ayurvedic-design-theme-using-earth-green-accents-and-cream-background",
-      "title": "Create a SearchBar component in frontend/src/components with an input field for search queries, a search icon, and clear button. Style it with the Ayurvedic design theme using earth-green accents and cream background.",
-      "reqIds": [
-        "REQ-31"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-add-the-searchbar-component-to-the-navigation-component-below-the-main-navigation-links-making-it-visible-on-all-pages-across-the-site",
-      "title": "Add the SearchBar component to the Navigation component below the main navigation links, making it visible on all pages across the site.",
-      "reqIds": [
-        "REQ-32"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-implement-search-functionality-that-filters-across-all-remedy-detail-pages-15-total-5-health-remedies-5-skin-care-5-hair-care-by-matching-search-query-against-page-titles-descriptions-and-remedy-names-display-search-results-in-a-dropdown-or-results-page-with-links-to-matching-remedy-pages",
-      "title": "Implement search functionality that filters across all remedy detail pages (15 total: 5 health remedies, 5 skin care, 5 hair care) by matching search query against page titles, descriptions, and remedy names. Display search results in a dropdown or results page with links to matching remedy pages.",
-      "reqIds": [
-        "REQ-33"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-add-keyboard-navigation-support-to-the-search-feature-with-enter-key-to-navigate-to-first-result-and-escape-key-to-close-search-results",
-      "title": "Add keyboard navigation support to the search feature with Enter key to navigate to first result and Escape key to close search results.",
-      "reqIds": [
-        "REQ-34"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-create-a-privacy-policy-page-at-route-privacy-policy-with-comprehensive-content-covering-data-collection-practices-cookie-usage-third-party-services-google-adsense-analytics-user-rights-and-contact-information-for-privacy-inquiries-style-it-consistently-with-the-ayurvedic-design-theme-using-cream-background-and-earth-green-accents",
-      "title": "Create a Privacy Policy page at route /privacy-policy with comprehensive content covering data collection practices, cookie usage, third-party services (Google AdSense, analytics), user rights, and contact information for privacy inquiries. Style it consistently with the Ayurvedic design theme using cream background and earth-green accents.",
-      "reqIds": [
-        "REQ-35"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-create-a-terms-of-service-page-at-route-terms-of-service-with-content-covering-website-usage-rules-content-ownership-user-responsibilities-disclaimer-of-medical-advice-liability-limitations-and-dispute-resolution-style-it-consistently-with-the-ayurvedic-design-theme",
-      "title": "Create a Terms of Service page at route /terms-of-service with content covering website usage rules, content ownership, user responsibilities, disclaimer of medical advice, liability limitations, and dispute resolution. Style it consistently with the Ayurvedic design theme.",
-      "reqIds": [
-        "REQ-36"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-update-footer-tsx-to-add-privacy-policy-and-terms-of-service-links-in-the-quick-links-section-positioned-alongside-existing-links-to-about-health-remedies-skin-care-hair-care-and-blog",
-      "title": "Update Footer.tsx to add Privacy Policy and Terms of Service links in the Quick Links section, positioned alongside existing links to About, Health Remedies, Skin Care, Hair Care, and Blog.",
-      "reqIds": [
-        "REQ-37"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-update-app-tsx-router-configuration-to-add-routes-for-privacy-policy-and-terms-of-service-pages",
-      "title": "Update App.tsx router configuration to add routes for /privacy-policy and /terms-of-service pages.",
-      "reqIds": [
-        "REQ-38"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-remove-the-built-with-using-caffeine-ai-text-and-link-from-the-footer-component-while-preserving-all-other-footer-content-including-the-copyright-notice-quick-links-section-about-health-remedies-skin-care-hair-care-blog-privacy-policy-terms-of-service-and-social-media-icons-section-instagram-facebook-youtube",
-      "title": "Remove the 'Built with ❤️ using caffeine.ai' text and link from the Footer component while preserving all other footer content including the copyright notice, quick links section (About, Health Remedies, Skin Care, Hair Care, Blog, Privacy Policy, Terms of Service), and social media icons section (Instagram, Facebook, YouTube)",
-      "reqIds": [
-        "REQ-39"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-debug-and-fix-blogpage-tsx-to-properly-fetch-and-display-blog-posts-from-the-backend-using-the-usegetpublishedposts-hook-ensuring-the-posts-array-is-correctly-mapped-to-the-existing-card-layout-with-category-badges-read-time-dates-and-navigation-to-detail-pages",
-      "title": "Debug and fix BlogPage.tsx to properly fetch and display blog posts from the backend using the useGetPublishedPosts hook, ensuring the posts array is correctly mapped to the existing card layout with category badges, read time, dates, and navigation to detail pages",
-      "reqIds": [
-        "REQ-40"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-verify-the-usegetpublishedposts-react-query-hook-in-usequeries-ts-correctly-calls-the-backend-actor-s-getpublishedposts-method-and-transforms-the-response-into-the-expected-format-for-the-frontend-blogpost-interface",
-      "title": "Verify the useGetPublishedPosts React Query hook in useQueries.ts correctly calls the backend actor's getPublishedPosts method and transforms the response into the expected format for the frontend BlogPost interface",
-      "reqIds": [
-        "REQ-42"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-debug-and-fix-the-blog-post-data-fetching-and-rendering-logic-in-blogpage-tsx-to-ensure-health-category-articles-are-properly-displayed-in-the-blog-listing-with-correct-category-badges-titles-excerpts-read-times-and-published-dates",
-      "title": "Debug and fix the blog post data fetching and rendering logic in BlogPage.tsx to ensure health category articles are properly displayed in the blog listing with correct category badges, titles, excerpts, read times, and published dates",
-      "reqIds": [
-        "REQ-43"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-debug-and-fix-the-blog-post-data-fetching-and-rendering-logic-in-adminpostspage-tsx-to-ensure-health-category-articles-are-properly-displayed-in-the-admin-posts-list-with-all-required-columns-title-category-status-published-date-and-action-buttons-edit-delete",
-      "title": "Debug and fix the blog post data fetching and rendering logic in AdminPostsPage.tsx to ensure health category articles are properly displayed in the admin posts list with all required columns (title, category, status, published date) and action buttons (edit, delete)",
-      "reqIds": [
-        "REQ-44"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-verify-the-usegetpublishedposts-and-usegetallposts-react-query-hooks-in-usequeries-ts-correctly-transform-backend-responses-for-health-category-posts-into-the-frontend-blogpost-interface-format-ensuring-proper-handling-of-category-filtering-and-date-formatting",
-      "title": "Verify the useGetPublishedPosts and useGetAllPosts React Query hooks in useQueries.ts correctly transform backend responses for health category posts into the frontend BlogPost interface format, ensuring proper handling of category filtering and date formatting",
-      "reqIds": [
-        "REQ-46"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-remove-the-why-choose-ayurvedic-health-remedies-section-from-the-healthremediespage-tsx-component-while-preserving-the-hero-section-and-the-five-subcategory-cards-immunity-boosting-digestion-gut-health-weight-management-diabetes-bp-support-stress-sleep-solutions",
-      "title": "Remove the 'Why Choose Ayurvedic Health Remedies?' section from the HealthRemediesPage.tsx component while preserving the hero section and the five subcategory cards (Immunity Boosting, Digestion & Gut Health, Weight Management, Diabetes & BP Support, Stress & Sleep Solutions)",
-      "reqIds": [
-        "REQ-47"
       ],
       "version": 1
     }
@@ -359,111 +26,52 @@
   "new_feature_requests": [
     {
       "id": "AR-1",
-      "summary": "Homepage with hero section showcasing AyurGlow Secrets tagline and core offerings",
+      "summary": "Add health remedies section",
       "reqIds": [],
       "status": "pending"
     },
     {
       "id": "AR-2",
-      "summary": "About Us page with Ayurvedic wellness philosophy and mission",
+      "summary": "Add skin care section",
       "reqIds": [],
       "status": "pending"
     },
     {
       "id": "AR-3",
-      "summary": "Health Remedies category page with immunity, digestion, weight management, diabetes/BP, and stress/sleep topics",
+      "summary": "Add hair care section",
       "reqIds": [],
       "status": "pending"
     },
     {
       "id": "AR-4",
-      "summary": "Skin Care category page with glow remedies, acne, pigmentation, anti-aging, and DIY face packs",
+      "summary": "Add comment sharing section at bottom of blog posts",
       "reqIds": [],
       "status": "pending"
     },
     {
       "id": "AR-5",
-      "summary": "Hair Care category page with hair fall, growth, dandruff, grey hair, and oils/masks content",
-      "reqIds": [],
-      "status": "pending"
-    },
-    {
-      "id": "AR-6",
-      "summary": "Blog section with 10 initial SEO-optimized Ayurvedic articles",
-      "reqIds": [],
-      "status": "pending"
-    },
-    {
-      "id": "AR-7",
-      "summary": "Blog post creation feature to publish Ayurvedic wellness articles",
+      "summary": "Add image upload option in blog post creation",
       "reqIds": [],
       "status": "pending"
     },
     {
       "id": "AR-8",
-      "summary": "Create a backend data model in main.mo for blog posts with fields: id (Text), title (Text), slug (Text), category (Text), content (Text), excerpt (Text), readTime (Nat), author (Text), publishedDate (Int), tags (Array of Text), and isPublished (Bool)",
+      "summary": "Update the backend BlogPost data model to support storing comments with author name, comment text, and timestamp",
       "reqIds": [
-        "REQ-11"
+        "REQ-3"
       ],
       "status": "pending"
     },
     {
       "id": "AR-9",
-      "summary": "Implement backend functions in main.mo for blog post operations: createPost (create new blog post), updatePost (update existing post), deletePost (remove post), getPost (retrieve single post by id), getAllPosts (retrieve all posts), and getPublishedPosts (retrieve only published posts)",
+      "summary": "Update the backend to handle image file uploads and storage for blog posts",
       "reqIds": [
-        "REQ-12"
+        "REQ-4"
       ],
-      "status": "pending"
-    },
-    {
-      "id": "AR-10",
-      "summary": "Add social media links section in Connect With Us footer area (Instagram, Facebook, YouTube)",
-      "reqIds": [],
-      "status": "pending"
-    },
-    {
-      "id": "AR-11",
-      "summary": "Create individual remedy pages for all health, skin care, and hair care subcategories",
-      "reqIds": [],
-      "status": "pending"
-    },
-    {
-      "id": "AR-12",
-      "summary": "Add search bar to help visitors find specific remedies across health, skin care, and hair care sections",
-      "reqIds": [],
-      "status": "pending"
-    },
-    {
-      "id": "AR-13",
-      "summary": "Add Privacy Policy and Terms of Service pages required for Google AdSense compliance",
-      "reqIds": [],
-      "status": "pending"
-    },
-    {
-      "id": "AR-15",
-      "summary": "Verify backend getPublishedPosts function in main.mo correctly filters and returns only posts where isPublished is true, ensuring the data structure matches the frontend BlogPost type expectations",
-      "reqIds": [
-        "REQ-41"
-      ],
-      "status": "pending"
-    },
-    {
-      "id": "AR-18",
-      "summary": "Verify the backend getPublishedPosts and getAllPosts functions in main.mo correctly retrieve and return health category blog posts with all required fields (id, title, slug, category, content, excerpt, readTime, author, publishedDate, tags, isPublished)",
-      "reqIds": [
-        "REQ-45"
-      ],
-      "status": "pending"
-    },
-    {
-      "id": "AR-19",
-      "summary": "Remove 'Why Choose Ayurvedic Health Remedies?' section from Health Remedies page",
-      "reqIds": [],
       "status": "pending"
     }
   ],
-  "gameProjectType": "none",
-  "projectName": "AyurGlow Secrets",
+  "projectName": "Add comment section to blog posts and image upload for blog posts",
   "clarification_mode": "instant",
   "clarification_rounds": 0
 }

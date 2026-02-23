@@ -1,23 +1,69 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Remove 'Why Choose Ayurvedic Health Remedies?' section from Health Remedies page",
+  "title": "Add comment section to blog posts and image upload for blog posts",
   "requirements": [
     {
-      "id": "REQ-47",
-      "summary": "Remove the 'Why Choose Ayurvedic Health Remedies?' section from HealthRemediesPage.tsx while preserving the hero section and five subcategory cards",
+      "id": "REQ-1",
+      "summary": "Add a comment section at the bottom of each blog post detail page that allows users to view and share comments",
       "acceptanceCriteria": [
-        "The 'Why Choose Ayurvedic Health Remedies?' section is completely removed from HealthRemediesPage.tsx",
-        "The hero section with heading and description remains visible",
-        "All five subcategory cards remain functional and clickable",
-        "The page layout remains visually balanced after section removal",
-        "No console errors or broken styling after the removal"
+        "Comment section appears below the blog post content on BlogPostDetailPage",
+        "Users can submit new comments with their name and comment text",
+        "All comments for a post are displayed in chronological order",
+        "Comments persist across page refreshes"
       ],
       "file_operations": [
         {
-          "path": "frontend/src/pages/HealthRemediesPage.tsx",
+          "path": "frontend/src/components/CommentSection.tsx",
+          "operation": "create",
+          "description": "Create a CommentSection component that displays existing comments and provides a form for submitting new comments. The component accepts a postId prop, fetches comments using the backend's getComments method, and submits new comments via the addComment method. Display comments in chronological order with author name, content, and formatted timestamp. Include form validation for required fields (name and comment text)."
+        },
+        {
+          "path": "frontend/src/hooks/useQueries.ts",
           "operation": "modify",
-          "description": "Remove the 'Why Choose Ayurvedic Health Remedies?' section from the component while preserving the hero section at the top and the five subcategory cards (Immunity Boosting, Digestion & Gut Health, Weight Management, Diabetes & BP Support, Stress & Sleep Solutions). Ensure the remaining layout maintains proper spacing and visual balance. Verify that all navigation links to the subcategory pages remain functional after the removal."
+          "description": "Add React Query hooks for comment operations: useGetComments hook to fetch comments for a specific post, and useAddComment mutation hook to submit new comments. The useAddComment mutation should invalidate the comments query for the post after successful submission to refresh the comment list."
+        },
+        {
+          "path": "frontend/src/pages/BlogPostDetailPage.tsx",
+          "operation": "modify",
+          "description": "Import and render the CommentSection component below the blog post content and sidebar section. Pass the current post's id as the postId prop to the CommentSection component. Position the comment section with appropriate spacing after the main content area."
+        }
+      ]
+    },
+    {
+      "id": "REQ-2",
+      "summary": "Add image upload capability to the blog post creation and editing forms, allowing authors to upload custom images instead of using image descriptions",
+      "acceptanceCriteria": [
+        "CreateBlogPostPage includes an image upload input field",
+        "EditBlogPostPage includes an image upload input field with current image preview",
+        "Uploaded images are stored and retrievable from the backend",
+        "Blog posts display the uploaded images on the detail page and in post cards"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/pages/CreateBlogPostPage.tsx",
+          "operation": "modify",
+          "description": "Replace the image description select field with a file upload input that accepts image files (jpg, png, webp). Use the blob-storage component's ExternalBlob.fromBytes method to handle the uploaded file. Display upload progress using withUploadProgress. Remove the imageDescriptionToFilename mapping logic. Update the form submission to pass the ExternalBlob instance (or null if no image uploaded) to the createPost mutation. Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/pages/EditBlogPostPage.tsx",
+          "operation": "modify",
+          "description": "Replace the image description select field with a file upload input. If the post has an existing image, display a preview using the ExternalBlob's getDirectURL method. Allow users to replace the existing image by uploading a new file. Use ExternalBlob.fromBytes for new uploads with progress tracking via withUploadProgress. Update the form submission to pass the ExternalBlob instance (existing or new) or null to the updatePost mutation. Remove the imageDescriptionToFilename mapping logic. Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/pages/BlogPostDetailPage.tsx",
+          "operation": "modify",
+          "description": "Update the featured image rendering to use the post's image field (ExternalBlob type) instead of the previous image URL. Use the getDirectURL method to obtain the image URL for the img src attribute. Handle cases where the image field may be undefined or null with appropriate fallback rendering."
+        },
+        {
+          "path": "frontend/src/components/PostCard.tsx",
+          "operation": "modify",
+          "description": "Update the image rendering in the PostCard component to use the post's image field (ExternalBlob type). Use the getDirectURL method to obtain the image URL for display. Handle cases where the image field may be undefined or null by showing a placeholder or default image."
+        },
+        {
+          "path": "frontend/src/components/FeaturedPost.tsx",
+          "operation": "modify",
+          "description": "Update the featured post image rendering to use the post's image field (ExternalBlob type). Use the getDirectURL method to obtain the image URL for the background or img element. Handle cases where the image field may be undefined or null with appropriate fallback rendering."
         }
       ]
     }

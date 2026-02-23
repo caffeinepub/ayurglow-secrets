@@ -8,9 +8,10 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { ArrowLeft, Loader2 } from 'lucide-react';
+import { ArrowLeft, Loader2, Upload, X } from 'lucide-react';
 import ReactQuill from 'react-quill-new';
 import 'react-quill-new/dist/quill.snow.css';
+import { ExternalBlob } from '../backend';
 
 export default function EditBlogPostPage() {
   const navigate = useNavigate();
@@ -26,6 +27,10 @@ export default function EditBlogPostPage() {
   const [author, setAuthor] = useState('');
   const [tags, setTags] = useState('');
   const [isPublished, setIsPublished] = useState(false);
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [existingImage, setExistingImage] = useState<ExternalBlob | null>(null);
+  const [uploadProgress, setUploadProgress] = useState<number>(0);
 
   const categories = ['Hair Care', 'Skin Care', 'Health', 'Beauty', 'Lifestyle'];
 
@@ -39,8 +44,47 @@ export default function EditBlogPostPage() {
       setAuthor(post.author);
       setTags(post.tags.join(', '));
       setIsPublished(post.isPublished);
+      
+      if (post.image) {
+        setExistingImage(post.image);
+        setImagePreview(post.image.getDirectURL());
+      }
     }
   }, [post]);
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      // Validate file type
+      if (!file.type.startsWith('image/')) {
+        alert('Please select an image file');
+        return;
+      }
+
+      // Validate file size (max 5MB)
+      if (file.size > 5 * 1024 * 1024) {
+        alert('Image size should be less than 5MB');
+        return;
+      }
+
+      setImageFile(file);
+      setExistingImage(null);
+      
+      // Create preview
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleRemoveImage = () => {
+    setImageFile(null);
+    setImagePreview(null);
+    setExistingImage(null);
+    setUploadProgress(0);
+  };
 
   const generateSlug = (text: string) => {
     return text
@@ -60,6 +104,22 @@ export default function EditBlogPostPage() {
     const slug = generateSlug(title);
     const tagsArray = tags.split(',').map(tag => tag.trim()).filter(tag => tag);
 
+    let imageBlob: ExternalBlob | null = existingImage;
+
+    if (imageFile) {
+      try {
+        const arrayBuffer = await imageFile.arrayBuffer();
+        const uint8Array = new Uint8Array(arrayBuffer);
+        imageBlob = ExternalBlob.fromBytes(uint8Array).withUploadProgress((percentage) => {
+          setUploadProgress(percentage);
+        });
+      } catch (error) {
+        console.error('Error processing image:', error);
+        alert('Failed to process image. Please try again.');
+        return;
+      }
+    }
+
     try {
       await updatePost.mutateAsync({
         id,
@@ -73,6 +133,7 @@ export default function EditBlogPostPage() {
         publishedDate: post?.publishedDate || BigInt(Date.now()),
         tags: tagsArray,
         isPublished,
+        image: imageBlob,
       });
 
       navigate({ to: '/admin/posts' });
@@ -197,6 +258,67 @@ export default function EditBlogPostPage() {
                       ],
                     }}
                   />
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="image" className="text-warm-brown font-semibold">
+                  Featured Image
+                </Label>
+                <div className="space-y-3">
+                  {!imagePreview ? (
+                    <div className="border-2 border-dashed border-sage-green/30 rounded-lg p-8 text-center hover:border-earth-green transition-colors">
+                      <input
+                        type="file"
+                        id="image"
+                        accept="image/*"
+                        onChange={handleImageChange}
+                        className="hidden"
+                      />
+                      <label
+                        htmlFor="image"
+                        className="cursor-pointer flex flex-col items-center gap-2"
+                      >
+                        <Upload className="w-10 h-10 text-sage-green" />
+                        <span className="text-warm-brown/70">
+                          Click to upload an image
+                        </span>
+                        <span className="text-xs text-warm-brown/50">
+                          PNG, JPG, WEBP up to 5MB
+                        </span>
+                      </label>
+                    </div>
+                  ) : (
+                    <div className="relative">
+                      <img
+                        src={imagePreview}
+                        alt="Preview"
+                        className="w-full h-64 object-cover rounded-lg border-2 border-sage-green/30"
+                      />
+                      <Button
+                        type="button"
+                        variant="destructive"
+                        size="icon"
+                        onClick={handleRemoveImage}
+                        className="absolute top-2 right-2"
+                      >
+                        <X className="w-4 h-4" />
+                      </Button>
+                      {uploadProgress > 0 && uploadProgress < 100 && (
+                        <div className="absolute bottom-2 left-2 right-2 bg-black/50 rounded p-2">
+                          <div className="text-xs text-white mb-1">
+                            Uploading: {uploadProgress}%
+                          </div>
+                          <div className="w-full bg-white/30 rounded-full h-2">
+                            <div
+                              className="bg-earth-green h-2 rounded-full transition-all"
+                              style={{ width: `${uploadProgress}%` }}
+                            />
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  )}
                 </div>
               </div>
 

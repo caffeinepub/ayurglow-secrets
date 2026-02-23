@@ -8,7 +8,24 @@
 
 import { IDL } from '@icp-sdk/core/candid';
 
-export const BlogPost = IDL.Record({
+export const _CaffeineStorageCreateCertificateResult = IDL.Record({
+  'method' : IDL.Text,
+  'blob_hash' : IDL.Text,
+});
+export const _CaffeineStorageRefillInformation = IDL.Record({
+  'proposed_top_up_amount' : IDL.Opt(IDL.Nat),
+});
+export const _CaffeineStorageRefillResult = IDL.Record({
+  'success' : IDL.Opt(IDL.Bool),
+  'topped_up_amount' : IDL.Opt(IDL.Nat),
+});
+export const ExternalBlob = IDL.Vec(IDL.Nat8);
+export const Comment = IDL.Record({
+  'content' : IDL.Text,
+  'author' : IDL.Text,
+  'timestamp' : IDL.Int,
+});
+export const BlogPostView = IDL.Record({
   'id' : IDL.Text,
   'title' : IDL.Text,
   'content' : IDL.Text,
@@ -20,9 +37,38 @@ export const BlogPost = IDL.Record({
   'readTime' : IDL.Nat,
   'excerpt' : IDL.Text,
   'category' : IDL.Text,
+  'image' : IDL.Opt(ExternalBlob),
+  'comments' : IDL.Vec(Comment),
 });
 
 export const idlService = IDL.Service({
+  '_caffeineStorageBlobIsLive' : IDL.Func(
+      [IDL.Vec(IDL.Nat8)],
+      [IDL.Bool],
+      ['query'],
+    ),
+  '_caffeineStorageBlobsToDelete' : IDL.Func(
+      [],
+      [IDL.Vec(IDL.Vec(IDL.Nat8))],
+      ['query'],
+    ),
+  '_caffeineStorageConfirmBlobDeletion' : IDL.Func(
+      [IDL.Vec(IDL.Vec(IDL.Nat8))],
+      [],
+      [],
+    ),
+  '_caffeineStorageCreateCertificate' : IDL.Func(
+      [IDL.Text],
+      [_CaffeineStorageCreateCertificateResult],
+      [],
+    ),
+  '_caffeineStorageRefillCashier' : IDL.Func(
+      [IDL.Opt(_CaffeineStorageRefillInformation)],
+      [_CaffeineStorageRefillResult],
+      [],
+    ),
+  '_caffeineStorageUpdateGatewayPrincipals' : IDL.Func([], [], []),
+  'addComment' : IDL.Func([IDL.Text, IDL.Text, IDL.Text], [IDL.Bool], []),
   'createPost' : IDL.Func(
       [
         IDL.Text,
@@ -36,14 +82,16 @@ export const idlService = IDL.Service({
         IDL.Int,
         IDL.Vec(IDL.Text),
         IDL.Bool,
+        IDL.Opt(ExternalBlob),
       ],
       [],
       [],
     ),
   'deletePost' : IDL.Func([IDL.Text], [], []),
-  'getAllPosts' : IDL.Func([], [IDL.Vec(BlogPost)], ['query']),
-  'getPost' : IDL.Func([IDL.Text], [IDL.Opt(BlogPost)], ['query']),
-  'getPublishedPosts' : IDL.Func([], [IDL.Vec(BlogPost)], ['query']),
+  'getAllPosts' : IDL.Func([], [IDL.Vec(BlogPostView)], ['query']),
+  'getComments' : IDL.Func([IDL.Text], [IDL.Vec(Comment)], ['query']),
+  'getPost' : IDL.Func([IDL.Text], [IDL.Opt(BlogPostView)], ['query']),
+  'getPublishedPosts' : IDL.Func([], [IDL.Vec(BlogPostView)], ['query']),
   'updatePost' : IDL.Func(
       [
         IDL.Text,
@@ -57,6 +105,7 @@ export const idlService = IDL.Service({
         IDL.Int,
         IDL.Vec(IDL.Text),
         IDL.Bool,
+        IDL.Opt(ExternalBlob),
       ],
       [],
       [],
@@ -66,7 +115,24 @@ export const idlService = IDL.Service({
 export const idlInitArgs = [];
 
 export const idlFactory = ({ IDL }) => {
-  const BlogPost = IDL.Record({
+  const _CaffeineStorageCreateCertificateResult = IDL.Record({
+    'method' : IDL.Text,
+    'blob_hash' : IDL.Text,
+  });
+  const _CaffeineStorageRefillInformation = IDL.Record({
+    'proposed_top_up_amount' : IDL.Opt(IDL.Nat),
+  });
+  const _CaffeineStorageRefillResult = IDL.Record({
+    'success' : IDL.Opt(IDL.Bool),
+    'topped_up_amount' : IDL.Opt(IDL.Nat),
+  });
+  const ExternalBlob = IDL.Vec(IDL.Nat8);
+  const Comment = IDL.Record({
+    'content' : IDL.Text,
+    'author' : IDL.Text,
+    'timestamp' : IDL.Int,
+  });
+  const BlogPostView = IDL.Record({
     'id' : IDL.Text,
     'title' : IDL.Text,
     'content' : IDL.Text,
@@ -78,9 +144,38 @@ export const idlFactory = ({ IDL }) => {
     'readTime' : IDL.Nat,
     'excerpt' : IDL.Text,
     'category' : IDL.Text,
+    'image' : IDL.Opt(ExternalBlob),
+    'comments' : IDL.Vec(Comment),
   });
   
   return IDL.Service({
+    '_caffeineStorageBlobIsLive' : IDL.Func(
+        [IDL.Vec(IDL.Nat8)],
+        [IDL.Bool],
+        ['query'],
+      ),
+    '_caffeineStorageBlobsToDelete' : IDL.Func(
+        [],
+        [IDL.Vec(IDL.Vec(IDL.Nat8))],
+        ['query'],
+      ),
+    '_caffeineStorageConfirmBlobDeletion' : IDL.Func(
+        [IDL.Vec(IDL.Vec(IDL.Nat8))],
+        [],
+        [],
+      ),
+    '_caffeineStorageCreateCertificate' : IDL.Func(
+        [IDL.Text],
+        [_CaffeineStorageCreateCertificateResult],
+        [],
+      ),
+    '_caffeineStorageRefillCashier' : IDL.Func(
+        [IDL.Opt(_CaffeineStorageRefillInformation)],
+        [_CaffeineStorageRefillResult],
+        [],
+      ),
+    '_caffeineStorageUpdateGatewayPrincipals' : IDL.Func([], [], []),
+    'addComment' : IDL.Func([IDL.Text, IDL.Text, IDL.Text], [IDL.Bool], []),
     'createPost' : IDL.Func(
         [
           IDL.Text,
@@ -94,14 +189,16 @@ export const idlFactory = ({ IDL }) => {
           IDL.Int,
           IDL.Vec(IDL.Text),
           IDL.Bool,
+          IDL.Opt(ExternalBlob),
         ],
         [],
         [],
       ),
     'deletePost' : IDL.Func([IDL.Text], [], []),
-    'getAllPosts' : IDL.Func([], [IDL.Vec(BlogPost)], ['query']),
-    'getPost' : IDL.Func([IDL.Text], [IDL.Opt(BlogPost)], ['query']),
-    'getPublishedPosts' : IDL.Func([], [IDL.Vec(BlogPost)], ['query']),
+    'getAllPosts' : IDL.Func([], [IDL.Vec(BlogPostView)], ['query']),
+    'getComments' : IDL.Func([IDL.Text], [IDL.Vec(Comment)], ['query']),
+    'getPost' : IDL.Func([IDL.Text], [IDL.Opt(BlogPostView)], ['query']),
+    'getPublishedPosts' : IDL.Func([], [IDL.Vec(BlogPostView)], ['query']),
     'updatePost' : IDL.Func(
         [
           IDL.Text,
@@ -115,6 +212,7 @@ export const idlFactory = ({ IDL }) => {
           IDL.Int,
           IDL.Vec(IDL.Text),
           IDL.Bool,
+          IDL.Opt(ExternalBlob),
         ],
         [],
         [],

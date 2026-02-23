@@ -1,39 +1,90 @@
 {
   "kind": "build_request",
-  "title": "Remove 'Why Choose Ayurvedic Health Remedies?' section from Health Remedies page",
-  "projectName": "AyurGlow Secrets",
+  "title": "Add comment section to blog posts and image upload for blog posts",
   "priority": "normal",
   "requirements": [
     {
-      "id": "REQ-47",
-      "text": "Remove the 'Why Choose Ayurvedic Health Remedies?' section from the HealthRemediesPage.tsx component while preserving the hero section and the five subcategory cards (Immunity Boosting, Digestion & Gut Health, Weight Management, Diabetes & BP Support, Stress & Sleep Solutions)",
-      "target": "frontend",
+      "id": "REQ-1",
+      "text": "Add a comment section at the bottom of each blog post detail page that allows users to view and share comments",
+      "target": "both",
       "source": {
         "messageIds": [
-          "msg-latest"
+          "msg-10"
         ],
         "quotes": [
-          "can remove the part\nWhy Choose Ayurvedic Health Remedies?"
+          "share your comment section in bottom of blog post part"
         ]
       },
       "acceptanceCriteria": [
-        "The 'Why Choose Ayurvedic Health Remedies?' section is completely removed from HealthRemediesPage.tsx",
-        "The hero section with heading and description remains visible",
-        "All five subcategory cards remain functional and clickable",
-        "The page layout remains visually balanced after section removal",
-        "No console errors or broken styling after the removal"
+        "Comment section appears below the blog post content on BlogPostDetailPage",
+        "Users can submit new comments with their name and comment text",
+        "All comments for a post are displayed in chronological order",
+        "Comments persist across page refreshes"
+      ]
+    },
+    {
+      "id": "REQ-2",
+      "text": "Add image upload capability to the blog post creation and editing forms, allowing authors to upload custom images instead of using image descriptions",
+      "target": "both",
+      "source": {
+        "messageIds": [
+          "msg-10"
+        ],
+        "quotes": [
+          "add image including option in blog post section"
+        ]
+      },
+      "acceptanceCriteria": [
+        "CreateBlogPostPage includes an image upload input field",
+        "EditBlogPostPage includes an image upload input field with current image preview",
+        "Uploaded images are stored and retrievable from the backend",
+        "Blog posts display the uploaded images on the detail page and in post cards"
+      ]
+    },
+    {
+      "id": "REQ-3",
+      "text": "Update the backend BlogPost data model to support storing comments with author name, comment text, and timestamp",
+      "target": "backend",
+      "source": {
+        "messageIds": [
+          "msg-10"
+        ]
+      },
+      "acceptanceCriteria": [
+        "BlogPost type includes a comments array field",
+        "Backend provides methods to add comments to a post",
+        "Backend provides methods to retrieve all comments for a post",
+        "Comments are returned with the blog post data"
+      ]
+    },
+    {
+      "id": "REQ-4",
+      "text": "Update the backend to handle image file uploads and storage for blog posts",
+      "target": "backend",
+      "source": {
+        "messageIds": [
+          "msg-10"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Backend accepts image file uploads via HTTP",
+        "Uploaded images are stored as assets accessible via URL",
+        "BlogPost type stores the uploaded image URL or asset ID",
+        "Image retrieval methods return the correct image for each post"
       ]
     }
   ],
   "constraints": [
-    "Do not modify the subcategory cards or their navigation functionality",
-    "Preserve the hero section at the top of the page",
-    "Maintain the Ayurvedic design theme and styling consistency"
+    "Maintain the single-actor architecture in backend/main.mo",
+    "Do not modify immutable frontend paths: useInternetIdentity.ts, useInternetIdentity.tsx, useActor.ts, main.tsx, or components/ui",
+    "Keep existing blog post CRUD functionality intact"
   ],
   "nonGoals": [
-    "Removing similar sections from other category pages (Skin Care, Hair Care)",
-    "Adding new content to replace the removed section",
-    "Modifying the subcategory routing or detail pages"
+    "Comment moderation or spam filtering",
+    "User authentication for commenting (anonymous commenting is acceptable)",
+    "Image editing or transformation capabilities",
+    "Comment threading or replies",
+    "Real-time comment updates"
   ],
   "imageRequirements": {
     "required": [],

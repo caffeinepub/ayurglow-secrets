@@ -3,112 +3,149 @@
 @tailwind utilities;
 
 @layer base {
-    :root {
-        --radius: 0.625rem;
-        
-        /* Ayurvedic Color Palette - Light Mode */
-        --background: 0.97 0.02 85;  /* Cream */
-        --foreground: 0.35 0.08 140;  /* Earth Green (dark) */
-        --card: 1 0 0;  /* White */
-        --card-foreground: 0.35 0.08 140;
-        --popover: 1 0 0;
-        --popover-foreground: 0.35 0.08 140;
-        --primary: 0.45 0.12 145;  /* Earth Green */
-        --primary-foreground: 0.97 0.02 85;  /* Cream */
-        --secondary: 0.85 0.04 130;  /* Sage Green */
-        --secondary-foreground: 0.35 0.08 140;
-        --muted: 0.92 0.02 90;  /* Light Beige */
-        --muted-foreground: 0.55 0.06 50;  /* Warm Brown */
-        --accent: 0.75 0.15 80;  /* Gold */
-        --accent-foreground: 0.35 0.08 140;
-        --destructive: 0.577 0.245 27.325;
-        --destructive-foreground: 0.985 0 0;
-        --border: 0.85 0.04 130;  /* Sage Green border */
-        --input: 0.92 0.02 90;
-        --ring: 0.45 0.12 145;
-        
-        /* Custom Ayurvedic Colors */
-        --earth-green: 0.45 0.12 145;
-        --sage-green: 0.85 0.04 130;
-        --warm-brown: 0.55 0.06 50;
-        --cream: 0.97 0.02 85;
-        --gold: 0.75 0.15 80;
-        
-        --chart-1: 0.646 0.222 41.116;
-        --chart-2: 0.6 0.118 184.704;
-        --chart-3: 0.398 0.07 227.392;
-        --chart-4: 0.828 0.189 84.429;
-        --chart-5: 0.769 0.188 70.08;
-        --sidebar: 0.985 0 0;
-        --sidebar-foreground: 0.145 0 0;
-        --sidebar-primary: 0.205 0 0;
-        --sidebar-primary-foreground: 0.985 0 0;
-        --sidebar-accent: 0.97 0 0;
-        --sidebar-accent-foreground: 0.205 0 0;
-        --sidebar-border: 0.922 0 0;
-        --sidebar-ring: 0.708 0 0;
-    }
+  :root {
+    /* Soft natural earth tones - Light mode */
+    --background: oklch(98% 0.01 85);  /* Warm off-white #FAF9F7 */
+    --foreground: oklch(35% 0.03 45);  /* Warm brown #6B5D52 */
 
-    .dark {
-        /* Ayurvedic Color Palette - Dark Mode */
-        --background: 0.25 0.06 140;  /* Dark Earth Green */
-        --foreground: 0.97 0.02 85;  /* Cream */
-        --card: 0.32 0.08 145;  /* Slightly lighter earth green */
-        --card-foreground: 0.97 0.02 85;
-        --popover: 0.32 0.08 145;
-        --popover-foreground: 0.97 0.02 85;
-        --primary: 0.75 0.15 80;  /* Gold */
-        --primary-foreground: 0.25 0.06 140;
-        --secondary: 0.40 0.10 140;  /* Medium Earth Green */
-        --secondary-foreground: 0.97 0.02 85;
-        --muted: 0.35 0.08 140;
-        --muted-foreground: 0.85 0.04 130;  /* Sage Green */
-        --accent: 0.75 0.15 80;  /* Gold */
-        --accent-foreground: 0.25 0.06 140;
-        --destructive: 0.704 0.191 22.216;
-        --destructive-foreground: 0.97 0.02 85;
-        --border: 0.40 0.10 140;
-        --input: 0.35 0.08 140;
-        --ring: 0.75 0.15 80;
-        
-        /* Custom Ayurvedic Colors - Dark Mode */
-        --earth-green: 0.55 0.12 145;
-        --sage-green: 0.70 0.08 130;
-        --warm-brown: 0.65 0.08 50;
-        --cream: 0.97 0.02 85;
-        --gold: 0.75 0.15 80;
-        
-        --chart-1: 0.488 0.243 264.376;
-        --chart-2: 0.696 0.17 162.48;
-        --chart-3: 0.769 0.188 70.08;
-        --chart-4: 0.627 0.265 303.9;
-        --chart-5: 0.645 0.246 16.439;
-        --sidebar: 0.205 0 0;
-        --sidebar-foreground: 0.985 0 0;
-        --sidebar-primary: 0.488 0.243 264.376;
-        --sidebar-primary-foreground: 0.985 0 0;
-        --sidebar-accent: 0.269 0 0;
-        --sidebar-accent-foreground: 0.985 0 0;
-        --sidebar-border: 1 0 0 / 10%;
-        --sidebar-ring: 0.439 0 0;
-    }
+    --card: oklch(99% 0.005 85);
+    --card-foreground: oklch(35% 0.03 45);
 
-    * {
-        @apply border-border;
-    }
-    
-    body {
-        @apply bg-background text-foreground;
-        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
-    }
-    
-    h1, h2, h3, h4, h5, h6 {
-        font-family: 'Playfair Display', Georgia, 'Times New Roman', serif;
-    }
+    --popover: oklch(99% 0.005 85);
+    --popover-foreground: oklch(35% 0.03 45);
+
+    --primary: oklch(45% 0.08 140);  /* Sage green #8B9D83 */
+    --primary-foreground: oklch(98% 0.01 85);
+
+    --secondary: oklch(55% 0.06 50);  /* Warm brown #8B7355 */
+    --secondary-foreground: oklch(98% 0.01 85);
+
+    --muted: oklch(95% 0.01 85);  /* Soft beige #F5F4F0 */
+    --muted-foreground: oklch(50% 0.03 45);
+
+    --accent: oklch(65% 0.12 85);  /* Soft gold #D4AF37 */
+    --accent-foreground: oklch(35% 0.03 45);
+
+    --destructive: oklch(55% 0.18 25);
+    --destructive-foreground: oklch(98% 0.01 85);
+
+    --border: oklch(85% 0.02 140);
+    --input: oklch(85% 0.02 140);
+    --ring: oklch(45% 0.08 140);
+
+    --radius: 0.5rem;
+
+    /* Custom Ayurvedic colors - softer tones */
+    --earth-green: oklch(40% 0.08 140);  /* Deep sage #5A6B54 */
+    --sage-green: oklch(60% 0.06 140);   /* Light sage #A8B5A0 */
+    --warm-brown: oklch(40% 0.04 50);    /* Warm brown #6B5D52 */
+    --cream: oklch(97% 0.01 85);         /* Cream #FAF8F5 */
+    --gold: oklch(70% 0.12 85);          /* Soft gold #D4AF37 */
+  }
+
+  .dark {
+    /* Dark mode with natural tones */
+    --background: oklch(20% 0.02 45);
+    --foreground: oklch(95% 0.01 85);
+
+    --card: oklch(22% 0.02 45);
+    --card-foreground: oklch(95% 0.01 85);
+
+    --popover: oklch(22% 0.02 45);
+    --popover-foreground: oklch(95% 0.01 85);
+
+    --primary: oklch(60% 0.08 140);
+    --primary-foreground: oklch(20% 0.02 45);
+
+    --secondary: oklch(55% 0.06 50);
+    --secondary-foreground: oklch(95% 0.01 85);
+
+    --muted: oklch(25% 0.02 45);
+    --muted-foreground: oklch(70% 0.02 85);
+
+    --accent: oklch(65% 0.12 85);
+    --accent-foreground: oklch(20% 0.02 45);
+
+    --destructive: oklch(55% 0.18 25);
+    --destructive-foreground: oklch(95% 0.01 85);
+
+    --border: oklch(30% 0.03 140);
+    --input: oklch(30% 0.03 140);
+    --ring: oklch(60% 0.08 140);
+
+    /* Custom Ayurvedic colors - dark mode */
+    --earth-green: oklch(55% 0.08 140);
+    --sage-green: oklch(50% 0.06 140);
+    --warm-brown: oklch(55% 0.04 50);
+    --cream: oklch(95% 0.01 85);
+    --gold: oklch(70% 0.12 85);
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    font-size: 16px;
+    line-height: 1.7;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Playfair Display', Georgia, serif;
+  }
 }
 
 @layer utilities {
-    .font-serif {
-        font-family: 'Playfair Display', Georgia, 'Times New Roman', serif;
-    }
+  .text-earth-green {
+    color: var(--earth-green);
+  }
+  .bg-earth-green {
+    background-color: var(--earth-green);
+  }
+  .border-earth-green {
+    border-color: var(--earth-green);
+  }
+  
+  .text-sage-green {
+    color: var(--sage-green);
+  }
+  .bg-sage-green {
+    background-color: var(--sage-green);
+  }
+  .border-sage-green {
+    border-color: var(--sage-green);
+  }
+  
+  .text-warm-brown {
+    color: var(--warm-brown);
+  }
+  .bg-warm-brown {
+    background-color: var(--warm-brown);
+  }
+  .border-warm-brown {
+    border-color: var(--warm-brown);
+  }
+  
+  .text-cream {
+    color: var(--cream);
+  }
+  .bg-cream {
+    background-color: var(--cream);
+  }
+  .border-cream {
+    border-color: var(--cream);
+  }
+  
+  .text-gold {
+    color: var(--gold);
+  }
+  .bg-gold {
+    background-color: var(--gold);
+  }
+  .border-gold {
+    border-color: var(--gold);
+  }
 }

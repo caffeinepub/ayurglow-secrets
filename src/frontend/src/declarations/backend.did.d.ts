@@ -10,7 +10,7 @@ import type { ActorMethod } from '@icp-sdk/core/agent';
 import type { IDL } from '@icp-sdk/core/candid';
 import type { Principal } from '@icp-sdk/core/principal';
 
-export interface BlogPost {
+export interface BlogPostView {
   'id' : string,
   'title' : string,
   'content' : string,
@@ -22,8 +22,43 @@ export interface BlogPost {
   'readTime' : bigint,
   'excerpt' : string,
   'category' : string,
+  'image' : [] | [ExternalBlob],
+  'comments' : Array<Comment>,
+}
+export interface Comment {
+  'content' : string,
+  'author' : string,
+  'timestamp' : bigint,
+}
+export type ExternalBlob = Uint8Array;
+export interface _CaffeineStorageCreateCertificateResult {
+  'method' : string,
+  'blob_hash' : string,
+}
+export interface _CaffeineStorageRefillInformation {
+  'proposed_top_up_amount' : [] | [bigint],
+}
+export interface _CaffeineStorageRefillResult {
+  'success' : [] | [boolean],
+  'topped_up_amount' : [] | [bigint],
 }
 export interface _SERVICE {
+  '_caffeineStorageBlobIsLive' : ActorMethod<[Uint8Array], boolean>,
+  '_caffeineStorageBlobsToDelete' : ActorMethod<[], Array<Uint8Array>>,
+  '_caffeineStorageConfirmBlobDeletion' : ActorMethod<
+    [Array<Uint8Array>],
+    undefined
+  >,
+  '_caffeineStorageCreateCertificate' : ActorMethod<
+    [string],
+    _CaffeineStorageCreateCertificateResult
+  >,
+  '_caffeineStorageRefillCashier' : ActorMethod<
+    [[] | [_CaffeineStorageRefillInformation]],
+    _CaffeineStorageRefillResult
+  >,
+  '_caffeineStorageUpdateGatewayPrincipals' : ActorMethod<[], undefined>,
+  'addComment' : ActorMethod<[string, string, string], boolean>,
   'createPost' : ActorMethod<
     [
       string,
@@ -37,13 +72,15 @@ export interface _SERVICE {
       bigint,
       Array<string>,
       boolean,
+      [] | [ExternalBlob],
     ],
     undefined
   >,
   'deletePost' : ActorMethod<[string], undefined>,
-  'getAllPosts' : ActorMethod<[], Array<BlogPost>>,
-  'getPost' : ActorMethod<[string], [] | [BlogPost]>,
-  'getPublishedPosts' : ActorMethod<[], Array<BlogPost>>,
+  'getAllPosts' : ActorMethod<[], Array<BlogPostView>>,
+  'getComments' : ActorMethod<[string], Array<Comment>>,
+  'getPost' : ActorMethod<[string], [] | [BlogPostView]>,
+  'getPublishedPosts' : ActorMethod<[], Array<BlogPostView>>,
   'updatePost' : ActorMethod<
     [
       string,
@@ -57,6 +94,7 @@ export interface _SERVICE {
       bigint,
       Array<string>,
       boolean,
+      [] | [ExternalBlob],
     ],
     undefined
   >,

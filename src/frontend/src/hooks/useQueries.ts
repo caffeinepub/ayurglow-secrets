@@ -1,12 +1,13 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useActor } from './useActor';
-import type { BlogPost } from '../backend';
+import type { BlogPostView, Comment } from '../backend';
+import { ExternalBlob } from '../backend';
 
 // Query hook to get all posts (published and drafts)
 export function useGetAllPosts() {
   const { actor, isFetching } = useActor();
 
-  return useQuery<BlogPost[]>({
+  return useQuery<BlogPostView[]>({
     queryKey: ['allPosts'],
     queryFn: async () => {
       if (!actor) return [];
@@ -23,7 +24,7 @@ export function useGetAllPosts() {
 export function useGetPublishedPosts() {
   const { actor, isFetching } = useActor();
 
-  return useQuery<BlogPost[]>({
+  return useQuery<BlogPostView[]>({
     queryKey: ['publishedPosts'],
     queryFn: async () => {
       if (!actor) return [];
@@ -40,7 +41,7 @@ export function useGetPublishedPosts() {
 export function useGetPost(id: string) {
   const { actor, isFetching } = useActor();
 
-  return useQuery<BlogPost | null>({
+  return useQuery<BlogPostView | null>({
     queryKey: ['post', id],
     queryFn: async () => {
       if (!actor) return null;
@@ -68,6 +69,7 @@ export function useCreatePost() {
       publishedDate: bigint;
       tags: string[];
       isPublished: boolean;
+      image: ExternalBlob | null;
     }) => {
       if (!actor) throw new Error('Actor not initialized');
       return actor.createPost(
@@ -81,7 +83,8 @@ export function useCreatePost() {
         post.author,
         post.publishedDate,
         post.tags,
-        post.isPublished
+        post.isPublished,
+        post.image
       );
     },
     onSuccess: () => {
@@ -109,6 +112,7 @@ export function useUpdatePost() {
       publishedDate: bigint;
       tags: string[];
       isPublished: boolean;
+      image: ExternalBlob | null;
     }) => {
       if (!actor) throw new Error('Actor not initialized');
       return actor.updatePost(
@@ -122,7 +126,8 @@ export function useUpdatePost() {
         post.author,
         post.publishedDate,
         post.tags,
-        post.isPublished
+        post.isPublished,
+        post.image
       );
     },
     onSuccess: (_, variables) => {
@@ -146,6 +151,37 @@ export function useDeletePost() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['allPosts'] });
       queryClient.invalidateQueries({ queryKey: ['publishedPosts'] });
+    },
+  });
+}
+
+// Query hook to get comments for a post
+export function useGetComments(postId: string) {
+  const { actor, isFetching } = useActor();
+
+  return useQuery<Comment[]>({
+    queryKey: ['comments', postId],
+    queryFn: async () => {
+      if (!actor) return [];
+      return actor.getComments(postId);
+    },
+    enabled: !!actor && !isFetching && !!postId,
+  });
+}
+
+// Mutation hook to add a comment
+export function useAddComment() {
+  const { actor } = useActor();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({ postId, author, content }: { postId: string; author: string; content: string }) => {
+      if (!actor) throw new Error('Actor not initialized');
+      return actor.addComment(postId, author, content);
+    },
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({ queryKey: ['comments', variables.postId] });
+      queryClient.invalidateQueries({ queryKey: ['post', variables.postId] });
     },
   });
 }

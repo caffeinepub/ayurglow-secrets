@@ -2,20 +2,46 @@
   "kind": "feature_evidence_report",
   "features": [
     {
-      "featureId": "feature-remove-the-why-choose-ayurvedic-health-remedies-section-from-the-healthremediespage-tsx-component-while-preserving-the-hero-section-and-the-five-subcategory-cards-immunity-boosting-digestion-gut-health-weight-management-diabetes-bp-support-stress-sleep-solutions",
-      "featureTitle": "Remove the 'Why Choose Ayurvedic Health Remedies?' section from the HealthRemediesPage.tsx component while preserving the hero section and the five subcategory cards (Immunity Boosting, Digestion & Gut Health, Weight Management, Diabetes & BP Support, Stress & Sleep Solutions)",
+      "featureId": "feature-add-a-comment-section-at-the-bottom-of-each-blog-post-detail-page-that-allows-users-to-view-and-share-comments",
+      "featureTitle": "Add a comment section at the bottom of each blog post detail page that allows users to view and share comments",
       "files": [
-        "frontend/src/pages/HealthRemediesPage.tsx"
+        "frontend/src/components/CommentSection.tsx",
+        "frontend/src/hooks/useQueries.ts",
+        "frontend/src/pages/BlogPostDetailPage.tsx"
       ],
       "components": [
         "core-infrastructure@1.0.2",
         "shadcn-ui@1.0.0",
         "build-template-react@1.0.0",
         "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
+        "github-export-icp-cli@1.0.0",
+        "blob-storage@4.0.0"
       ],
       "testIds": [
-        "REQ-47"
+        "REQ-1"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-add-image-upload-capability-to-the-blog-post-creation-and-editing-forms-allowing-authors-to-upload-custom-images-instead-of-using-image-descriptions",
+      "featureTitle": "Add image upload capability to the blog post creation and editing forms, allowing authors to upload custom images instead of using image descriptions",
+      "files": [
+        "frontend/src/components/FeaturedPost.tsx",
+        "frontend/src/components/PostCard.tsx",
+        "frontend/src/pages/BlogPostDetailPage.tsx",
+        "frontend/src/pages/CreateBlogPostPage.tsx",
+        "frontend/src/pages/EditBlogPostPage.tsx"
+      ],
+      "components": [
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0",
+        "blob-storage@4.0.0"
+      ],
+      "testIds": [
+        "REQ-2"
       ],
       "confidence": "high"
     }
