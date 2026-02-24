@@ -1,206 +1,43 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Rebuild AyurGlow Secrets homepage with new content structure and enhanced blog post features",
+  "title": "Add AyurGlow Secrets logo and change welcome section text to black",
   "requirements": [
     {
       "id": "REQ-1",
-      "summary": "Update homepage hero section with new headline and subheading text",
+      "summary": "Change the color of the welcome heading text and subheading in the hero section to black",
       "acceptanceCriteria": [
-        "Hero section displays the exact headline and subheading text provided",
-        "Hero section maintains visual prominence on the homepage"
+        "The welcome heading and descriptive text are displayed in black color",
+        "The tagline 'Ancient Ayurvedic Wisdom for Healthy Body, Glowing Skin & Strong Hair' is displayed in black color",
+        "Text remains readable against the background with sufficient contrast"
       ],
       "file_operations": [
         {
           "path": "frontend/src/pages/HomePage.tsx",
           "operation": "modify",
-          "description": "Replace the existing hero section content with the new headline 'Welcome to AyurGlow Secrets' and subheading 'Discover time-tested Ayurvedic remedies for overall health, radiant skin, and strong, healthy hair. We bring you natural, chemical-free solutions rooted in ancient Indian wisdom and backed by modern understanding.' Maintain the hero section's visual prominence and styling consistent with the Ayurvedic wellness aesthetic."
+          "description": "Update the hero section text elements to use black color. Change the h1 heading 'Welcome to AyurGlow Secrets', the descriptive paragraph text, and the tagline 'Ancient Ayurvedic Wisdom for Healthy Body, Glowing Skin & Strong Hair' from their current earth-tone colors to black (text-black or text-gray-900) while maintaining readability against the background."
         }
       ]
     },
     {
       "id": "REQ-2",
-      "summary": "Add 'What We Offer' section to homepage with four key offerings",
+      "summary": "Display the generated AyurGlow Secrets logo image in the navigation header and footer",
       "acceptanceCriteria": [
-        "Section displays all four offerings with their emoji icons",
-        "Offerings are presented in a visually organized manner"
+        "The logo image is displayed in the navigation header",
+        "The logo image is displayed in the footer",
+        "The logo is appropriately sized and aligned with existing navigation elements",
+        "The logo maintains its aspect ratio and visual quality"
       ],
       "file_operations": [
-        {
-          "path": "frontend/src/pages/HomePage.tsx",
-          "operation": "modify",
-          "description": "Add a new 'What We Offer' section between the hero and featured blog post sections. Display four offerings in a grid layout: '🌿 Natural Ayurvedic Health Remedies', '💆 Skin Care Tips for Natural Glow', '💇 Hair Fall & Hair Growth Treatments', '🧘 Holistic Lifestyle & Wellness Advice'. Use Card components or similar styling for visual organization. Each offering should include the emoji icon, title, and optionally a brief description."
-        }
-      ]
-    },
-    {
-      "id": "REQ-3",
-      "summary": "Add 'Why AyurGlow Secrets?' section to homepage highlighting four key benefits",
-      "acceptanceCriteria": [
-        "Section displays all four benefits clearly",
-        "Visual styling emphasizes trustworthiness and natural wellness"
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/pages/HomePage.tsx",
-          "operation": "modify",
-          "description": "Add a 'Why AyurGlow Secrets?' section below the 'What We Offer' section. Display four benefits in a grid or card layout: '100% natural & Ayurvedic approach', 'Simple home remedies', 'Safe, affordable, and effective', 'Suitable for all age groups'. Use visual elements (icons, cards, or highlighting) that emphasize trustworthiness and natural wellness. Consider using green/earth tones consistent with the site's color palette."
-        }
-      ]
-    },
-    {
-      "id": "REQ-4",
-      "summary": "Update About page content with new About Us text",
-      "acceptanceCriteria": [
-        "About page displays the complete provided text",
-        "Content maintains the Ayurvedic wellness tone and philosophy"
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/pages/AboutPage.tsx",
-          "operation": "modify",
-          "description": "Replace the existing About page content with the new text: 'AyurGlow Secrets is a wellness platform dedicated to sharing the healing power of Ayurveda for a healthier life, glowing skin, and stronger hair. Inspired by ancient Ayurvedic texts and traditional Indian home remedies, our goal is to help people adopt natural solutions over chemical-based treatments. We believe true beauty and health begin from within. Through balanced nutrition, herbal remedies, and mindful living, Ayurveda offers sustainable healing without side effects. Our content is carefully researched and simplified to help you easily follow Ayurvedic practices in your daily life.' Maintain the existing layout structure (hero and content cards) while updating the text content. Ensure the Ayurvedic wellness tone is preserved."
-        }
-      ]
-    },
-    {
-      "id": "REQ-5",
-      "summary": "Replace site logo with uploaded 'website logo.png' in navigation and footer",
-      "acceptanceCriteria": [
-        "Uploaded logo displays in the navigation header",
-        "Logo maintains proper dimensions and quality",
-        "Logo is clickable and links to homepage"
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/public/assets/website-logo.png",
-          "operation": "create",
-          "description": "Copy the uploaded 'website logo.png' file to the frontend public assets directory with the filename 'website-logo.png' for use in the navigation and footer components."
-        },
         {
           "path": "frontend/src/components/Navigation.tsx",
           "operation": "modify",
-          "description": "Replace the existing logo reference with the new uploaded logo file at '/assets/website-logo.png'. Ensure the logo maintains proper dimensions and quality, is clickable, and links to the homepage. Update the img element's src attribute and maintain any existing alt text or accessibility attributes."
+          "description": "Replace the current text-based brand name with an img element displaying the generated logo from frontend/public/assets/generated/ayurglow-logo.dim_400x120.png. Position and size the logo appropriately within the navigation bar, ensuring it aligns with existing navigation elements and maintains its aspect ratio."
         },
         {
           "path": "frontend/src/components/Footer.tsx",
           "operation": "modify",
-          "description": "Replace the existing logo reference in the footer with the new uploaded logo file at '/assets/website-logo.png'. Ensure consistent sizing and styling with the navigation logo."
-        }
-      ]
-    },
-    {
-      "id": "REQ-6",
-      "summary": "Add capability to upload and insert images at the beginning of blog post content",
-      "acceptanceCriteria": [
-        "Users can upload an image before the main content starts",
-        "Image displays properly in the blog post editor",
-        "Image persists when post is saved and published"
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/pages/CreateBlogPostPage.tsx",
-          "operation": "modify",
-          "description": "Add a dedicated image upload field positioned before the ReactQuill content editor. This field should use the blob-storage component's ExternalBlob.fromBytes() for file upload and withUploadProgress() for progress tracking. Store the uploaded image as the first element in the contentImages array. Display a preview of the uploaded image below the upload button. Verify the blob-storage component's usage instructions before implementing. The image should be included in the createPost backend call's contentImages parameter."
-        },
-        {
-          "path": "frontend/src/pages/EditBlogPostPage.tsx",
-          "operation": "modify",
-          "description": "Add a dedicated image upload field positioned before the ReactQuill content editor, similar to CreateBlogPostPage. If the post already has a first contentImages element, display it as the existing 'beginning image' with an option to replace it. Handle both ExternalBlob uploads for new images and preservation of existing ExternalBlob references. Verify the blob-storage component's usage instructions before implementing. Update the updatePost backend call to include the modified contentImages array."
-        }
-      ]
-    },
-    {
-      "id": "REQ-7",
-      "summary": "Add capability to upload and insert images in the middle of blog post content within ReactQuill editor",
-      "acceptanceCriteria": [
-        "Users can insert images anywhere within the blog post content",
-        "Image upload interface is accessible from the rich text editor toolbar",
-        "Inserted images display correctly in both editor and published view"
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/pages/CreateBlogPostPage.tsx",
-          "operation": "modify",
-          "description": "Extend the ReactQuill editor toolbar configuration to include a custom image upload button. When clicked, open a file picker that uses the blob-storage component's ExternalBlob.fromBytes() and withUploadProgress() for upload handling. Once uploaded, insert the image URL (from ExternalBlob.getDirectURL()) into the editor content at the cursor position using ReactQuill's editor.insertEmbed() API. Store the ExternalBlob reference in the contentImages array (after the first element reserved for REQ-6). Verify the blob-storage component's usage instructions before implementing. Ensure images display correctly in the editor and in the published BlogPostDetailPage view."
-        },
-        {
-          "path": "frontend/src/pages/EditBlogPostPage.tsx",
-          "operation": "modify",
-          "description": "Extend the ReactQuill editor toolbar configuration to include a custom image upload button, similar to CreateBlogPostPage. Handle both new image uploads (using ExternalBlob.fromBytes()) and preservation of existing embedded images (using ExternalBlob.getDirectURL() for display). When parsing existing post content on load, extract image URLs and match them to ExternalBlob references in contentImages to enable proper editing. Verify the blob-storage component's usage instructions before implementing. Update the contentImages array in the updatePost backend call."
-        },
-        {
-          "path": "frontend/src/pages/BlogPostDetailPage.tsx",
-          "operation": "modify",
-          "description": "Ensure the blog post content area properly renders inline images from the post's content HTML. Images inserted via ReactQuill should display using their ExternalBlob.getDirectURL() references. Verify that the content rendering preserves image dimensions and styling. No changes needed if images already render correctly via the existing dangerouslySetInnerHTML or similar content rendering approach."
-        }
-      ]
-    },
-    {
-      "id": "REQ-8",
-      "summary": "Ensure comment section displays at the end of blog post detail page with clear heading",
-      "acceptanceCriteria": [
-        "Comment section appears at the bottom of blog post detail pages",
-        "Section has a clear heading encouraging user comments",
-        "Users can add and view comments"
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/pages/BlogPostDetailPage.tsx",
-          "operation": "modify",
-          "description": "Verify that the CommentSection component is rendered at the bottom of the blog post detail page. Update the section heading to 'Share Your Comment' or similar encouraging text. Ensure the CommentSection component is properly positioned after all post content and displays both the comment form and existing comments. If not already present, add the CommentSection component with the post ID prop."
-        },
-        {
-          "path": "frontend/src/components/CommentSection.tsx",
-          "operation": "modify",
-          "description": "Update the section heading to 'Share Your Comment' or similar encouraging text if the current heading does not match. Ensure the component displays a clear call-to-action for users to add comments. Verify that the form fields (author name and content) and the list of existing comments are all visible and functional."
-        }
-      ]
-    },
-    {
-      "id": "REQ-9",
-      "summary": "Apply visual design inspiration from reference URL for layout structure and natural wellness aesthetic",
-      "acceptanceCriteria": [
-        "Site adopts a clean, wellness-focused visual design similar in style to the reference URL",
-        "Layout patterns support easy content discovery",
-        "Design feels cohesive with Ayurvedic wellness branding",
-        "No content is copied from the reference site"
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/index.css",
-          "operation": "modify",
-          "description": "Update global CSS styles to incorporate visual design patterns inspired by https://naturalremedytips.com/ including typography hierarchy, spacing, color usage, and natural wellness aesthetic elements. Focus on card styling, layout structure, and visual polish. Do not copy any content or exact design elements; use only as inspiration for a clean, wellness-focused design. Maintain the existing Ayurvedic green color palette while refining visual presentation for better content discovery and readability."
-        },
-        {
-          "path": "frontend/tailwind.config.js",
-          "operation": "modify",
-          "description": "Refine Tailwind configuration to support the updated visual design. Consider adjustments to spacing scale, typography settings, border radius, shadows, or transitions to achieve a clean, wellness-focused aesthetic inspired by https://naturalremedytips.com/. Maintain the existing green color palette and ensure configuration supports easy content discovery through clear visual hierarchy. Do not copy exact values; adapt patterns to fit AyurGlow Secrets branding."
-        },
-        {
-          "path": "frontend/src/components/PostCard.tsx",
-          "operation": "modify",
-          "description": "Refine the PostCard component styling to incorporate design patterns inspired by https://naturalremedytips.com/ such as card shadows, hover effects, image treatment, typography hierarchy, and spacing. Focus on creating a clean, wellness-focused visual presentation that supports easy content discovery. Maintain consistency with the updated global styles and Ayurvedic branding."
-        },
-        {
-          "path": "frontend/src/components/FeaturedPost.tsx",
-          "operation": "modify",
-          "description": "Update the FeaturedPost component styling to align with the refined visual design aesthetic. Incorporate layout patterns, image treatment, and typography hierarchy inspired by https://naturalremedytips.com/ while maintaining unique AyurGlow Secrets branding. Ensure the featured post remains visually prominent and supports easy content discovery."
-        },
-        {
-          "path": "frontend/src/pages/HomePage.tsx",
-          "operation": "modify",
-          "description": "Refine the overall homepage layout structure to incorporate design patterns inspired by https://naturalremedytips.com/ including section spacing, content organization, and visual flow. Ensure all new sections (hero, What We Offer, Why AyurGlow Secrets) follow a cohesive visual design that supports easy content discovery and feels consistent with the Ayurvedic wellness aesthetic. Apply refined typography, spacing, and card styles consistent with updated global CSS."
-        },
-        {
-          "path": "frontend/src/pages/BlogPostDetailPage.tsx",
-          "operation": "modify",
-          "description": "Update the blog post detail page layout and styling to incorporate design patterns inspired by https://naturalremedytips.com/ such as content width, typography treatment, image presentation, and spacing. Ensure the page feels clean, readable, and consistent with the natural wellness aesthetic. Maintain proper integration of the sidebar and comment section."
-        },
-        {
-          "path": "frontend/src/components/BlogSidebar.tsx",
-          "operation": "modify",
-          "description": "Refine the BlogSidebar component styling to align with the updated visual design. Consider card styling, spacing, typography, and interaction patterns inspired by https://naturalremedytips.com/. Ensure the sidebar supports easy content discovery and maintains visual consistency with the rest of the site."
+          "description": "Replace the current brand icon (Leaf) and text-based branding in the footer with an img element displaying the generated logo from frontend/public/assets/generated/ayurglow-logo.dim_400x120.png. Size the logo appropriately for the footer context while maintaining its aspect ratio and visual quality."
         }
       ]
     }

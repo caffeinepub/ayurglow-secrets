@@ -33,7 +33,7 @@ export default function Navigation() {
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2 group">
             <img 
-              src="/assets/website-logo.png" 
+              src="/assets/generated/ayurglow-logo.dim_400x120.png" 
               alt="AyurGlow Secrets" 
               className="h-10 w-auto group-hover:scale-105 transition-transform"
             />

@@ -2,8 +2,8 @@
   "kind": "feature_evidence_report",
   "features": [
     {
-      "featureId": "feature-update-the-homepage-hero-section-to-display-headline-welcome-to-ayurglow-secrets-subheading-discover-time-tested-ayurvedic-remedies-for-overall-health-radiant-skin-and-strong-healthy-hair-we-bring-you-natural-chemical-free-solutions-rooted-in-ancient-indian-wisdom-and-backed-by-modern-understanding",
-      "featureTitle": "Update the homepage hero section to display: headline 'Welcome to AyurGlow Secrets', subheading 'Discover time-tested Ayurvedic remedies for overall health, radiant skin, and strong, healthy hair. We bring you natural, chemical-free solutions rooted in ancient Indian wisdom and backed by modern understanding.'",
+      "featureId": "feature-change-the-color-of-the-welcome-heading-text-welcome-to-ayurglow-secrets-and-its-subheading-discover-time-tested-ayurvedic-remedies-for-overall-health-radiant-skin-and-strong-healthy-hair-we-bring-you-natural-chemical-free-solutions-rooted-in-ancient-indian-wisdom-and-backed-by-modern-understanding-to-black-in-the-hero-section",
+      "featureTitle": "Change the color of the welcome heading text 'Welcome to AyurGlow Secrets' and its subheading 'Discover time-tested Ayurvedic remedies for overall health, radiant skin, and strong, healthy hair. We bring you natural, chemical-free solutions rooted in ancient Indian wisdom and backed by modern understanding.' to black in the hero section",
       "files": [
         "frontend/src/pages/HomePage.tsx"
       ],
@@ -21,65 +21,8 @@
       "confidence": "high"
     },
     {
-      "featureId": "feature-add-a-what-we-offer-section-to-the-homepage-displaying-four-key-offerings-natural-ayurvedic-health-remedies-skin-care-tips-for-natural-glow-hair-fall-hair-growth-treatments-holistic-lifestyle-wellness-advice",
-      "featureTitle": "Add a 'What We Offer' section to the homepage displaying four key offerings: '🌿 Natural Ayurvedic Health Remedies', '💆 Skin Care Tips for Natural Glow', '💇 Hair Fall & Hair Growth Treatments', '🧘 Holistic Lifestyle & Wellness Advice'",
-      "files": [
-        "frontend/src/pages/HomePage.tsx"
-      ],
-      "components": [
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0",
-        "blob-storage@4.0.0"
-      ],
-      "testIds": [
-        "REQ-2"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-add-a-why-ayurglow-secrets-section-to-the-homepage-highlighting-100-natural-ayurvedic-approach-simple-home-remedies-safe-affordable-and-effective-suitable-for-all-age-groups",
-      "featureTitle": "Add a 'Why AyurGlow Secrets?' section to the homepage highlighting: '100% natural & Ayurvedic approach', 'Simple home remedies', 'Safe, affordable, and effective', 'Suitable for all age groups'",
-      "files": [
-        "frontend/src/pages/HomePage.tsx"
-      ],
-      "components": [
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0",
-        "blob-storage@4.0.0"
-      ],
-      "testIds": [
-        "REQ-3"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-update-the-about-page-content-to-match-the-provided-about-us-text-ayurglow-secrets-is-a-wellness-platform-dedicated-to-sharing-the-healing-power-of-ayurveda-for-a-healthier-life-glowing-skin-and-stronger-hair-inspired-by-ancient-ayurvedic-texts-and-traditional-indian-home-remedies-our-goal-is-to-help-people-adopt-natural-solutions-over-chemical-based-treatments-we-believe-true-beauty-and-health-begin-from-within-through-balanced-nutrition-herbal-remedies-and-mindful-living-ayurveda-offers-sustainable-healing-without-side-effects-our-content-is-carefully-researched-and-simplified-to-help-you-easily-follow-ayurvedic-practices-in-your-daily-life",
-      "featureTitle": "Update the About page content to match the provided About Us text: 'AyurGlow Secrets is a wellness platform dedicated to sharing the healing power of Ayurveda for a healthier life, glowing skin, and stronger hair. Inspired by ancient Ayurvedic texts and traditional Indian home remedies, our goal is to help people adopt natural solutions over chemical-based treatments. We believe true beauty and health begin from within. Through balanced nutrition, herbal remedies, and mindful living, Ayurveda offers sustainable healing without side effects. Our content is carefully researched and simplified to help you easily follow Ayurvedic practices in your daily life.'",
-      "files": [
-        "frontend/src/pages/AboutPage.tsx"
-      ],
-      "components": [
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0",
-        "blob-storage@4.0.0"
-      ],
-      "testIds": [
-        "REQ-4"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-replace-the-existing-site-logo-with-the-uploaded-website-logo-png-throughout-the-application-navigation-header-and-footer",
-      "featureTitle": "Replace the existing site logo with the uploaded 'website logo.png' throughout the application (navigation header and footer)",
+      "featureId": "feature-display-the-generated-ayurglow-secrets-logo-image-in-the-navigation-header-and-footer-replacing-any-existing-placeholder-or-text-only-branding",
+      "featureTitle": "Display the generated AyurGlow Secrets logo image in the navigation header and footer, replacing any existing placeholder or text-only branding",
       "files": [
         "frontend/src/components/Footer.tsx",
         "frontend/src/components/Navigation.tsx"
@@ -93,93 +36,7 @@
         "blob-storage@4.0.0"
       ],
       "testIds": [
-        "REQ-5"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-add-capability-to-upload-and-insert-images-at-the-beginning-of-blog-post-content-in-the-blog-post-editor-createblogpostpage-and-editblogpostpage",
-      "featureTitle": "Add capability to upload and insert images at the beginning of blog post content in the blog post editor (CreateBlogPostPage and EditBlogPostPage)",
-      "files": [
-        "frontend/src/pages/CreateBlogPostPage.tsx",
-        "frontend/src/pages/EditBlogPostPage.tsx"
-      ],
-      "components": [
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0",
-        "blob-storage@4.0.0"
-      ],
-      "testIds": [
-        "REQ-6"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-add-capability-to-upload-and-insert-images-in-the-middle-of-blog-post-content-within-the-reactquill-rich-text-editor-createblogpostpage-and-editblogpostpage",
-      "featureTitle": "Add capability to upload and insert images in the middle of blog post content within the ReactQuill rich text editor (CreateBlogPostPage and EditBlogPostPage)",
-      "files": [
-        "frontend/src/pages/BlogPostDetailPage.tsx",
-        "frontend/src/pages/CreateBlogPostPage.tsx",
-        "frontend/src/pages/EditBlogPostPage.tsx"
-      ],
-      "components": [
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0",
-        "blob-storage@4.0.0"
-      ],
-      "testIds": [
-        "REQ-7"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-ensure-the-comment-section-displays-at-the-end-of-each-blog-post-detail-page-with-the-heading-share-your-comment-or-similar",
-      "featureTitle": "Ensure the comment section displays at the end of each blog post detail page with the heading 'Share Your Comment' or similar",
-      "files": [
-        "frontend/src/components/CommentSection.tsx",
-        "frontend/src/pages/BlogPostDetailPage.tsx"
-      ],
-      "components": [
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0",
-        "blob-storage@4.0.0"
-      ],
-      "testIds": [
-        "REQ-8"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-apply-visual-design-inspiration-from-https-naturalremedytips-com-for-layout-structure-card-styling-typography-hierarchy-and-natural-wellness-aesthetic-while-ensuring-all-content-and-functionality-remains-unique-to-ayurglow-secrets",
-      "featureTitle": "Apply visual design inspiration from https://naturalremedytips.com/ for layout structure, card styling, typography hierarchy, and natural wellness aesthetic while ensuring all content and functionality remains unique to AyurGlow Secrets",
-      "files": [
-        "frontend/src/components/BlogSidebar.tsx",
-        "frontend/src/components/FeaturedPost.tsx",
-        "frontend/src/components/PostCard.tsx",
-        "frontend/src/index.css",
-        "frontend/src/pages/BlogPostDetailPage.tsx",
-        "frontend/src/pages/HomePage.tsx",
-        "frontend/tailwind.config.js"
-      ],
-      "components": [
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0",
-        "blob-storage@4.0.0"
-      ],
-      "testIds": [
-        "REQ-9"
+        "REQ-2"
       ],
       "confidence": "high"
     }

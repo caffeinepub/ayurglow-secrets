@@ -13,9 +13,9 @@ export default function Footer() {
           {/* Brand */}
           <div className="col-span-1 md:col-span-1">
             <img 
-              src="/assets/website-logo.png" 
+              src="/assets/generated/ayurglow-logo.dim_400x120.png" 
               alt="AyurGlow Secrets" 
-              className="h-16 w-auto mb-4"
+              className="h-12 w-auto mb-4 brightness-0 invert"
             />
             <p className="text-white/80 text-sm leading-relaxed">
               Ancient Ayurvedic Wisdom for Healthy Body, Glowing Skin & Strong Hair

@@ -20,21 +20,21 @@ export default function HomePage() {
         className="relative min-h-[500px] md:min-h-[600px] flex items-center justify-center bg-cover bg-center"
         style={{ backgroundImage: 'url(/assets/generated/hero-natural-health.dim_1920x600.png)' }}
       >
-        <div className="absolute inset-0 bg-gradient-to-br from-earth-green/95 via-forest-green/85 to-sage-green/75" />
+        <div className="absolute inset-0 bg-white/90" />
         <div className="relative z-10 container mx-auto px-4 text-center max-w-4xl">
           <img 
-            src="/assets/website-logo.png" 
+            src="/assets/generated/ayurglow-logo.dim_400x120.png" 
             alt="AyurGlow Secrets" 
-            className="w-32 h-32 md:w-40 md:h-40 mx-auto mb-6"
+            className="w-64 md:w-80 h-auto mx-auto mb-6"
           />
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 text-white font-serif leading-tight">
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 text-black font-serif leading-tight">
             Welcome to AyurGlow Secrets
           </h1>
-          <p className="text-lg md:text-xl text-white/95 leading-relaxed max-w-3xl mx-auto mb-4">
+          <p className="text-lg md:text-xl text-black leading-relaxed max-w-3xl mx-auto mb-4">
             Discover time-tested Ayurvedic remedies for overall health, radiant skin, and strong, healthy hair. 
             We bring you natural, chemical-free solutions rooted in ancient Indian wisdom and backed by modern understanding.
           </p>
-          <p className="text-base md:text-lg text-white/90 italic">
+          <p className="text-base md:text-lg text-black italic font-medium">
             Ancient Ayurvedic Wisdom for Healthy Body, Glowing Skin & Strong Hair
           </p>
         </div>
@@ -147,25 +147,25 @@ export default function HomePage() {
 
             <div className="bg-white rounded-xl p-6 shadow-md hover:shadow-lg transition-shadow">
               <div className="w-12 h-12 mb-4 rounded-full bg-earth-green/10 flex items-center justify-center">
-                <Heart className="w-6 h-6 text-earth-green" />
+                <Sparkles className="w-6 h-6 text-earth-green" />
               </div>
               <h3 className="text-lg font-semibold text-earth-green mb-2 font-serif">
-                Simple Home Remedies
+                Proven & Time-Tested Solutions
               </h3>
               <p className="text-foreground/70 text-sm leading-relaxed">
-                Easy-to-follow treatments using everyday ingredients
+                Remedies used for centuries, validated by modern science
               </p>
             </div>
 
             <div className="bg-white rounded-xl p-6 shadow-md hover:shadow-lg transition-shadow">
               <div className="w-12 h-12 mb-4 rounded-full bg-earth-green/10 flex items-center justify-center">
-                <Sparkles className="w-6 h-6 text-earth-green" />
+                <Heart className="w-6 h-6 text-earth-green" />
               </div>
               <h3 className="text-lg font-semibold text-earth-green mb-2 font-serif">
-                Safe, Affordable, and Effective
+                Holistic Wellness Focus
               </h3>
               <p className="text-foreground/70 text-sm leading-relaxed">
-                Proven results without harmful side effects or high costs
+                Treating root causes, not just symptoms
               </p>
             </div>
 
@@ -174,10 +174,10 @@ export default function HomePage() {
                 <Users className="w-6 h-6 text-earth-green" />
               </div>
               <h3 className="text-lg font-semibold text-earth-green mb-2 font-serif">
-                Suitable for All Age Groups
+                For the Whole Family
               </h3>
               <p className="text-foreground/70 text-sm leading-relaxed">
-                Gentle, natural solutions for the whole family
+                Safe, gentle solutions suitable for all ages
               </p>
             </div>
           </div>
@@ -187,58 +187,51 @@ export default function HomePage() {
       {/* Blog Posts Section */}
       <section className="py-16 bg-white">
         <div className="container mx-auto px-4">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold text-earth-green mb-4 font-serif">
+              Latest from Our Blog
+            </h2>
+            <p className="text-foreground/70 text-lg max-w-2xl mx-auto">
+              Discover insights, tips, and stories about natural wellness
+            </p>
+          </div>
+
           {isLoading ? (
-            <div className="flex justify-center items-center py-20">
+            <div className="flex justify-center items-center py-12">
               <Loader2 className="w-8 h-8 animate-spin text-earth-green" />
             </div>
-          ) : posts.length === 0 ? (
-            <div className="text-center py-20">
-              <p className="text-foreground/70 text-lg mb-4">No blog posts available yet.</p>
-              <p className="text-sm text-muted-foreground mb-6">
-                Create your first blog post to get started.
-              </p>
-              <Button 
-                onClick={() => navigate({ to: '/admin/create-post' })}
-                className="bg-earth-green hover:bg-earth-green/90 text-white"
-              >
-                Create Your First Post
-              </Button>
-            </div>
-          ) : (
-            <>
-              {/* Featured Post */}
+          ) : posts.length > 0 ? (
+            <div className="space-y-12">
               {featuredPost && (
-                <div className="mb-12">
-                  <h2 className="text-2xl md:text-3xl font-bold text-earth-green mb-6 font-serif">Featured Article</h2>
+                <div className="max-w-5xl mx-auto">
                   <FeaturedPost post={featuredPost} />
                 </div>
               )}
 
-              {/* Recent Posts Grid */}
               {recentPosts.length > 0 && (
-                <div>
-                  <h2 className="text-2xl md:text-3xl font-bold text-earth-green mb-8 font-serif">Latest Articles</h2>
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {recentPosts.map((post) => (
-                      <PostCard key={post.id} post={post} />
-                    ))}
-                  </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
+                  {recentPosts.map((post) => (
+                    <PostCard key={post.id} post={post} />
+                  ))}
                 </div>
               )}
 
-              {/* View All Button */}
-              {posts.length > 7 && (
-                <div className="text-center mt-12">
-                  <Button 
-                    onClick={() => navigate({ to: '/blog' })}
-                    variant="outline"
-                    className="border-earth-green text-earth-green hover:bg-earth-green hover:text-white"
-                  >
-                    View All Posts
-                  </Button>
-                </div>
-              )}
-            </>
+              <div className="text-center">
+                <Button
+                  onClick={() => navigate({ to: '/blog' })}
+                  size="lg"
+                  className="bg-earth-green hover:bg-forest-green text-white"
+                >
+                  View All Posts
+                </Button>
+              </div>
+            </div>
+          ) : (
+            <div className="text-center py-12">
+              <p className="text-foreground/60 text-lg mb-6">
+                No blog posts available yet. Check back soon!
+              </p>
+            </div>
           )}
         </div>
       </section>
@@ -248,10 +241,10 @@ export default function HomePage() {
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-earth-green mb-4 font-serif">
-              Explore Our Remedies
+              Explore Our Categories
             </h2>
-            <p className="text-foreground/70 text-lg max-w-2xl mx-auto leading-relaxed">
-              Natural solutions for your health and wellness journey
+            <p className="text-foreground/70 text-lg max-w-2xl mx-auto">
+              Find the perfect remedy for your wellness needs
             </p>
           </div>
 
@@ -260,17 +253,20 @@ export default function HomePage() {
               className="border-sage-green/30 hover:border-earth-green hover:shadow-xl transition-all duration-300 cursor-pointer group overflow-hidden"
               onClick={() => navigate({ to: '/health-remedies' })}
             >
-              <CardContent className="p-6 text-center">
+              <div className="relative h-48 overflow-hidden">
                 <img 
                   src="/assets/generated/icon-immunity.dim_128x128.png" 
                   alt="Health Remedies"
-                  className="w-24 h-24 mx-auto mb-4 group-hover:scale-110 transition-transform"
+                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
                 />
-                <h3 className="text-xl md:text-2xl font-semibold text-earth-green mb-3 font-serif">
+                <div className="absolute inset-0 bg-gradient-to-t from-earth-green/90 to-transparent" />
+                <h3 className="absolute bottom-4 left-4 text-2xl font-bold text-white font-serif">
                   Health Remedies
                 </h3>
+              </div>
+              <CardContent className="p-6">
                 <p className="text-foreground/70 text-sm leading-relaxed">
-                  Boost immunity, improve digestion, and enhance overall wellness
+                  Natural solutions for immunity, digestion, weight management, and overall wellness
                 </p>
               </CardContent>
             </Card>
@@ -279,17 +275,20 @@ export default function HomePage() {
               className="border-sage-green/30 hover:border-earth-green hover:shadow-xl transition-all duration-300 cursor-pointer group overflow-hidden"
               onClick={() => navigate({ to: '/skin-care' })}
             >
-              <CardContent className="p-6 text-center">
+              <div className="relative h-48 overflow-hidden">
                 <img 
                   src="/assets/generated/icon-skin.dim_128x128.png" 
                   alt="Skin Care"
-                  className="w-24 h-24 mx-auto mb-4 group-hover:scale-110 transition-transform"
+                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
                 />
-                <h3 className="text-xl md:text-2xl font-semibold text-earth-green mb-3 font-serif">
+                <div className="absolute inset-0 bg-gradient-to-t from-earth-green/90 to-transparent" />
+                <h3 className="absolute bottom-4 left-4 text-2xl font-bold text-white font-serif">
                   Skin Care
                 </h3>
+              </div>
+              <CardContent className="p-6">
                 <p className="text-foreground/70 text-sm leading-relaxed">
-                  Achieve radiant, healthy skin through natural treatments
+                  Achieve radiant, glowing skin with natural face packs, treatments, and remedies
                 </p>
               </CardContent>
             </Card>
@@ -298,17 +297,20 @@ export default function HomePage() {
               className="border-sage-green/30 hover:border-earth-green hover:shadow-xl transition-all duration-300 cursor-pointer group overflow-hidden"
               onClick={() => navigate({ to: '/hair-care' })}
             >
-              <CardContent className="p-6 text-center">
+              <div className="relative h-48 overflow-hidden">
                 <img 
                   src="/assets/generated/icon-hair.dim_128x128.png" 
                   alt="Hair Care"
-                  className="w-24 h-24 mx-auto mb-4 group-hover:scale-110 transition-transform"
+                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
                 />
-                <h3 className="text-xl md:text-2xl font-semibold text-earth-green mb-3 font-serif">
+                <div className="absolute inset-0 bg-gradient-to-t from-earth-green/90 to-transparent" />
+                <h3 className="absolute bottom-4 left-4 text-2xl font-bold text-white font-serif">
                   Hair Care
                 </h3>
+              </div>
+              <CardContent className="p-6">
                 <p className="text-foreground/70 text-sm leading-relaxed">
-                  Nourish and strengthen your hair with natural remedies
+                  Strengthen hair, prevent hair fall, and promote growth with Ayurvedic treatments
                 </p>
               </CardContent>
             </Card>
