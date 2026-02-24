@@ -27,19 +27,16 @@ export default function Navigation() {
   ];
 
   return (
-    <nav className="bg-white border-b border-sky-blue/20 sticky top-0 z-50 shadow-sm">
+    <nav className="bg-white border-b border-sage-green/20 sticky top-0 z-50 shadow-sm">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2 group">
             <img 
-              src="/assets/generated/ayur-leaf.dim_64x64.png" 
+              src="/assets/website-logo.png" 
               alt="AyurGlow Secrets" 
-              className="w-10 h-10 group-hover:scale-110 transition-transform"
+              className="h-10 w-auto group-hover:scale-105 transition-transform"
             />
-            <span className="text-lg md:text-xl font-bold text-ocean-blue font-serif hidden sm:block">
-              AyurGlow Secrets
-            </span>
           </Link>
 
           {/* Desktop Navigation */}
@@ -48,9 +45,9 @@ export default function Navigation() {
               <Link
                 key={link.path}
                 to={link.path}
-                className={`text-sm font-medium transition-colors hover:text-ocean-blue ${
+                className={`text-sm font-medium transition-colors hover:text-earth-green ${
                   currentPath === link.path
-                    ? 'text-ocean-blue font-semibold'
+                    ? 'text-earth-green font-semibold'
                     : 'text-foreground/80'
                 }`}
               >
@@ -60,7 +57,7 @@ export default function Navigation() {
 
             {/* Categories Dropdown */}
             <DropdownMenu>
-              <DropdownMenuTrigger className="flex items-center gap-1 text-sm font-medium text-foreground/80 hover:text-ocean-blue transition-colors">
+              <DropdownMenuTrigger className="flex items-center gap-1 text-sm font-medium text-foreground/80 hover:text-earth-green transition-colors">
                 Categories
                 <ChevronDown className="w-4 h-4" />
               </DropdownMenuTrigger>
@@ -80,9 +77,9 @@ export default function Navigation() {
             {/* Admin Link */}
             <Link
               to="/admin/posts"
-              className={`text-sm font-medium transition-colors hover:text-ocean-blue ${
+              className={`text-sm font-medium transition-colors hover:text-earth-green ${
                 currentPath.startsWith('/admin')
-                  ? 'text-ocean-blue font-semibold'
+                  ? 'text-earth-green font-semibold'
                   : 'text-foreground/80'
               }`}
             >
@@ -93,7 +90,7 @@ export default function Navigation() {
           {/* Mobile Menu Button */}
           <button
             onClick={() => setIsOpen(!isOpen)}
-            className="md:hidden p-2 text-ocean-blue hover:bg-mint-green/10 rounded-lg transition-colors"
+            className="md:hidden p-2 text-earth-green hover:bg-sage-green/10 rounded-lg transition-colors"
             aria-label="Toggle menu"
           >
             {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
@@ -102,7 +99,7 @@ export default function Navigation() {
 
         {/* Mobile Navigation */}
         {isOpen && (
-          <div className="md:hidden py-4 border-t border-sky-blue/20">
+          <div className="md:hidden py-4 border-t border-sage-green/20">
             <div className="flex flex-col gap-2">
               {navLinks.map((link) => (
                 <Link
@@ -111,8 +108,8 @@ export default function Navigation() {
                   onClick={() => setIsOpen(false)}
                   className={`px-4 py-2.5 rounded-lg text-sm font-medium transition-colors ${
                     currentPath === link.path
-                      ? 'bg-ocean-blue text-white'
-                      : 'text-foreground/80 hover:bg-mint-green/10'
+                      ? 'bg-earth-green text-white'
+                      : 'text-foreground/80 hover:bg-sage-green/10'
                   }`}
                 >
                   {link.label}
@@ -130,8 +127,8 @@ export default function Navigation() {
                   onClick={() => setIsOpen(false)}
                   className={`px-4 py-2.5 rounded-lg text-sm font-medium transition-colors ${
                     currentPath === link.path
-                      ? 'bg-ocean-blue text-white'
-                      : 'text-foreground/80 hover:bg-mint-green/10'
+                      ? 'bg-earth-green text-white'
+                      : 'text-foreground/80 hover:bg-sage-green/10'
                   }`}
                 >
                   {link.label}
@@ -143,8 +140,8 @@ export default function Navigation() {
                 onClick={() => setIsOpen(false)}
                 className={`px-4 py-2.5 rounded-lg text-sm font-medium transition-colors ${
                   currentPath.startsWith('/admin')
-                    ? 'bg-ocean-blue text-white'
-                    : 'text-foreground/80 hover:bg-mint-green/10'
+                    ? 'bg-earth-green text-white'
+                    : 'text-foreground/80 hover:bg-sage-green/10'
                 }`}
               >
                 Admin

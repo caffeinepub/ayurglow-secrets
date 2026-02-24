@@ -11,7 +11,9 @@ export function useGetAllPosts() {
     queryKey: ['allPosts'],
     queryFn: async () => {
       if (!actor) return [];
+      console.log('Fetching all posts...');
       const posts = await actor.getAllPosts();
+      console.log('All posts received:', posts);
       return posts;
     },
     enabled: !!actor && !isFetching,
@@ -27,9 +29,22 @@ export function useGetPublishedPosts() {
   return useQuery<BlogPostView[]>({
     queryKey: ['publishedPosts'],
     queryFn: async () => {
-      if (!actor) return [];
+      if (!actor) {
+        console.log('Actor not available');
+        return [];
+      }
+      console.log('Fetching published posts...');
       const posts = await actor.getPublishedPosts();
-      return posts;
+      console.log('Published posts received:', posts);
+      console.log('Number of published posts:', posts.length);
+      
+      // Sort by published date (most recent first)
+      const sortedPosts = [...posts].sort((a, b) => {
+        return Number(b.publishedDate) - Number(a.publishedDate);
+      });
+      
+      console.log('Sorted published posts:', sortedPosts);
+      return sortedPosts;
     },
     enabled: !!actor && !isFetching,
     staleTime: 0,
@@ -73,6 +88,7 @@ export function useCreatePost() {
       contentImages: ExternalBlob[];
     }) => {
       if (!actor) throw new Error('Actor not initialized');
+      console.log('Creating post:', post);
       return actor.createPost(
         post.id,
         post.title,
@@ -90,6 +106,7 @@ export function useCreatePost() {
       );
     },
     onSuccess: () => {
+      console.log('Post created successfully, invalidating queries');
       queryClient.invalidateQueries({ queryKey: ['allPosts'] });
       queryClient.invalidateQueries({ queryKey: ['publishedPosts'] });
     },
@@ -118,6 +135,7 @@ export function useUpdatePost() {
       contentImages: ExternalBlob[];
     }) => {
       if (!actor) throw new Error('Actor not initialized');
+      console.log('Updating post:', post);
       return actor.updatePost(
         post.id,
         post.title,
@@ -135,6 +153,7 @@ export function useUpdatePost() {
       );
     },
     onSuccess: (_, variables) => {
+      console.log('Post updated successfully, invalidating queries');
       queryClient.invalidateQueries({ queryKey: ['allPosts'] });
       queryClient.invalidateQueries({ queryKey: ['publishedPosts'] });
       queryClient.invalidateQueries({ queryKey: ['post', variables.id] });
@@ -150,9 +169,11 @@ export function useDeletePost() {
   return useMutation({
     mutationFn: async (id: string) => {
       if (!actor) throw new Error('Actor not initialized');
+      console.log('Deleting post:', id);
       return actor.deletePost(id);
     },
     onSuccess: () => {
+      console.log('Post deleted successfully, invalidating queries');
       queryClient.invalidateQueries({ queryKey: ['allPosts'] });
       queryClient.invalidateQueries({ queryKey: ['publishedPosts'] });
     },

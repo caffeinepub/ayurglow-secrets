@@ -1,44 +1,46 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useRef, useMemo, useCallback, useEffect } from 'react';
 import { useNavigate, useParams } from '@tanstack/react-router';
-import { useGetPost, useUpdatePost } from '../hooks/useQueries';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { ArrowLeft, Loader2, Upload, X, Image as ImageIcon } from 'lucide-react';
+import { useGetPost, useUpdatePost } from '@/hooks/useQueries';
+import { Loader2, X, Image as ImageIcon } from 'lucide-react';
 import ReactQuill from 'react-quill-new';
 import 'react-quill-new/dist/quill.snow.css';
 import { ExternalBlob } from '../backend';
 
 export default function EditBlogPostPage() {
   const navigate = useNavigate();
-  const { id } = useParams({ strict: false }) as { id: string };
-  const { data: post, isLoading, error } = useGetPost(id);
-  const updatePost = useUpdatePost();
-  const quillRef = useRef<ReactQuill>(null);
+  const { id } = useParams({ from: '/admin/edit-post/$id' });
+  const { data: post, isLoading } = useGetPost(id);
+  const updatePostMutation = useUpdatePost();
 
   const [title, setTitle] = useState('');
+  const [slug, setSlug] = useState('');
   const [category, setCategory] = useState('');
   const [content, setContent] = useState('');
   const [excerpt, setExcerpt] = useState('');
-  const [readTime, setReadTime] = useState('');
+  const [readTime, setReadTime] = useState('5');
   const [author, setAuthor] = useState('');
   const [tags, setTags] = useState('');
   const [isPublished, setIsPublished] = useState(false);
-  const [imageFile, setImageFile] = useState<File | null>(null);
-  const [imagePreview, setImagePreview] = useState<string | null>(null);
-  const [existingImage, setExistingImage] = useState<ExternalBlob | null>(null);
-  const [uploadProgress, setUploadProgress] = useState<number>(0);
+  const [featuredImage, setFeaturedImage] = useState<ExternalBlob | null>(null);
+  const [featuredImagePreview, setFeaturedImagePreview] = useState<string>('');
+  const [beginningImage, setBeginningImage] = useState<ExternalBlob | null>(null);
+  const [beginningImagePreview, setBeginningImagePreview] = useState<string>('');
   const [contentImages, setContentImages] = useState<ExternalBlob[]>([]);
+  const [uploadProgress, setUploadProgress] = useState<number>(0);
+  const [isUploading, setIsUploading] = useState(false);
 
-  const categories = ['Hair Care', 'Skin Care', 'Health', 'Beauty', 'Lifestyle'];
+  const quillRef = useRef<ReactQuill>(null);
 
   useEffect(() => {
     if (post) {
       setTitle(post.title);
+      setSlug(post.slug);
       setCategory(post.category);
       setContent(post.content);
       setExcerpt(post.excerpt);
@@ -48,151 +50,154 @@ export default function EditBlogPostPage() {
       setIsPublished(post.isPublished);
       
       if (post.image) {
-        setExistingImage(post.image);
-        setImagePreview(post.image.getDirectURL());
+        setFeaturedImage(post.image);
+        setFeaturedImagePreview(post.image.getDirectURL());
       }
 
-      // Load existing content images
       if (post.contentImages && post.contentImages.length > 0) {
-        setContentImages(post.contentImages);
+        const [firstImage, ...restImages] = post.contentImages;
+        setBeginningImage(firstImage);
+        setBeginningImagePreview(firstImage.getDirectURL());
+        setContentImages(restImages);
       }
     }
   }, [post]);
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleTitleChange = (value: string) => {
+    setTitle(value);
+    const generatedSlug = value
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/(^-|-$)/g, '');
+    setSlug(generatedSlug);
+  };
+
+  const handleFeaturedImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) {
-      // Validate file type
-      if (!file.type.startsWith('image/')) {
-        alert('Please select an image file');
-        return;
-      }
+    if (!file) return;
 
-      // Validate file size (max 5MB)
-      if (file.size > 5 * 1024 * 1024) {
-        alert('Image size should be less than 5MB');
-        return;
-      }
+    setIsUploading(true);
+    setUploadProgress(0);
 
-      setImageFile(file);
-      setExistingImage(null);
+    try {
+      const arrayBuffer = await file.arrayBuffer();
+      const uint8Array = new Uint8Array(arrayBuffer);
       
-      // Create preview
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setImagePreview(reader.result as string);
-      };
-      reader.readAsDataURL(file);
+      const blob = ExternalBlob.fromBytes(uint8Array).withUploadProgress((percentage) => {
+        setUploadProgress(percentage);
+      });
+
+      setFeaturedImage(blob);
+      const previewUrl = URL.createObjectURL(file);
+      setFeaturedImagePreview(previewUrl);
+    } catch (error) {
+      console.error('Error uploading featured image:', error);
+    } finally {
+      setIsUploading(false);
+      setUploadProgress(0);
     }
   };
 
-  const handleRemoveImage = () => {
-    setImageFile(null);
-    setImagePreview(null);
-    setExistingImage(null);
+  const handleBeginningImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setIsUploading(true);
     setUploadProgress(0);
+
+    try {
+      const arrayBuffer = await file.arrayBuffer();
+      const uint8Array = new Uint8Array(arrayBuffer);
+      
+      const blob = ExternalBlob.fromBytes(uint8Array).withUploadProgress((percentage) => {
+        setUploadProgress(percentage);
+      });
+
+      setBeginningImage(blob);
+      const previewUrl = URL.createObjectURL(file);
+      setBeginningImagePreview(previewUrl);
+    } catch (error) {
+      console.error('Error uploading beginning image:', error);
+    } finally {
+      setIsUploading(false);
+      setUploadProgress(0);
+    }
   };
 
-  // Custom image handler for ReactQuill
-  const imageHandler = () => {
+  const handleContentImageUpload = useCallback(async () => {
     const input = document.createElement('input');
     input.setAttribute('type', 'file');
     input.setAttribute('accept', 'image/*');
     input.click();
 
-    input.onchange = async () => {
+    input.addEventListener('change', async () => {
       const file = input.files?.[0];
-      if (file) {
-        // Validate file type
-        if (!file.type.startsWith('image/')) {
-          alert('Please select an image file');
-          return;
-        }
+      if (!file) return;
 
-        // Validate file size (max 5MB)
-        if (file.size > 5 * 1024 * 1024) {
-          alert('Image size should be less than 5MB');
-          return;
-        }
+      setIsUploading(true);
+      setUploadProgress(0);
 
-        try {
-          // Convert file to ExternalBlob
-          const arrayBuffer = await file.arrayBuffer();
-          const uint8Array = new Uint8Array(arrayBuffer);
-          const blob = ExternalBlob.fromBytes(uint8Array);
-          
-          // Add to contentImages array
-          setContentImages(prev => [...prev, blob]);
-          
-          // Get the direct URL for the image
-          const imageUrl = blob.getDirectURL();
-          
-          // Insert image into editor
-          const quill = quillRef.current?.getEditor();
-          if (quill) {
-            const range = quill.getSelection(true);
-            quill.insertEmbed(range.index, 'image', imageUrl);
-            quill.setSelection(range.index + 1, 0);
-          }
-        } catch (error) {
-          console.error('Error uploading image:', error);
-          alert('Failed to upload image. Please try again.');
+      try {
+        const arrayBuffer = await file.arrayBuffer();
+        const uint8Array = new Uint8Array(arrayBuffer);
+        
+        const blob = ExternalBlob.fromBytes(uint8Array).withUploadProgress((percentage) => {
+          setUploadProgress(percentage);
+        });
+
+        const imageUrl = blob.getDirectURL();
+        
+        setContentImages(prev => [...prev, blob]);
+
+        const quill = quillRef.current?.getEditor();
+        if (quill) {
+          const range = quill.getSelection();
+          const index = range ? range.index : quill.getLength();
+          quill.insertEmbed(index, 'image', imageUrl);
+          quill.setSelection(index + 1, 0);
         }
+      } catch (error) {
+        console.error('Error uploading content image:', error);
+      } finally {
+        setIsUploading(false);
+        setUploadProgress(0);
       }
-    };
-  };
+    });
+  }, []);
 
-  const modules = {
+  const modules = useMemo(() => ({
     toolbar: {
       container: [
         [{ header: [1, 2, 3, false] }],
         ['bold', 'italic', 'underline', 'strike'],
         [{ list: 'ordered' }, { list: 'bullet' }],
-        ['link', 'image', 'blockquote'],
+        [{ color: [] }, { background: [] }],
+        ['link', 'image'],
         ['clean'],
       ],
       handlers: {
-        image: imageHandler,
+        image: handleContentImageUpload,
       },
     },
-  };
+  }), [handleContentImageUpload]);
 
-  const generateSlug = (text: string) => {
-    return text
-      .toLowerCase()
-      .replace(/[^a-z0-9]+/g, '-')
-      .replace(/^-+|-+$/g, '');
-  };
+  const formats = [
+    'header',
+    'bold', 'italic', 'underline', 'strike',
+    'list', 'bullet',
+    'color', 'background',
+    'link', 'image',
+  ];
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!title || !category || !content || !excerpt || !readTime || !author) {
-      alert('Please fill in all required fields');
-      return;
-    }
-
-    const slug = generateSlug(title);
-    const tagsArray = tags.split(',').map(tag => tag.trim()).filter(tag => tag);
-
-    let imageBlob: ExternalBlob | null = existingImage;
-
-    if (imageFile) {
-      try {
-        const arrayBuffer = await imageFile.arrayBuffer();
-        const uint8Array = new Uint8Array(arrayBuffer);
-        imageBlob = ExternalBlob.fromBytes(uint8Array).withUploadProgress((percentage) => {
-          setUploadProgress(percentage);
-        });
-      } catch (error) {
-        console.error('Error processing image:', error);
-        alert('Failed to process image. Please try again.');
-        return;
-      }
-    }
+    const allContentImages = beginningImage 
+      ? [beginningImage, ...contentImages] 
+      : contentImages;
 
     try {
-      await updatePost.mutateAsync({
+      await updatePostMutation.mutateAsync({
         id,
         title,
         slug,
@@ -201,281 +206,248 @@ export default function EditBlogPostPage() {
         excerpt,
         readTime: BigInt(readTime),
         author,
-        publishedDate: post?.publishedDate || BigInt(Date.now()),
-        tags: tagsArray,
+        publishedDate: BigInt(Date.now()),
+        tags: tags.split(',').map(tag => tag.trim()).filter(Boolean),
         isPublished,
-        image: imageBlob,
-        contentImages,
+        image: featuredImage,
+        contentImages: allContentImages,
       });
 
       navigate({ to: '/admin/posts' });
     } catch (error) {
       console.error('Error updating post:', error);
-      alert('Failed to update post. Please try again.');
     }
   };
 
   if (isLoading) {
     return (
-      <div className="w-full min-h-screen bg-cream flex items-center justify-center">
-        <div className="text-center">
-          <Loader2 className="h-12 w-12 animate-spin text-earth-green mx-auto mb-4" />
-          <p className="text-warm-brown">Loading post...</p>
-        </div>
+      <div className="flex justify-center items-center min-h-screen">
+        <Loader2 className="w-8 h-8 animate-spin text-earth-green" />
       </div>
     );
   }
 
-  if (error || !post) {
+  if (!post) {
     return (
-      <div className="w-full min-h-screen bg-cream flex items-center justify-center">
-        <Card className="max-w-md border-2 border-sage-green/30">
-          <CardContent className="p-8 text-center">
-            <h2 className="text-2xl font-serif text-earth-green mb-4">Post Not Found</h2>
-            <p className="text-warm-brown mb-6">The post you're looking for doesn't exist.</p>
-            <Button
-              onClick={() => navigate({ to: '/admin/posts' })}
-              className="bg-earth-green hover:bg-earth-green/90 text-cream"
-            >
-              Back to Admin
-            </Button>
-          </CardContent>
-        </Card>
+      <div className="container mx-auto px-4 py-8">
+        <p>Post not found</p>
       </div>
     );
   }
 
   return (
-    <div className="w-full min-h-screen bg-cream py-12">
-      <div className="container mx-auto px-4 max-w-4xl">
-        <Button
-          variant="ghost"
-          onClick={() => navigate({ to: '/admin/posts' })}
-          className="mb-6 text-earth-green hover:text-warm-brown"
-        >
-          <ArrowLeft className="mr-2 h-4 w-4" />
-          Back to Admin
-        </Button>
+    <div className="container mx-auto px-4 py-8 max-w-4xl">
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-2xl md:text-3xl font-serif text-earth-green">Edit Blog Post</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div className="space-y-2">
+              <Label htmlFor="title">Title</Label>
+              <Input
+                id="title"
+                value={title}
+                onChange={(e) => handleTitleChange(e.target.value)}
+                placeholder="Enter post title"
+                required
+              />
+            </div>
 
-        <Card className="border-2 border-sage-green/30 shadow-lg">
-          <CardHeader className="bg-sage-green/10">
-            <CardTitle className="text-3xl font-serif text-earth-green">
-              Edit Blog Post
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="p-6">
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div className="space-y-2">
-                <Label htmlFor="title" className="text-warm-brown font-semibold">
-                  Title *
-                </Label>
+            <div className="space-y-2">
+              <Label htmlFor="slug">Slug</Label>
+              <Input
+                id="slug"
+                value={slug}
+                onChange={(e) => setSlug(e.target.value)}
+                placeholder="post-slug"
+                required
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="category">Category</Label>
+              <Select value={category} onValueChange={setCategory} required>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select category" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="Health Remedies">Health Remedies</SelectItem>
+                  <SelectItem value="Skin Care">Skin Care</SelectItem>
+                  <SelectItem value="Hair Care">Hair Care</SelectItem>
+                  <SelectItem value="Wellness">Wellness</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="author">Author</Label>
+              <Input
+                id="author"
+                value={author}
+                onChange={(e) => setAuthor(e.target.value)}
+                placeholder="Author name"
+                required
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="excerpt">Excerpt</Label>
+              <Input
+                id="excerpt"
+                value={excerpt}
+                onChange={(e) => setExcerpt(e.target.value)}
+                placeholder="Brief description"
+                required
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="readTime">Read Time (minutes)</Label>
+              <Input
+                id="readTime"
+                type="number"
+                value={readTime}
+                onChange={(e) => setReadTime(e.target.value)}
+                min="1"
+                required
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="tags">Tags (comma-separated)</Label>
+              <Input
+                id="tags"
+                value={tags}
+                onChange={(e) => setTags(e.target.value)}
+                placeholder="ayurveda, health, natural"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="featuredImage">Featured Image</Label>
+              <div className="flex items-center gap-4">
                 <Input
-                  id="title"
-                  value={title}
-                  onChange={(e) => setTitle(e.target.value)}
-                  placeholder="Enter post title"
-                  className="border-sage-green/30 focus:border-earth-green"
-                  required
+                  id="featuredImage"
+                  type="file"
+                  accept="image/*"
+                  onChange={handleFeaturedImageUpload}
+                  className="flex-1"
                 />
+                {isUploading && uploadProgress > 0 && (
+                  <span className="text-sm text-muted-foreground">{uploadProgress}%</span>
+                )}
               </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="category" className="text-warm-brown font-semibold">
-                  Category *
-                </Label>
-                <Select value={category} onValueChange={setCategory} required>
-                  <SelectTrigger className="border-sage-green/30 focus:border-earth-green">
-                    <SelectValue placeholder="Select a category" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {categories.map((cat) => (
-                      <SelectItem key={cat} value={cat}>
-                        {cat}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="excerpt" className="text-warm-brown font-semibold">
-                  Excerpt *
-                </Label>
-                <Textarea
-                  id="excerpt"
-                  value={excerpt}
-                  onChange={(e) => setExcerpt(e.target.value)}
-                  placeholder="Brief description of the post"
-                  className="border-sage-green/30 focus:border-earth-green min-h-[100px]"
-                  required
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label className="text-warm-brown font-semibold">
-                  Content * 
-                  <span className="text-sm font-normal text-muted-foreground ml-2">
-                    (Click the <ImageIcon className="inline w-4 h-4" /> icon to insert images)
-                  </span>
-                </Label>
-                <div className="border border-sage-green/30 rounded-lg overflow-hidden">
-                  <ReactQuill
-                    ref={quillRef}
-                    theme="snow"
-                    value={content}
-                    onChange={setContent}
-                    placeholder="Write your post content here..."
-                    className="bg-white"
-                    modules={modules}
-                  />
+              {featuredImagePreview && (
+                <div className="relative mt-2">
+                  <img src={featuredImagePreview} alt="Featured preview" className="w-full h-48 object-cover rounded-lg" />
+                  <Button
+                    type="button"
+                    variant="destructive"
+                    size="icon"
+                    className="absolute top-2 right-2"
+                    onClick={() => {
+                      setFeaturedImage(null);
+                      setFeaturedImagePreview('');
+                    }}
+                  >
+                    <X className="w-4 h-4" />
+                  </Button>
                 </div>
-              </div>
+              )}
+            </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="image" className="text-warm-brown font-semibold">
-                  Featured Image
-                </Label>
-                <div className="space-y-3">
-                  {!imagePreview ? (
-                    <div className="border-2 border-dashed border-sage-green/30 rounded-lg p-8 text-center hover:border-earth-green transition-colors">
-                      <input
-                        type="file"
-                        id="image"
-                        accept="image/*"
-                        onChange={handleImageChange}
-                        className="hidden"
-                      />
-                      <label
-                        htmlFor="image"
-                        className="cursor-pointer flex flex-col items-center gap-2"
-                      >
-                        <Upload className="w-10 h-10 text-sage-green" />
-                        <span className="text-warm-brown/70">
-                          Click to upload an image
-                        </span>
-                        <span className="text-xs text-warm-brown/50">
-                          PNG, JPG, WEBP up to 5MB
-                        </span>
-                      </label>
-                    </div>
-                  ) : (
-                    <div className="relative">
-                      <img
-                        src={imagePreview}
-                        alt="Preview"
-                        className="w-full h-64 object-cover rounded-lg border-2 border-sage-green/30"
-                      />
-                      <Button
-                        type="button"
-                        variant="destructive"
-                        size="icon"
-                        onClick={handleRemoveImage}
-                        className="absolute top-2 right-2"
-                      >
-                        <X className="w-4 h-4" />
-                      </Button>
-                      {uploadProgress > 0 && uploadProgress < 100 && (
-                        <div className="absolute bottom-2 left-2 right-2 bg-black/50 rounded p-2">
-                          <div className="text-xs text-white mb-1">
-                            Uploading: {uploadProgress}%
-                          </div>
-                          <div className="w-full bg-white/30 rounded-full h-2">
-                            <div
-                              className="bg-earth-green h-2 rounded-full transition-all"
-                              style={{ width: `${uploadProgress}%` }}
-                            />
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="space-y-2">
-                  <Label htmlFor="author" className="text-warm-brown font-semibold">
-                    Author *
-                  </Label>
-                  <Input
-                    id="author"
-                    value={author}
-                    onChange={(e) => setAuthor(e.target.value)}
-                    placeholder="Author name"
-                    className="border-sage-green/30 focus:border-earth-green"
-                    required
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="readTime" className="text-warm-brown font-semibold">
-                    Read Time (minutes) *
-                  </Label>
-                  <Input
-                    id="readTime"
-                    type="number"
-                    min="1"
-                    value={readTime}
-                    onChange={(e) => setReadTime(e.target.value)}
-                    placeholder="5"
-                    className="border-sage-green/30 focus:border-earth-green"
-                    required
-                  />
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="tags" className="text-warm-brown font-semibold">
-                  Tags (comma-separated)
-                </Label>
+            <div className="space-y-2">
+              <Label htmlFor="beginningImage">Beginning Image (appears before content)</Label>
+              <div className="flex items-center gap-4">
                 <Input
-                  id="tags"
-                  value={tags}
-                  onChange={(e) => setTags(e.target.value)}
-                  placeholder="ayurveda, hair care, natural remedies"
-                  className="border-sage-green/30 focus:border-earth-green"
+                  id="beginningImage"
+                  type="file"
+                  accept="image/*"
+                  onChange={handleBeginningImageUpload}
+                  className="flex-1"
+                />
+                {isUploading && uploadProgress > 0 && (
+                  <span className="text-sm text-muted-foreground">{uploadProgress}%</span>
+                )}
+              </div>
+              {beginningImagePreview && (
+                <div className="relative mt-2">
+                  <img src={beginningImagePreview} alt="Beginning preview" className="w-full h-48 object-cover rounded-lg" />
+                  <Button
+                    type="button"
+                    variant="destructive"
+                    size="icon"
+                    className="absolute top-2 right-2"
+                    onClick={() => {
+                      setBeginningImage(null);
+                      setBeginningImagePreview('');
+                    }}
+                  >
+                    <X className="w-4 h-4" />
+                  </Button>
+                </div>
+              )}
+              <p className="text-sm text-muted-foreground">
+                This image will appear at the very beginning of your blog post content.
+              </p>
+            </div>
+
+            <div className="space-y-2">
+              <Label>Content</Label>
+              <div className="border rounded-lg overflow-hidden">
+                <ReactQuill
+                  ref={quillRef}
+                  theme="snow"
+                  value={content}
+                  onChange={setContent}
+                  modules={modules}
+                  formats={formats}
+                  className="min-h-[400px]"
+                  placeholder="Write your blog post content here... Click the image icon in the toolbar to insert images within your content."
                 />
               </div>
+              <p className="text-sm text-muted-foreground flex items-center gap-2">
+                <ImageIcon className="w-4 h-4" />
+                Use the image button in the toolbar above to insert images anywhere in your content.
+              </p>
+            </div>
 
-              <div className="flex items-center space-x-3 p-4 bg-sage-green/10 rounded-lg">
-                <Switch
-                  id="publish"
-                  checked={isPublished}
-                  onCheckedChange={setIsPublished}
-                />
-                <Label htmlFor="publish" className="text-warm-brown font-semibold cursor-pointer">
-                  Publish immediately
-                </Label>
-              </div>
+            <div className="flex items-center gap-2">
+              <Switch
+                id="isPublished"
+                checked={isPublished}
+                onCheckedChange={setIsPublished}
+              />
+              <Label htmlFor="isPublished">Publish immediately</Label>
+            </div>
 
-              <div className="flex gap-4 pt-4">
-                <Button
-                  type="submit"
-                  disabled={updatePost.isPending}
-                  className="flex-1 bg-earth-green hover:bg-earth-green/90 text-cream"
-                >
-                  {updatePost.isPending ? (
-                    <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Updating...
-                    </>
-                  ) : (
-                    'Update Post'
-                  )}
-                </Button>
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={() => navigate({ to: '/admin/posts' })}
-                  className="border-sage-green/30 text-warm-brown hover:bg-sage-green/10"
-                >
-                  Cancel
-                </Button>
-              </div>
-            </form>
-          </CardContent>
-        </Card>
-      </div>
+            <div className="flex gap-4">
+              <Button
+                type="submit"
+                disabled={updatePostMutation.isPending || isUploading}
+                className="bg-earth-green hover:bg-earth-green/90"
+              >
+                {updatePostMutation.isPending ? (
+                  <>
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    Updating...
+                  </>
+                ) : (
+                  'Update Post'
+                )}
+              </Button>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => navigate({ to: '/admin/posts' })}
+              >
+                Cancel
+              </Button>
+            </div>
+          </form>
+        </CardContent>
+      </Card>
     </div>
   );
 }

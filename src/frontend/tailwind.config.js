@@ -52,12 +52,17 @@ export default {
         'sage-green': 'var(--sage-green)',
         'forest-green': 'var(--forest-green)',
         'mint-green': 'var(--mint-green)',
-        'lime-green': 'var(--lime-green)',
+        'cream': 'var(--cream)',
+        'warm-brown': 'var(--warm-brown)',
+        'gold': 'var(--gold)',
+        'ocean-blue': 'var(--ocean-blue)',
+        'sky-blue': 'var(--sky-blue)',
+        'teal': 'var(--teal)',
       },
       borderRadius: {
-        lg: "16px",
-        md: "12px",
-        sm: "6px",
+        lg: "0.75rem",
+        md: "0.5rem",
+        sm: "0.375rem",
       },
       fontFamily: {
         sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
@@ -82,6 +87,10 @@ export default {
       spacing: {
         '18': '4.5rem',
         '22': '5.5rem',
+      },
+      boxShadow: {
+        'soft': '0 2px 15px -3px rgba(0, 0, 0, 0.07), 0 10px 20px -2px rgba(0, 0, 0, 0.04)',
+        'medium': '0 4px 20px -2px rgba(0, 0, 0, 0.1), 0 12px 28px -4px rgba(0, 0, 0, 0.08)',
       },
       keyframes: {
         "accordion-down": {

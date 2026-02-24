@@ -1,61 +1,44 @@
-import { SiFacebook, SiInstagram, SiX, SiYoutube } from 'react-icons/si';
 import { Link } from '@tanstack/react-router';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
 import { Heart } from 'lucide-react';
+import { SiFacebook, SiX, SiInstagram, SiYoutube } from 'react-icons/si';
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
-  const appIdentifier = typeof window !== 'undefined' 
-    ? encodeURIComponent(window.location.hostname) 
-    : 'ayurglow-secrets';
+  const appIdentifier = encodeURIComponent(window.location.hostname || 'ayurglow-secrets');
 
   return (
-    <footer className="bg-mint-green/5 border-t border-sky-blue/20 mt-20">
+    <footer className="bg-earth-green text-white">
       <div className="container mx-auto px-4 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
-          {/* About Section */}
-          <div>
-            <div className="flex items-center gap-2 mb-4">
-              <img 
-                src="/assets/generated/ayur-leaf.dim_64x64.png" 
-                alt="AyurGlow Leaf" 
-                className="w-8 h-8"
-              />
-              <h3 className="text-base md:text-lg font-bold font-serif text-ocean-blue">AyurGlow Secrets</h3>
-            </div>
-            <p className="text-foreground/70 text-sm leading-relaxed">
-              Discover time-tested Ayurvedic remedies for overall health, radiant skin, and strong, healthy hair. Natural solutions rooted in ancient wisdom.
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+          {/* Brand */}
+          <div className="col-span-1 md:col-span-1">
+            <img 
+              src="/assets/website-logo.png" 
+              alt="AyurGlow Secrets" 
+              className="h-16 w-auto mb-4"
+            />
+            <p className="text-white/80 text-sm leading-relaxed">
+              Ancient Ayurvedic Wisdom for Healthy Body, Glowing Skin & Strong Hair
             </p>
           </div>
 
           {/* Quick Links */}
           <div>
-            <h4 className="text-sm md:text-base font-semibold mb-4 font-serif text-ocean-blue">Quick Links</h4>
+            <h3 className="text-base md:text-lg font-semibold mb-4 font-serif">Quick Links</h3>
             <ul className="space-y-2 text-sm">
               <li>
-                <Link to="/" className="text-foreground/70 hover:text-forest-green transition-colors">
+                <Link to="/" className="text-white/80 hover:text-white transition-colors">
                   Home
                 </Link>
               </li>
               <li>
-                <Link to="/blog" className="text-foreground/70 hover:text-forest-green transition-colors">
+                <Link to="/about" className="text-white/80 hover:text-white transition-colors">
+                  About Us
+                </Link>
+              </li>
+              <li>
+                <Link to="/blog" className="text-white/80 hover:text-white transition-colors">
                   Blog
-                </Link>
-              </li>
-              <li>
-                <Link to="/about" className="text-foreground/70 hover:text-forest-green transition-colors">
-                  About
-                </Link>
-              </li>
-              <li>
-                <Link to="/privacy-policy" className="text-foreground/70 hover:text-forest-green transition-colors">
-                  Privacy Policy
-                </Link>
-              </li>
-              <li>
-                <Link to="/terms-of-service" className="text-foreground/70 hover:text-forest-green transition-colors">
-                  Terms of Service
                 </Link>
               </li>
             </ul>
@@ -63,102 +46,100 @@ export default function Footer() {
 
           {/* Categories */}
           <div>
-            <h4 className="text-sm md:text-base font-semibold mb-4 font-serif text-ocean-blue">Categories</h4>
+            <h3 className="text-base md:text-lg font-semibold mb-4 font-serif">Categories</h3>
             <ul className="space-y-2 text-sm">
               <li>
-                <Link to="/health-remedies" className="text-foreground/70 hover:text-forest-green transition-colors">
+                <Link to="/health-remedies" className="text-white/80 hover:text-white transition-colors">
                   Health Remedies
                 </Link>
               </li>
               <li>
-                <Link to="/skin-care" className="text-foreground/70 hover:text-forest-green transition-colors">
+                <Link to="/skin-care" className="text-white/80 hover:text-white transition-colors">
                   Skin Care
                 </Link>
               </li>
               <li>
-                <Link to="/hair-care" className="text-foreground/70 hover:text-forest-green transition-colors">
+                <Link to="/hair-care" className="text-white/80 hover:text-white transition-colors">
                   Hair Care
                 </Link>
               </li>
             </ul>
           </div>
 
-          {/* Newsletter & Social */}
+          {/* Legal */}
           <div>
-            <h4 className="text-sm md:text-base font-semibold mb-4 font-serif text-ocean-blue">Stay Connected</h4>
-            <p className="text-foreground/70 text-sm mb-3 leading-relaxed">
-              Subscribe to our newsletter for wellness tips
-            </p>
-            <div className="flex gap-2 mb-4">
-              <Input 
-                type="email" 
-                placeholder="Your email" 
-                className="text-sm border-sky-blue/30"
-              />
-              <Button 
-                size="sm" 
-                className="bg-forest-green hover:bg-forest-green/90 whitespace-nowrap text-sm"
-              >
-                Subscribe
-              </Button>
-            </div>
-            <div className="flex gap-3">
+            <h3 className="text-base md:text-lg font-semibold mb-4 font-serif">Legal</h3>
+            <ul className="space-y-2 text-sm">
+              <li>
+                <Link to="/privacy-policy" className="text-white/80 hover:text-white transition-colors">
+                  Privacy Policy
+                </Link>
+              </li>
+              <li>
+                <Link to="/terms-of-service" className="text-white/80 hover:text-white transition-colors">
+                  Terms of Service
+                </Link>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        {/* Social Media */}
+        <div className="mt-8 pt-8 border-t border-white/20">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+            <div className="flex items-center gap-4">
               <a 
                 href="https://facebook.com" 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="w-9 h-9 rounded-full bg-sky-blue/20 hover:bg-ocean-blue hover:text-white flex items-center justify-center transition-colors text-ocean-blue" 
+                className="text-white/80 hover:text-white transition-colors"
                 aria-label="Facebook"
               >
-                <SiFacebook size={16} />
+                <SiFacebook className="w-5 h-5" />
+              </a>
+              <a 
+                href="https://twitter.com" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="text-white/80 hover:text-white transition-colors"
+                aria-label="X (Twitter)"
+              >
+                <SiX className="w-5 h-5" />
               </a>
               <a 
                 href="https://instagram.com" 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="w-9 h-9 rounded-full bg-sky-blue/20 hover:bg-ocean-blue hover:text-white flex items-center justify-center transition-colors text-ocean-blue" 
+                className="text-white/80 hover:text-white transition-colors"
                 aria-label="Instagram"
               >
-                <SiInstagram size={16} />
-              </a>
-              <a 
-                href="https://x.com" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="w-9 h-9 rounded-full bg-sky-blue/20 hover:bg-ocean-blue hover:text-white flex items-center justify-center transition-colors text-ocean-blue" 
-                aria-label="X (Twitter)"
-              >
-                <SiX size={16} />
+                <SiInstagram className="w-5 h-5" />
               </a>
               <a 
                 href="https://youtube.com" 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="w-9 h-9 rounded-full bg-sky-blue/20 hover:bg-ocean-blue hover:text-white flex items-center justify-center transition-colors text-ocean-blue" 
+                className="text-white/80 hover:text-white transition-colors"
                 aria-label="YouTube"
               >
-                <SiYoutube size={16} />
+                <SiYoutube className="w-5 h-5" />
               </a>
             </div>
-          </div>
-        </div>
 
-        {/* Bottom Bar */}
-        <div className="border-t border-sky-blue/20 pt-6 text-center text-sm text-muted-foreground">
-          <p className="mb-2">
-            © {currentYear} AyurGlow Secrets. All rights reserved.
-          </p>
-          <p className="flex items-center justify-center gap-1 flex-wrap">
-            Built with <Heart className="w-4 h-4 text-forest-green fill-forest-green" /> using{' '}
-            <a 
-              href={`https://caffeine.ai/?utm_source=Caffeine-footer&utm_medium=referral&utm_content=${appIdentifier}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-ocean-blue hover:text-sky-blue transition-colors font-medium"
-            >
-              caffeine.ai
-            </a>
-          </p>
+            <div className="text-sm text-white/80 text-center md:text-right">
+              <p className="flex items-center justify-center md:justify-end gap-1">
+                © {currentYear} AyurGlow Secrets. Built with <Heart className="w-4 h-4 text-red-400 fill-red-400" /> using{' '}
+                <a 
+                  href={`https://caffeine.ai/?utm_source=Caffeine-footer&utm_medium=referral&utm_content=${appIdentifier}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-white transition-colors underline"
+                >
+                  caffeine.ai
+                </a>
+              </p>
+            </div>
+          </div>
         </div>
       </div>
     </footer>

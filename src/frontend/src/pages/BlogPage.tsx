@@ -6,11 +6,17 @@ import { Loader2 } from 'lucide-react';
 export default function BlogPage() {
   const { data: posts = [], isLoading, error } = useGetPublishedPosts();
 
+  console.log('BlogPage - isLoading:', isLoading);
+  console.log('BlogPage - posts:', posts);
+  console.log('BlogPage - error:', error);
+
   if (error) {
+    console.error('BlogPage error:', error);
     return (
       <div className="container mx-auto px-4 py-12">
         <div className="text-center text-red-600">
           <p>Error loading blog posts. Please try again later.</p>
+          <p className="text-sm mt-2">{error instanceof Error ? error.message : 'Unknown error'}</p>
         </div>
       </div>
     );
@@ -37,13 +43,17 @@ export default function BlogPage() {
               </div>
             ) : posts.length === 0 ? (
               <div className="text-center py-20">
-                <p className="text-foreground/70 text-base md:text-lg">No published posts yet.</p>
+                <p className="text-foreground/70 text-base md:text-lg mb-4">No published posts yet.</p>
+                <p className="text-sm text-muted-foreground">
+                  Posts need to be created and marked as "Published" to appear here.
+                </p>
               </div>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {posts.map((post) => (
-                  <PostCard key={post.id} post={post} />
-                ))}
+                {posts.map((post) => {
+                  console.log('Rendering post:', post.id, post.title);
+                  return <PostCard key={post.id} post={post} />;
+                })}
               </div>
             )}
           </div>

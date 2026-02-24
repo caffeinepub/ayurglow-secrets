@@ -20,11 +20,14 @@ export default function FeaturedPost({ post }: FeaturedPostProps) {
             src={imageUrl} 
             alt={post.title}
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+            onError={(e) => {
+              e.currentTarget.src = '/assets/generated/blog-featured-placeholder.dim_800x450.png';
+            }}
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-ocean-blue/90 via-ocean-blue/50 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-earth-green/90 via-earth-green/50 to-transparent" />
           
           <div className="absolute bottom-0 left-0 right-0 p-6 md:p-8 text-white">
-            <Badge className="mb-3 bg-mint-green text-forest-green hover:bg-mint-green/90 text-xs">
+            <Badge className="mb-3 bg-sage-green text-earth-green hover:bg-sage-green/90 text-xs">
               {post.category}
             </Badge>
             
@@ -48,7 +51,7 @@ export default function FeaturedPost({ post }: FeaturedPostProps) {
             </div>
             
             <div className="mt-4">
-              <span className="inline-flex items-center text-mint-green font-semibold text-sm group-hover:gap-2 transition-all">
+              <span className="inline-flex items-center text-sage-green font-semibold text-sm group-hover:gap-2 transition-all">
                 Read More
                 <span className="ml-1 group-hover:ml-0 transition-all">→</span>
               </span>

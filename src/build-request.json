@@ -1,55 +1,186 @@
 {
   "kind": "build_request",
-  "title": "Update text colors to black and reduce immunity page heading font size",
+  "title": "Rebuild AyurGlow Secrets homepage with new content structure and enhanced blog post features",
   "projectName": "AyurGlow Secrets",
-  "priority": "normal",
+  "priority": "high",
   "requirements": [
     {
       "id": "REQ-1",
-      "text": "Change all text colors across the website to black, overriding any existing color schemes in the CSS files",
+      "text": "Update the homepage hero section to display: headline 'Welcome to AyurGlow Secrets', subheading 'Discover time-tested Ayurvedic remedies for overall health, radiant skin, and strong, healthy hair. We bring you natural, chemical-free solutions rooted in ancient Indian wisdom and backed by modern understanding.'",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-user-final"
+          "msg-latest"
         ],
         "quotes": [
-          "make all the text in my website black colour"
+          "Welcome to AyurGlow Secrets",
+          "Discover time-tested Ayurvedic remedies"
         ]
       },
       "acceptanceCriteria": [
-        "All headings, paragraphs, and body text render in black color",
-        "Text color changes apply consistently across all pages",
-        "No colored text remains except for interactive elements like links and buttons where appropriate"
+        "Hero section displays the exact headline and subheading text provided",
+        "Hero section maintains visual prominence on the homepage"
       ]
     },
     {
       "id": "REQ-2",
-      "text": "Reduce the font size of the heading 'Ayurvedic Immunity Boosting Remedies | Natural Ways to Increase Immunity' on the immunity boosting page (frontend/src/pages/health-remedies/ImmunityBoostingPage.tsx) to ensure it is fully visible and readable over the background image",
+      "text": "Add a 'What We Offer' section to the homepage displaying four key offerings: '🌿 Natural Ayurvedic Health Remedies', '💆 Skin Care Tips for Natural Glow', '💇 Hair Fall & Hair Growth Treatments', '🧘 Holistic Lifestyle & Wellness Advice'",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-user-final"
+          "msg-latest"
         ],
         "quotes": [
-          "reduce the fornt size of (Ayurvedic Immunity Boosting Remedies | Natural Ways to Increase Immunity) as it is not visible due to the image"
+          "What We Offer",
+          "🌿 Natural Ayurvedic Health Remedies",
+          "💆 Skin Care Tips for Natural Glow"
         ]
       },
       "acceptanceCriteria": [
-        "The heading text is fully visible and legible on the immunity boosting page",
-        "The reduced font size maintains visual hierarchy and readability",
-        "The heading does not overlap or become obscured by background images"
+        "Section displays all four offerings with their emoji icons",
+        "Offerings are presented in a visually organized manner"
+      ]
+    },
+    {
+      "id": "REQ-3",
+      "text": "Add a 'Why AyurGlow Secrets?' section to the homepage highlighting: '100% natural & Ayurvedic approach', 'Simple home remedies', 'Safe, affordable, and effective', 'Suitable for all age groups'",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-latest"
+        ],
+        "quotes": [
+          "Why AyurGlow Secrets?",
+          "100% natural & Ayurvedic approach",
+          "Simple home remedies"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Section displays all four benefits clearly",
+        "Visual styling emphasizes trustworthiness and natural wellness"
+      ]
+    },
+    {
+      "id": "REQ-4",
+      "text": "Update the About page content to match the provided About Us text: 'AyurGlow Secrets is a wellness platform dedicated to sharing the healing power of Ayurveda for a healthier life, glowing skin, and stronger hair. Inspired by ancient Ayurvedic texts and traditional Indian home remedies, our goal is to help people adopt natural solutions over chemical-based treatments. We believe true beauty and health begin from within. Through balanced nutrition, herbal remedies, and mindful living, Ayurveda offers sustainable healing without side effects. Our content is carefully researched and simplified to help you easily follow Ayurvedic practices in your daily life.'",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-latest"
+        ],
+        "quotes": [
+          "AyurGlow Secrets is a wellness platform",
+          "We believe true beauty and health begin from within"
+        ]
+      },
+      "acceptanceCriteria": [
+        "About page displays the complete provided text",
+        "Content maintains the Ayurvedic wellness tone and philosophy"
+      ]
+    },
+    {
+      "id": "REQ-5",
+      "text": "Replace the existing site logo with the uploaded 'website logo.png' throughout the application (navigation header and footer)",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-latest"
+        ],
+        "quotes": [
+          "use the share logo for the website"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Uploaded logo displays in the navigation header",
+        "Logo maintains proper dimensions and quality",
+        "Logo is clickable and links to homepage"
+      ]
+    },
+    {
+      "id": "REQ-6",
+      "text": "Add capability to upload and insert images at the beginning of blog post content in the blog post editor (CreateBlogPostPage and EditBlogPostPage)",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-latest"
+        ],
+        "quotes": [
+          "please make sure I can upload image at the beginning and middle of my blog post"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Users can upload an image before the main content starts",
+        "Image displays properly in the blog post editor",
+        "Image persists when post is saved and published"
+      ]
+    },
+    {
+      "id": "REQ-7",
+      "text": "Add capability to upload and insert images in the middle of blog post content within the ReactQuill rich text editor (CreateBlogPostPage and EditBlogPostPage)",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-latest"
+        ],
+        "quotes": [
+          "please make sure I can upload image at the beginning and middle of my blog post"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Users can insert images anywhere within the blog post content",
+        "Image upload interface is accessible from the rich text editor toolbar",
+        "Inserted images display correctly in both editor and published view"
+      ]
+    },
+    {
+      "id": "REQ-8",
+      "text": "Ensure the comment section displays at the end of each blog post detail page with the heading 'Share Your Comment' or similar",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-latest"
+        ],
+        "quotes": [
+          "also should have share your comment at the end of each blog post"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Comment section appears at the bottom of blog post detail pages",
+        "Section has a clear heading encouraging user comments",
+        "Users can add and view comments"
+      ]
+    },
+    {
+      "id": "REQ-9",
+      "text": "Apply visual design inspiration from https://naturalremedytips.com/ for layout structure, card styling, typography hierarchy, and natural wellness aesthetic while ensuring all content and functionality remains unique to AyurGlow Secrets",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-latest"
+        ],
+        "quotes": [
+          "take the idea from the below URL but do not copy content from the URL",
+          "https://naturalremedytips.com/"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Site adopts a clean, wellness-focused visual design similar in style to the reference URL",
+        "Layout patterns support easy content discovery",
+        "Design feels cohesive with Ayurvedic wellness branding",
+        "No content is copied from the reference site"
       ]
     }
   ],
   "constraints": [
-    "Maintain existing layout structure and component hierarchy",
-    "Preserve the Tailwind CSS framework and utility classes",
-    "Do not modify immutable frontend paths including UI components and hooks"
+    "Do not copy any content from https://naturalremedytips.com/ - only use it for visual design inspiration",
+    "Preserve existing backend blog post and comment functionality",
+    "Maintain the three main category pages: Health Remedies, Skin Care, Hair Care with their existing subcategory structure"
   ],
   "nonGoals": [
-    "Changing button or link colors beyond making body text black",
-    "Modifying other page headings not specifically mentioned",
-    "Altering the overall design system or color palette beyond text colors"
+    "Creating new remedy content pages beyond what already exists",
+    "Changing the backend data model for blog posts or comments",
+    "Implementing social media sharing buttons (not explicitly requested)",
+    "Adding newsletter subscription functionality (not in scope for this rebuild)"
   ],
   "imageRequirements": {
     "required": [],

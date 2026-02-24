@@ -15,21 +15,24 @@ export default function PostCard({ post }: PostCardProps) {
 
   return (
     <Link to="/blog/$slug" params={{ slug: post.slug }}>
-      <Card className="h-full overflow-hidden border-sky-blue/20 hover:border-ocean-blue hover:shadow-xl transition-all duration-300 group">
+      <Card className="h-full overflow-hidden border-sage-green/20 hover:border-earth-green hover:shadow-xl transition-all duration-300 group">
         <div className="relative aspect-video overflow-hidden">
           <img 
             src={imageUrl} 
             alt={post.title}
             className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+            onError={(e) => {
+              e.currentTarget.src = '/assets/generated/blog-ayurveda-herbs.dim_1200x600.png';
+            }}
           />
         </div>
         
         <CardContent className="p-5">
-          <Badge className="mb-3 bg-mint-green/30 text-forest-green hover:bg-mint-green/40 text-xs">
+          <Badge className="mb-3 bg-sage-green/30 text-earth-green hover:bg-sage-green/40 text-xs">
             {post.category}
           </Badge>
           
-          <h3 className="text-lg md:text-xl font-bold text-ocean-blue mb-2 font-serif line-clamp-2 group-hover:text-sky-blue transition-colors leading-snug">
+          <h3 className="text-lg md:text-xl font-bold text-earth-green mb-2 font-serif line-clamp-2 group-hover:text-forest-green transition-colors leading-snug">
             {post.title}
           </h3>
           

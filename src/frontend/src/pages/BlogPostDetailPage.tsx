@@ -1,84 +1,69 @@
-import { useParams, useNavigate } from '@tanstack/react-router';
-import { useGetPublishedPosts } from '@/hooks/useQueries';
+import { useParams, Link } from '@tanstack/react-router';
 import { Calendar, Clock, ArrowLeft } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import BlogSidebar from '@/components/BlogSidebar';
 import CommentSection from '@/components/CommentSection';
+import { useGetPost, useGetPublishedPosts } from '@/hooks/useQueries';
 import { Loader2 } from 'lucide-react';
 
 export default function BlogPostDetailPage() {
-  const { slug } = useParams({ strict: false });
-  const navigate = useNavigate();
-  const { data: posts = [], isLoading } = useGetPublishedPosts();
-
-  const post = posts.find((p) => p.slug === slug);
+  const { slug } = useParams({ from: '/blog/$slug' });
+  const { data: posts = [] } = useGetPublishedPosts();
+  const post = posts.find(p => p.slug === slug);
+  const { isLoading } = useGetPost(post?.id || '');
 
   if (isLoading) {
     return (
-      <div className="container mx-auto px-4 py-12">
-        <div className="flex justify-center items-center py-20">
-          <Loader2 className="w-8 h-8 animate-spin text-ocean-blue" />
-        </div>
+      <div className="flex justify-center items-center min-h-screen">
+        <Loader2 className="w-8 h-8 animate-spin text-earth-green" />
       </div>
     );
   }
 
   if (!post) {
     return (
-      <div className="container mx-auto px-4 py-12">
-        <div className="text-center">
-          <h1 className="text-2xl md:text-3xl font-bold text-ocean-blue mb-4">Post Not Found</h1>
-          <p className="text-foreground/70 mb-6">The blog post you're looking for doesn't exist.</p>
-          <Button 
-            onClick={() => navigate({ to: '/blog' })}
-            className="bg-ocean-blue hover:bg-ocean-blue/90"
-          >
+      <div className="container mx-auto px-4 py-16 text-center">
+        <h1 className="text-2xl font-bold text-earth-green mb-4">Post Not Found</h1>
+        <p className="text-foreground/70 mb-6">The blog post you're looking for doesn't exist.</p>
+        <Link to="/blog">
+          <Button className="bg-earth-green hover:bg-earth-green/90">
+            <ArrowLeft className="w-4 h-4 mr-2" />
             Back to Blog
           </Button>
-        </div>
+        </Link>
       </div>
     );
   }
 
   const imageUrl = post.image?.getDirectURL() || '/assets/generated/blog-ayurveda-herbs.dim_1200x600.png';
   const publishDate = new Date(Number(post.publishedDate));
+  const beginningImage = post.contentImages && post.contentImages.length > 0 ? post.contentImages[0] : null;
 
   return (
-    <div className="bg-background min-h-screen">
-      {/* Featured Image */}
-      <div className="relative w-full h-[350px] md:h-[450px] overflow-hidden">
-        <img 
-          src={imageUrl} 
-          alt={post.title}
-          className="w-full h-full object-cover"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-      </div>
+    <div className="w-full bg-white">
+      <div className="container mx-auto px-4 py-8">
+        <div className="mb-6">
+          <Link to="/blog">
+            <Button variant="ghost" className="text-earth-green hover:text-earth-green/80">
+              <ArrowLeft className="w-4 h-4 mr-2" />
+              Back to Blog
+            </Button>
+          </Link>
+        </div>
 
-      <div className="container mx-auto px-4 -mt-32 relative z-10">
-        <div className="flex flex-col lg:flex-row gap-8">
-          {/* Main Content */}
-          <article className="flex-1">
-            <div className="bg-background rounded-xl shadow-xl p-6 md:p-10 max-w-4xl">
-              <Button
-                variant="ghost"
-                onClick={() => navigate({ to: '/blog' })}
-                className="mb-6 text-foreground/70 hover:text-ocean-blue -ml-2"
-              >
-                <ArrowLeft className="w-4 h-4 mr-2" />
-                Back to Blog
-              </Button>
-
-              <Badge className="mb-4 bg-mint-green/30 text-forest-green">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <article className="lg:col-span-2">
+            <div className="mb-6">
+              <Badge className="mb-3 bg-sage-green/30 text-earth-green hover:bg-sage-green/40">
                 {post.category}
               </Badge>
-
-              <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold text-ocean-blue mb-4 font-serif leading-tight">
+              
+              <h1 className="text-xl md:text-2xl lg:text-3xl font-bold text-earth-green mb-4 font-serif leading-tight">
                 {post.title}
               </h1>
-
-              <div className="flex flex-wrap items-center gap-4 text-sm text-foreground/60 mb-8 pb-6 border-b border-sky-blue/20">
+              
+              <div className="flex flex-wrap items-center gap-3 text-sm text-foreground/70 mb-6">
                 <div className="flex items-center gap-1.5">
                   <Calendar className="w-4 h-4" />
                   <span>{publishDate.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</span>
@@ -89,47 +74,54 @@ export default function BlogPostDetailPage() {
                 </div>
                 <span>By {post.author}</span>
               </div>
+            </div>
 
-              <div 
-                className="prose prose-base max-w-none
-                  prose-headings:font-serif prose-headings:text-ocean-blue prose-headings:mb-4 prose-headings:mt-6
-                  prose-h2:text-2xl prose-h3:text-xl prose-h4:text-lg
-                  prose-p:text-foreground/80 prose-p:leading-relaxed prose-p:text-base prose-p:mb-4
-                  prose-a:text-ocean-blue prose-a:no-underline hover:prose-a:underline
-                  prose-strong:text-ocean-blue prose-strong:font-semibold
-                  prose-ul:text-foreground/80 prose-ul:my-4 prose-ul:space-y-2
-                  prose-ol:text-foreground/80 prose-ol:my-4 prose-ol:space-y-2
-                  prose-li:text-foreground/80 prose-li:leading-relaxed prose-li:text-base
-                  prose-img:rounded-lg prose-img:shadow-md prose-img:my-6"
-                dangerouslySetInnerHTML={{ __html: post.content }}
+            <div className="mb-8">
+              <img 
+                src={imageUrl} 
+                alt={post.title}
+                className="w-full h-auto rounded-xl shadow-lg"
               />
+            </div>
 
-              {post.tags.length > 0 && (
-                <div className="mt-8 pt-6 border-t border-sky-blue/20">
-                  <div className="flex flex-wrap gap-2">
-                    {post.tags.map((tag) => (
-                      <Badge 
-                        key={tag} 
-                        variant="outline"
-                        className="border-sky-blue/30 text-foreground/70 text-sm"
-                      >
-                        #{tag}
-                      </Badge>
-                    ))}
-                  </div>
+            {beginningImage && (
+              <div className="mb-8">
+                <img 
+                  src={beginningImage.getDirectURL()} 
+                  alt="Post beginning"
+                  className="w-full h-auto rounded-xl shadow-md"
+                />
+              </div>
+            )}
+
+            <div 
+              className="prose prose-lg max-w-none prose-headings:text-earth-green prose-headings:font-serif prose-p:text-foreground prose-p:leading-relaxed prose-a:text-earth-green prose-strong:text-foreground prose-ul:text-foreground prose-ol:text-foreground prose-img:rounded-lg prose-img:shadow-md"
+              dangerouslySetInnerHTML={{ __html: post.content }}
+            />
+
+            {post.tags.length > 0 && (
+              <div className="mt-8 pt-6 border-t border-sage-green/20">
+                <div className="flex flex-wrap gap-2">
+                  {post.tags.map((tag) => (
+                    <Badge 
+                      key={tag} 
+                      variant="outline" 
+                      className="border-sage-green/30 text-earth-green"
+                    >
+                      {tag}
+                    </Badge>
+                  ))}
                 </div>
-              )}
+              </div>
+            )}
 
-              {/* Comment Section */}
+            <div className="mt-12">
               <CommentSection postId={post.id} />
             </div>
           </article>
 
-          {/* Sidebar - Hidden on mobile */}
-          <aside className="hidden lg:block lg:w-80">
-            <div className="sticky top-24">
-              <BlogSidebar posts={posts} />
-            </div>
+          <aside className="lg:col-span-1">
+            <BlogSidebar posts={posts} />
           </aside>
         </div>
       </div>
