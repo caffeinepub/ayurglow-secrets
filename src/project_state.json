@@ -1,34 +1,18 @@
 {
   "schemaVersion": "1.0.0",
   "projectStateVersion": 3,
-  "summary": "Blog website project with green theme",
+  "summary": "Website styling adjustments: changing text color to black and reducing font size for better visibility over images",
   "architectural_notes": [],
   "known_issues": [
-    "Uploaded blog posts are not displaying on the website"
+    "Text visibility issue: some content not readable over background images"
   ],
   "isFixRequest": true,
   "existing_features": [
     {
-      "id": "feature-debug-and-fix-why-uploaded-blog-posts-are-not-displaying-on-the-blog-listing-page-and-ensure-all-published-posts-appear-correctly",
-      "title": "Debug and fix why uploaded blog posts are not displaying on the blog listing page and ensure all published posts appear correctly",
+      "id": "feature-change-all-text-colors-across-the-website-to-black-overriding-any-existing-color-schemes-in-the-css-files",
+      "title": "Change all text colors across the website to black, overriding any existing color schemes in the CSS files",
       "reqIds": [
         "REQ-1"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-add-image-upload-functionality-within-the-blog-post-rich-text-editor-to-allow-inserting-images-in-the-middle-of-blog-post-content",
-      "title": "Add image upload functionality within the blog post rich text editor to allow inserting images in the middle of blog post content",
-      "reqIds": [
-        "REQ-2"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-restore-the-website-color-scheme-to-green-theme-as-it-appeared-in-earlier-versions-replacing-the-current-blue-green-palette",
-      "title": "Restore the website color scheme to green theme as it appeared in earlier versions, replacing the current blue-green palette",
-      "reqIds": [
-        "REQ-3"
       ],
       "version": 1
     }
@@ -36,20 +20,22 @@
   "new_feature_requests": [
     {
       "id": "AR-1",
-      "summary": "Fix uploaded blog posts not displaying",
+      "summary": "Change all website text to black color",
       "reqIds": [],
       "status": "pending"
     },
     {
       "id": "AR-2",
-      "summary": "Add image upload option within blog post content",
+      "summary": "Reduce font size of 'Ayurvedic Immunity Boosting Remedies | Natural Ways to Increase Immunity' for better visibility over image",
       "reqIds": [],
       "status": "pending"
     },
     {
-      "id": "AR-3",
-      "summary": "Restore green color theme for website",
-      "reqIds": [],
+      "id": "AR-4",
+      "summary": "Reduce the font size of the heading 'Ayurvedic Immunity Boosting Remedies | Natural Ways to Increase Immunity' on the immunity boosting page (frontend/src/pages/health-remedies/ImmunityBoostingPage.tsx) to ensure it is fully visible and readable over the background image",
+      "reqIds": [
+        "REQ-2"
+      ],
       "status": "pending"
     }
   ],

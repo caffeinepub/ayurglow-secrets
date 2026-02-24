@@ -1,75 +1,55 @@
 {
   "kind": "build_request",
-  "title": "Fix blog post display, add inline image upload, and restore green theme",
+  "title": "Update text colors to black and reduce immunity page heading font size",
   "projectName": "AyurGlow Secrets",
-  "priority": "high",
+  "priority": "normal",
   "requirements": [
     {
       "id": "REQ-1",
-      "text": "Debug and fix why uploaded blog posts are not displaying on the blog listing page and ensure all published posts appear correctly",
-      "target": "both",
+      "text": "Change all text colors across the website to black, overriding any existing color schemes in the CSS files",
+      "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-latest"
+          "msg-user-final"
         ],
         "quotes": [
-          "why my blog posts which I have uploaded not showing"
+          "make all the text in my website black colour"
         ]
       },
       "acceptanceCriteria": [
-        "All uploaded blog posts with published status are visible on the blog listing page",
-        "Blog posts display with correct title, excerpt, image, and metadata",
-        "Posts are accessible via their individual detail pages"
+        "All headings, paragraphs, and body text render in black color",
+        "Text color changes apply consistently across all pages",
+        "No colored text remains except for interactive elements like links and buttons where appropriate"
       ]
     },
     {
       "id": "REQ-2",
-      "text": "Add image upload functionality within the blog post rich text editor to allow inserting images in the middle of blog post content",
-      "target": "both",
-      "source": {
-        "messageIds": [
-          "msg-latest"
-        ],
-        "quotes": [
-          "can you create upload image option in the middle of my blog post"
-        ]
-      },
-      "acceptanceCriteria": [
-        "Rich text editor (ReactQuill) includes an image upload button in the toolbar",
-        "Users can upload images and insert them at any position within the blog post content",
-        "Uploaded images are stored properly and display correctly in both editor and published post view",
-        "Image uploads integrate with existing blob storage system"
-      ]
-    },
-    {
-      "id": "REQ-3",
-      "text": "Restore the website color scheme to green theme as it appeared in earlier versions, replacing the current blue-green palette",
+      "text": "Reduce the font size of the heading 'Ayurvedic Immunity Boosting Remedies | Natural Ways to Increase Immunity' on the immunity boosting page (frontend/src/pages/health-remedies/ImmunityBoostingPage.tsx) to ensure it is fully visible and readable over the background image",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-latest"
+          "msg-user-final"
         ],
         "quotes": [
-          "can you make look of my website like earlier as green"
+          "reduce the fornt size of (Ayurvedic Immunity Boosting Remedies | Natural Ways to Increase Immunity) as it is not visible due to the image"
         ]
       },
       "acceptanceCriteria": [
-        "Primary color palette uses green tones instead of blue-green",
-        "All UI components (buttons, cards, badges, links) reflect the green theme",
-        "Both light and dark mode variants use appropriate green color values",
-        "Theme colors are consistently applied across all pages"
+        "The heading text is fully visible and legible on the immunity boosting page",
+        "The reduced font size maintains visual hierarchy and readability",
+        "The heading does not overlap or become obscured by background images"
       ]
     }
   ],
   "constraints": [
-    "Maintain existing ReactQuill editor integration",
-    "Preserve blob storage architecture using MixinStorage",
-    "Do not modify immutable frontend paths (useInternetIdentity.ts, useActor.ts, main.tsx, components/ui)"
+    "Maintain existing layout structure and component hierarchy",
+    "Preserve the Tailwind CSS framework and utility classes",
+    "Do not modify immutable frontend paths including UI components and hooks"
   ],
   "nonGoals": [
-    "Changing the overall layout or structure of blog pages",
-    "Adding new blog post features beyond inline images",
-    "Modifying authentication or user management"
+    "Changing button or link colors beyond making body text black",
+    "Modifying other page headings not specifically mentioned",
+    "Altering the overall design system or color palette beyond text colors"
   ],
   "imageRequirements": {
     "required": [],

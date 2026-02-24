@@ -58,8 +58,10 @@ export default function ImmunityBoostPage() {
     <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-12">
         <div className="max-w-4xl mx-auto">
-          <h1 className="text-4xl font-bold text-foreground mb-4">Immunity Boosting Remedies</h1>
-          <p className="text-lg text-muted-foreground mb-8">
+          <h1 className="text-2xl md:text-3xl font-bold mb-4" style={{ color: '#000000' }}>
+            Ayurvedic Immunity Boosting Remedies | Natural Ways to Increase Immunity
+          </h1>
+          <p className="text-lg mb-8" style={{ color: '#000000' }}>
             Strengthen your body's natural defense system with these powerful Ayurvedic immunity boosters.
           </p>
 
@@ -68,13 +70,13 @@ export default function ImmunityBoostPage() {
               <div key={index} className="bg-card rounded-lg p-6 shadow-sm border border-border">
                 <div className="flex items-center gap-3 mb-4">
                   {remedy.icon}
-                  <h2 className="text-2xl font-semibold text-card-foreground">{remedy.title}</h2>
+                  <h2 className="text-2xl font-semibold" style={{ color: '#000000' }}>{remedy.title}</h2>
                 </div>
 
                 <div className="grid md:grid-cols-2 gap-6">
                   <div>
-                    <h3 className="font-semibold text-card-foreground mb-2">Ingredients:</h3>
-                    <ul className="list-disc list-inside space-y-1 text-muted-foreground">
+                    <h3 className="font-semibold mb-2" style={{ color: '#000000' }}>Ingredients:</h3>
+                    <ul className="list-disc list-inside space-y-1" style={{ color: '#000000' }}>
                       {remedy.ingredients.map((ingredient, i) => (
                         <li key={i}>{ingredient}</li>
                       ))}
@@ -82,8 +84,8 @@ export default function ImmunityBoostPage() {
                   </div>
 
                   <div>
-                    <h3 className="font-semibold text-card-foreground mb-2">Application:</h3>
-                    <ol className="list-decimal list-inside space-y-1 text-muted-foreground">
+                    <h3 className="font-semibold mb-2" style={{ color: '#000000' }}>Application:</h3>
+                    <ol className="list-decimal list-inside space-y-1" style={{ color: '#000000' }}>
                       {remedy.application.map((step, i) => (
                         <li key={i}>{step}</li>
                       ))}
@@ -92,11 +94,11 @@ export default function ImmunityBoostPage() {
                 </div>
 
                 <div className="mt-4 pt-4 border-t border-border">
-                  <p className="text-muted-foreground mb-2">
-                    <span className="font-semibold text-card-foreground">Benefits:</span> {remedy.benefits}
+                  <p className="mb-2" style={{ color: '#000000' }}>
+                    <span className="font-semibold">Benefits:</span> {remedy.benefits}
                   </p>
-                  <p className="text-muted-foreground">
-                    <span className="font-semibold text-card-foreground">Frequency:</span> {remedy.frequency}
+                  <p style={{ color: '#000000' }}>
+                    <span className="font-semibold">Frequency:</span> {remedy.frequency}
                   </p>
                 </div>
               </div>
