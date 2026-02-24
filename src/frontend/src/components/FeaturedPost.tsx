@@ -15,40 +15,40 @@ export default function FeaturedPost({ post }: FeaturedPostProps) {
   return (
     <Link to="/blog/$slug" params={{ slug: post.slug }} className="block group">
       <div className="relative overflow-hidden rounded-xl shadow-lg hover:shadow-2xl transition-shadow duration-300">
-        <div className="relative h-[450px] md:h-[500px]">
+        <div className="relative h-[400px] md:h-[450px]">
           <img 
             src={imageUrl} 
             alt={post.title}
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-ocean-blue/90 via-ocean-blue/50 to-transparent" />
           
           <div className="absolute bottom-0 left-0 right-0 p-6 md:p-8 text-white">
-            <Badge className="mb-3 bg-gold text-earth-green hover:bg-gold/90">
+            <Badge className="mb-3 bg-mint-green text-forest-green hover:bg-mint-green/90 text-xs">
               {post.category}
             </Badge>
             
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4 font-serif leading-tight">
+            <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-3 font-serif leading-tight">
               {post.title}
             </h2>
             
-            <p className="text-lg text-white/90 mb-4 leading-relaxed">
+            <p className="text-base md:text-lg text-white/90 mb-4 leading-relaxed line-clamp-2">
               {excerpt}
             </p>
             
             <div className="flex items-center gap-4 text-sm text-white/80">
-              <div className="flex items-center gap-1">
+              <div className="flex items-center gap-1.5">
                 <Calendar className="w-4 h-4" />
                 <span>{publishDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
               </div>
-              <div className="flex items-center gap-1">
+              <div className="flex items-center gap-1.5">
                 <Clock className="w-4 h-4" />
                 <span>{Number(post.readTime)} min read</span>
               </div>
             </div>
             
             <div className="mt-4">
-              <span className="inline-flex items-center text-gold font-semibold group-hover:gap-2 transition-all">
+              <span className="inline-flex items-center text-mint-green font-semibold text-sm group-hover:gap-2 transition-all">
                 Read More
                 <span className="ml-1 group-hover:ml-0 transition-all">→</span>
               </span>

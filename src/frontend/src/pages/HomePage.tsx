@@ -20,17 +20,17 @@ export default function HomePage() {
         className="relative h-[400px] md:h-[500px] flex items-center justify-center bg-cover bg-center"
         style={{ backgroundImage: 'url(/assets/generated/hero-natural-health.dim_1920x600.png)' }}
       >
-        <div className="absolute inset-0 bg-gradient-to-r from-earth-green/90 via-earth-green/70 to-transparent" />
-        <div className="relative z-10 container mx-auto px-4 text-cream max-w-2xl">
+        <div className="absolute inset-0 bg-gradient-to-r from-ocean-blue/90 via-teal/70 to-transparent" />
+        <div className="relative z-10 container mx-auto px-4 text-white max-w-2xl">
           <img 
             src="/assets/generated/ayur-leaf.dim_64x64.png" 
             alt="Ayurvedic Leaf" 
             className="w-16 h-16 mb-6"
           />
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4 font-serif leading-tight">
+          <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4 font-serif leading-tight">
             Natural Health & Wellness Tips
           </h1>
-          <p className="text-lg md:text-xl text-cream/90 leading-relaxed">
+          <p className="text-base md:text-lg text-white/90 leading-relaxed">
             Discover ancient Ayurvedic wisdom for modern living. Natural remedies for health, beauty, and wellness.
           </p>
         </div>
@@ -41,14 +41,14 @@ export default function HomePage() {
         <div className="container mx-auto px-4">
           {isLoading ? (
             <div className="flex justify-center items-center py-20">
-              <Loader2 className="w-8 h-8 animate-spin text-earth-green" />
+              <Loader2 className="w-8 h-8 animate-spin text-ocean-blue" />
             </div>
           ) : posts.length === 0 ? (
             <div className="text-center py-20">
-              <p className="text-warm-brown/70 text-lg mb-6">No blog posts available yet.</p>
+              <p className="text-foreground/70 text-base md:text-lg mb-6">No blog posts available yet.</p>
               <Button 
                 onClick={() => navigate({ to: '/admin/create-post' })}
-                className="bg-earth-green hover:bg-earth-green/90"
+                className="bg-ocean-blue hover:bg-ocean-blue/90"
               >
                 Create Your First Post
               </Button>
@@ -65,7 +65,7 @@ export default function HomePage() {
               {/* Recent Posts Grid */}
               {recentPosts.length > 0 && (
                 <div>
-                  <h2 className="text-3xl font-bold text-earth-green mb-8 font-serif">Latest Articles</h2>
+                  <h2 className="text-2xl md:text-3xl font-bold text-ocean-blue mb-8 font-serif">Latest Articles</h2>
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {recentPosts.map((post) => (
                       <PostCard key={post.id} post={post} />
@@ -80,7 +80,7 @@ export default function HomePage() {
                   <Button 
                     onClick={() => navigate({ to: '/blog' })}
                     variant="outline"
-                    className="border-earth-green text-earth-green hover:bg-earth-green hover:text-cream"
+                    className="border-ocean-blue text-ocean-blue hover:bg-ocean-blue hover:text-white"
                   >
                     View All Posts
                   </Button>
@@ -92,20 +92,20 @@ export default function HomePage() {
       </section>
 
       {/* Categories Section */}
-      <section className="py-16 bg-sage-green/5">
+      <section className="py-16 bg-mint-green/5">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold text-earth-green mb-4 font-serif">
+            <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-ocean-blue mb-4 font-serif">
               Explore Our Remedies
             </h2>
-            <p className="text-warm-brown/70 text-lg max-w-2xl mx-auto">
+            <p className="text-foreground/70 text-base md:text-lg max-w-2xl mx-auto leading-relaxed">
               Natural solutions for your health and wellness journey
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
             <Card 
-              className="border-sage-green/30 hover:border-earth-green hover:shadow-lg transition-all duration-300 cursor-pointer group"
+              className="border-sky-blue/30 hover:border-ocean-blue hover:shadow-lg transition-all duration-300 cursor-pointer group"
               onClick={() => navigate({ to: '/health-remedies' })}
             >
               <CardContent className="p-6 text-center">
@@ -114,17 +114,17 @@ export default function HomePage() {
                   alt="Health Remedies"
                   className="w-20 h-20 mx-auto mb-4 group-hover:scale-110 transition-transform"
                 />
-                <h3 className="text-xl font-semibold text-earth-green mb-2 font-serif">
+                <h3 className="text-lg md:text-xl font-semibold text-ocean-blue mb-2 font-serif">
                   Health Remedies
                 </h3>
-                <p className="text-warm-brown/70 text-sm">
+                <p className="text-foreground/70 text-sm leading-relaxed">
                   Boost immunity, improve digestion, and enhance overall wellness
                 </p>
               </CardContent>
             </Card>
 
             <Card 
-              className="border-sage-green/30 hover:border-earth-green hover:shadow-lg transition-all duration-300 cursor-pointer group"
+              className="border-sky-blue/30 hover:border-ocean-blue hover:shadow-lg transition-all duration-300 cursor-pointer group"
               onClick={() => navigate({ to: '/skin-care' })}
             >
               <CardContent className="p-6 text-center">
@@ -133,17 +133,17 @@ export default function HomePage() {
                   alt="Skin Care"
                   className="w-20 h-20 mx-auto mb-4 group-hover:scale-110 transition-transform"
                 />
-                <h3 className="text-xl font-semibold text-earth-green mb-2 font-serif">
+                <h3 className="text-lg md:text-xl font-semibold text-ocean-blue mb-2 font-serif">
                   Skin Care
                 </h3>
-                <p className="text-warm-brown/70 text-sm">
+                <p className="text-foreground/70 text-sm leading-relaxed">
                   Achieve radiant, healthy skin through natural treatments
                 </p>
               </CardContent>
             </Card>
 
             <Card 
-              className="border-sage-green/30 hover:border-earth-green hover:shadow-lg transition-all duration-300 cursor-pointer group"
+              className="border-sky-blue/30 hover:border-ocean-blue hover:shadow-lg transition-all duration-300 cursor-pointer group"
               onClick={() => navigate({ to: '/hair-care' })}
             >
               <CardContent className="p-6 text-center">
@@ -152,11 +152,11 @@ export default function HomePage() {
                   alt="Hair Care"
                   className="w-20 h-20 mx-auto mb-4 group-hover:scale-110 transition-transform"
                 />
-                <h3 className="text-xl font-semibold text-earth-green mb-2 font-serif">
+                <h3 className="text-lg md:text-xl font-semibold text-ocean-blue mb-2 font-serif">
                   Hair Care
                 </h3>
-                <p className="text-warm-brown/70 text-sm">
-                  Strengthen your hair naturally with Ayurvedic solutions
+                <p className="text-foreground/70 text-sm leading-relaxed">
+                  Nourish and strengthen your hair with natural remedies
                 </p>
               </CardContent>
             </Card>

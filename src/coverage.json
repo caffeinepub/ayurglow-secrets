@@ -1,45 +1,73 @@
 {
   "kind": "coverage_report",
   "version": "1.0",
-  "generatedAt": "2026-02-23T18:36:43.424Z",
+  "generatedAt": "2026-02-24T07:34:07.273Z",
   "sources": {
     "buildRequest": true,
     "implementationPlan": true
   },
   "requirements": {
-    "total": 2,
-    "implemented": 2,
+    "total": 3,
+    "implemented": 3,
     "items": [
       {
         "id": "REQ-1",
-        "summary": "Update the CSS color palette in frontend/src/index.css to use blue and green as the primary color combination, replacing the current vibrant color system (electric-blue, coral-pink, lime-green, sunshine-yellow, vivid-orange) with harmonious blue and green tones",
+        "summary": "Debug and fix why uploaded blog posts are not displaying on the blog listing page and ensure all published posts appear correctly",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/index.css"
+          "frontend/src/pages/BlogPage.tsx",
+          "frontend/src/hooks/useQueries.ts",
+          "frontend/src/components/PostCard.tsx",
+          "frontend/src/pages/BlogPostDetailPage.tsx"
         ],
         "matchedFiles": [
-          "frontend/src/index.css"
+          "frontend/src/hooks/useQueries.ts"
         ]
       },
       {
         "id": "REQ-2",
-        "summary": "Apply the new blue and green color scheme consistently across all components including navigation, cards, buttons, links, hero sections, and interactive elements",
+        "summary": "Add image upload functionality within the blog post rich text editor to allow inserting images in the middle of blog post content",
         "status": "implemented",
         "plannedFiles": [
+          "frontend/src/pages/CreateBlogPostPage.tsx",
+          "frontend/src/pages/EditBlogPostPage.tsx",
+          "frontend/src/pages/BlogPostDetailPage.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/pages/CreateBlogPostPage.tsx",
+          "frontend/src/pages/EditBlogPostPage.tsx"
+        ]
+      },
+      {
+        "id": "REQ-3",
+        "summary": "Restore the website color scheme to green theme as it appeared in earlier versions, replacing the current blue-green palette",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/index.css",
           "frontend/tailwind.config.js"
         ],
         "matchedFiles": [
+          "frontend/src/index.css",
           "frontend/tailwind.config.js"
         ]
       }
     ]
   },
   "changedFiles": [
+    "backend/main.mo",
+    "backend/migration.mo",
     "build-request.json",
     "feature_evidence.json",
     "frontend-file-summaries.txt",
     "frontend-implementation-plan.json",
+    "frontend/src/backend.d.ts",
+    "frontend/src/backend.ts",
+    "frontend/src/declarations/backend.did.d.ts",
+    "frontend/src/declarations/backend.did.js",
+    "frontend/src/hooks/useQueries.ts",
     "frontend/src/index.css",
+    "frontend/src/pages/CreateBlogPostPage.tsx",
+    "frontend/src/pages/EditBlogPostPage.tsx",
     "frontend/tailwind.config.js",
     "project_state.json",
     "scratch/component-selection.json",

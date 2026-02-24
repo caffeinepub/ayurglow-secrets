@@ -27,7 +27,7 @@ export default function Navigation() {
   ];
 
   return (
-    <nav className="bg-white border-b border-sage-green/20 sticky top-0 z-50 shadow-sm">
+    <nav className="bg-white border-b border-sky-blue/20 sticky top-0 z-50 shadow-sm">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
@@ -37,21 +37,21 @@ export default function Navigation() {
               alt="AyurGlow Secrets" 
               className="w-10 h-10 group-hover:scale-110 transition-transform"
             />
-            <span className="text-xl font-bold text-earth-green font-serif hidden sm:block">
+            <span className="text-lg md:text-xl font-bold text-ocean-blue font-serif hidden sm:block">
               AyurGlow Secrets
             </span>
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center gap-8">
+          <div className="hidden md:flex items-center gap-6 lg:gap-8">
             {navLinks.map((link) => (
               <Link
                 key={link.path}
                 to={link.path}
-                className={`text-sm font-medium transition-colors hover:text-earth-green ${
+                className={`text-sm font-medium transition-colors hover:text-ocean-blue ${
                   currentPath === link.path
-                    ? 'text-earth-green font-semibold'
-                    : 'text-warm-brown/80'
+                    ? 'text-ocean-blue font-semibold'
+                    : 'text-foreground/80'
                 }`}
               >
                 {link.label}
@@ -60,7 +60,7 @@ export default function Navigation() {
 
             {/* Categories Dropdown */}
             <DropdownMenu>
-              <DropdownMenuTrigger className="flex items-center gap-1 text-sm font-medium text-warm-brown/80 hover:text-earth-green transition-colors">
+              <DropdownMenuTrigger className="flex items-center gap-1 text-sm font-medium text-foreground/80 hover:text-ocean-blue transition-colors">
                 Categories
                 <ChevronDown className="w-4 h-4" />
               </DropdownMenuTrigger>
@@ -69,7 +69,7 @@ export default function Navigation() {
                   <DropdownMenuItem 
                     key={link.path}
                     onClick={() => navigate({ to: link.path })}
-                    className="cursor-pointer"
+                    className="cursor-pointer text-sm"
                   >
                     {link.label}
                   </DropdownMenuItem>
@@ -80,10 +80,10 @@ export default function Navigation() {
             {/* Admin Link */}
             <Link
               to="/admin/posts"
-              className={`text-sm font-medium transition-colors hover:text-earth-green ${
+              className={`text-sm font-medium transition-colors hover:text-ocean-blue ${
                 currentPath.startsWith('/admin')
-                  ? 'text-earth-green font-semibold'
-                  : 'text-warm-brown/80'
+                  ? 'text-ocean-blue font-semibold'
+                  : 'text-foreground/80'
               }`}
             >
               Admin
@@ -93,7 +93,7 @@ export default function Navigation() {
           {/* Mobile Menu Button */}
           <button
             onClick={() => setIsOpen(!isOpen)}
-            className="md:hidden p-2 text-earth-green hover:bg-sage-green/10 rounded-lg transition-colors"
+            className="md:hidden p-2 text-ocean-blue hover:bg-mint-green/10 rounded-lg transition-colors"
             aria-label="Toggle menu"
           >
             {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
@@ -102,24 +102,24 @@ export default function Navigation() {
 
         {/* Mobile Navigation */}
         {isOpen && (
-          <div className="md:hidden py-4 border-t border-sage-green/20">
+          <div className="md:hidden py-4 border-t border-sky-blue/20">
             <div className="flex flex-col gap-2">
               {navLinks.map((link) => (
                 <Link
                   key={link.path}
                   to={link.path}
                   onClick={() => setIsOpen(false)}
-                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                  className={`px-4 py-2.5 rounded-lg text-sm font-medium transition-colors ${
                     currentPath === link.path
-                      ? 'bg-earth-green text-cream'
-                      : 'text-warm-brown/80 hover:bg-sage-green/10'
+                      ? 'bg-ocean-blue text-white'
+                      : 'text-foreground/80 hover:bg-mint-green/10'
                   }`}
                 >
                   {link.label}
                 </Link>
               ))}
 
-              <div className="px-4 py-2 text-xs font-semibold text-warm-brown/60 uppercase">
+              <div className="px-4 py-2 text-xs font-semibold text-muted-foreground uppercase tracking-wide">
                 Categories
               </div>
 
@@ -128,10 +128,10 @@ export default function Navigation() {
                   key={link.path}
                   to={link.path}
                   onClick={() => setIsOpen(false)}
-                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                  className={`px-4 py-2.5 rounded-lg text-sm font-medium transition-colors ${
                     currentPath === link.path
-                      ? 'bg-earth-green text-cream'
-                      : 'text-warm-brown/80 hover:bg-sage-green/10'
+                      ? 'bg-ocean-blue text-white'
+                      : 'text-foreground/80 hover:bg-mint-green/10'
                   }`}
                 >
                   {link.label}
@@ -141,10 +141,10 @@ export default function Navigation() {
               <Link
                 to="/admin/posts"
                 onClick={() => setIsOpen(false)}
-                className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                className={`px-4 py-2.5 rounded-lg text-sm font-medium transition-colors ${
                   currentPath.startsWith('/admin')
-                    ? 'bg-earth-green text-cream'
-                    : 'text-warm-brown/80 hover:bg-sage-green/10'
+                    ? 'bg-ocean-blue text-white'
+                    : 'text-foreground/80 hover:bg-mint-green/10'
                 }`}
               >
                 Admin

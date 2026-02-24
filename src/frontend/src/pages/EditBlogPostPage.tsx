@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate, useParams } from '@tanstack/react-router';
 import { useGetPost, useUpdatePost } from '../hooks/useQueries';
 import { Button } from '@/components/ui/button';
@@ -8,7 +8,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { ArrowLeft, Loader2, Upload, X } from 'lucide-react';
+import { ArrowLeft, Loader2, Upload, X, Image as ImageIcon } from 'lucide-react';
 import ReactQuill from 'react-quill-new';
 import 'react-quill-new/dist/quill.snow.css';
 import { ExternalBlob } from '../backend';
@@ -18,6 +18,7 @@ export default function EditBlogPostPage() {
   const { id } = useParams({ strict: false }) as { id: string };
   const { data: post, isLoading, error } = useGetPost(id);
   const updatePost = useUpdatePost();
+  const quillRef = useRef<ReactQuill>(null);
 
   const [title, setTitle] = useState('');
   const [category, setCategory] = useState('');
@@ -31,6 +32,7 @@ export default function EditBlogPostPage() {
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [existingImage, setExistingImage] = useState<ExternalBlob | null>(null);
   const [uploadProgress, setUploadProgress] = useState<number>(0);
+  const [contentImages, setContentImages] = useState<ExternalBlob[]>([]);
 
   const categories = ['Hair Care', 'Skin Care', 'Health', 'Beauty', 'Lifestyle'];
 
@@ -48,6 +50,11 @@ export default function EditBlogPostPage() {
       if (post.image) {
         setExistingImage(post.image);
         setImagePreview(post.image.getDirectURL());
+      }
+
+      // Load existing content images
+      if (post.contentImages && post.contentImages.length > 0) {
+        setContentImages(post.contentImages);
       }
     }
   }, [post]);
@@ -84,6 +91,70 @@ export default function EditBlogPostPage() {
     setImagePreview(null);
     setExistingImage(null);
     setUploadProgress(0);
+  };
+
+  // Custom image handler for ReactQuill
+  const imageHandler = () => {
+    const input = document.createElement('input');
+    input.setAttribute('type', 'file');
+    input.setAttribute('accept', 'image/*');
+    input.click();
+
+    input.onchange = async () => {
+      const file = input.files?.[0];
+      if (file) {
+        // Validate file type
+        if (!file.type.startsWith('image/')) {
+          alert('Please select an image file');
+          return;
+        }
+
+        // Validate file size (max 5MB)
+        if (file.size > 5 * 1024 * 1024) {
+          alert('Image size should be less than 5MB');
+          return;
+        }
+
+        try {
+          // Convert file to ExternalBlob
+          const arrayBuffer = await file.arrayBuffer();
+          const uint8Array = new Uint8Array(arrayBuffer);
+          const blob = ExternalBlob.fromBytes(uint8Array);
+          
+          // Add to contentImages array
+          setContentImages(prev => [...prev, blob]);
+          
+          // Get the direct URL for the image
+          const imageUrl = blob.getDirectURL();
+          
+          // Insert image into editor
+          const quill = quillRef.current?.getEditor();
+          if (quill) {
+            const range = quill.getSelection(true);
+            quill.insertEmbed(range.index, 'image', imageUrl);
+            quill.setSelection(range.index + 1, 0);
+          }
+        } catch (error) {
+          console.error('Error uploading image:', error);
+          alert('Failed to upload image. Please try again.');
+        }
+      }
+    };
+  };
+
+  const modules = {
+    toolbar: {
+      container: [
+        [{ header: [1, 2, 3, false] }],
+        ['bold', 'italic', 'underline', 'strike'],
+        [{ list: 'ordered' }, { list: 'bullet' }],
+        ['link', 'image', 'blockquote'],
+        ['clean'],
+      ],
+      handlers: {
+        image: imageHandler,
+      },
+    },
   };
 
   const generateSlug = (text: string) => {
@@ -134,6 +205,7 @@ export default function EditBlogPostPage() {
         tags: tagsArray,
         isPublished,
         image: imageBlob,
+        contentImages,
       });
 
       navigate({ to: '/admin/posts' });
@@ -240,23 +312,21 @@ export default function EditBlogPostPage() {
               </div>
 
               <div className="space-y-2">
-                <Label className="text-warm-brown font-semibold">Content *</Label>
+                <Label className="text-warm-brown font-semibold">
+                  Content * 
+                  <span className="text-sm font-normal text-muted-foreground ml-2">
+                    (Click the <ImageIcon className="inline w-4 h-4" /> icon to insert images)
+                  </span>
+                </Label>
                 <div className="border border-sage-green/30 rounded-lg overflow-hidden">
                   <ReactQuill
+                    ref={quillRef}
                     theme="snow"
                     value={content}
                     onChange={setContent}
                     placeholder="Write your post content here..."
                     className="bg-white"
-                    modules={{
-                      toolbar: [
-                        [{ header: [1, 2, 3, false] }],
-                        ['bold', 'italic', 'underline', 'strike'],
-                        [{ list: 'ordered' }, { list: 'bullet' }],
-                        ['link', 'blockquote'],
-                        ['clean'],
-                      ],
-                    }}
+                    modules={modules}
                   />
                 </div>
               </div>

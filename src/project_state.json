@@ -1,26 +1,34 @@
 {
   "schemaVersion": "1.0.0",
   "projectStateVersion": 3,
-  "summary": "Website project with blue and green color scheme",
-  "architectural_notes": [
-    "Color scheme: Blue and green combination across entire website"
+  "summary": "Blog website project with green theme",
+  "architectural_notes": [],
+  "known_issues": [
+    "Uploaded blog posts are not displaying on the website"
   ],
-  "known_issues": [],
-  "isFixRequest": false,
+  "isFixRequest": true,
   "existing_features": [
     {
-      "id": "feature-update-the-css-color-palette-in-frontend-src-index-css-to-use-blue-and-green-as-the-primary-color-combination-replacing-the-current-vibrant-color-system-electric-blue-coral-pink-lime-green-sunshine-yellow-vivid-orange-with-harmonious-blue-and-green-tones",
-      "title": "Update the CSS color palette in frontend/src/index.css to use blue and green as the primary color combination, replacing the current vibrant color system (electric-blue, coral-pink, lime-green, sunshine-yellow, vivid-orange) with harmonious blue and green tones",
+      "id": "feature-debug-and-fix-why-uploaded-blog-posts-are-not-displaying-on-the-blog-listing-page-and-ensure-all-published-posts-appear-correctly",
+      "title": "Debug and fix why uploaded blog posts are not displaying on the blog listing page and ensure all published posts appear correctly",
       "reqIds": [
         "REQ-1"
       ],
       "version": 1
     },
     {
-      "id": "feature-apply-the-new-blue-and-green-color-scheme-consistently-across-all-components-including-navigation-cards-buttons-links-hero-sections-and-interactive-elements",
-      "title": "Apply the new blue and green color scheme consistently across all components including navigation, cards, buttons, links, hero sections, and interactive elements",
+      "id": "feature-add-image-upload-functionality-within-the-blog-post-rich-text-editor-to-allow-inserting-images-in-the-middle-of-blog-post-content",
+      "title": "Add image upload functionality within the blog post rich text editor to allow inserting images in the middle of blog post content",
       "reqIds": [
         "REQ-2"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-restore-the-website-color-scheme-to-green-theme-as-it-appeared-in-earlier-versions-replacing-the-current-blue-green-palette",
+      "title": "Restore the website color scheme to green theme as it appeared in earlier versions, replacing the current blue-green palette",
+      "reqIds": [
+        "REQ-3"
       ],
       "version": 1
     }
@@ -28,7 +36,19 @@
   "new_feature_requests": [
     {
       "id": "AR-1",
-      "summary": "Apply blue and green color combination to entire website",
+      "summary": "Fix uploaded blog posts not displaying",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-2",
+      "summary": "Add image upload option within blog post content",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-3",
+      "summary": "Restore green color theme for website",
       "reqIds": [],
       "status": "pending"
     }

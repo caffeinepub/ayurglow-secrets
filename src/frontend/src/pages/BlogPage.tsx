@@ -20,10 +20,10 @@ export default function BlogPage() {
     <div className="bg-background min-h-screen">
       <div className="container mx-auto px-4 py-12">
         <div className="mb-8">
-          <h1 className="text-4xl md:text-5xl font-bold text-earth-green mb-3 font-serif">
+          <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-ocean-blue mb-3 font-serif">
             Latest Posts
           </h1>
-          <p className="text-warm-brown/70 text-lg">
+          <p className="text-foreground/70 text-base md:text-lg leading-relaxed">
             Explore our collection of natural health and wellness articles
           </p>
         </div>
@@ -33,11 +33,11 @@ export default function BlogPage() {
           <div className="flex-1">
             {isLoading ? (
               <div className="flex justify-center items-center py-20">
-                <Loader2 className="w-8 h-8 animate-spin text-earth-green" />
+                <Loader2 className="w-8 h-8 animate-spin text-ocean-blue" />
               </div>
             ) : posts.length === 0 ? (
               <div className="text-center py-20">
-                <p className="text-warm-brown/70 text-lg">No published posts yet.</p>
+                <p className="text-foreground/70 text-base md:text-lg">No published posts yet.</p>
               </div>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

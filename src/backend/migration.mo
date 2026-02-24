@@ -1,10 +1,9 @@
 import Map "mo:core/Map";
-import Text "mo:core/Text";
 import List "mo:core/List";
+import Text "mo:core/Text";
 import Storage "blob-storage/Storage";
 
 module {
-  // Old types
   type OldBlogPost = {
     id : Text;
     title : Text;
@@ -17,18 +16,16 @@ module {
     publishedDate : Int;
     tags : [Text];
     isPublished : Bool;
-    imageUrl : ?Text;
+    image : ?Storage.ExternalBlob;
+    comments : List.List<{
+      author : Text;
+      content : Text;
+      timestamp : Int;
+    }>;
   };
 
   type OldActor = {
     blogPosts : Map.Map<Text, OldBlogPost>;
-  };
-
-  // New types
-  type Comment = {
-    author : Text;
-    content : Text;
-    timestamp : Int;
   };
 
   type NewBlogPost = {
@@ -44,7 +41,12 @@ module {
     tags : [Text];
     isPublished : Bool;
     image : ?Storage.ExternalBlob;
-    comments : List.List<Comment>;
+    contentImages : [Storage.ExternalBlob];
+    comments : List.List<{
+      author : Text;
+      content : Text;
+      timestamp : Int;
+    }>;
   };
 
   type NewActor = {
@@ -56,8 +58,7 @@ module {
       func(_id, oldPost) {
         {
           oldPost with
-          image = null;
-          comments = List.empty<Comment>();
+          contentImages = [];
         };
       }
     );

@@ -1,58 +1,75 @@
 {
   "kind": "build_request",
-  "title": "Apply blue and green color scheme to entire website",
+  "title": "Fix blog post display, add inline image upload, and restore green theme",
   "projectName": "AyurGlow Secrets",
-  "priority": "normal",
+  "priority": "high",
   "requirements": [
     {
       "id": "REQ-1",
-      "text": "Update the CSS color palette in frontend/src/index.css to use blue and green as the primary color combination, replacing the current vibrant color system (electric-blue, coral-pink, lime-green, sunshine-yellow, vivid-orange) with harmonious blue and green tones",
-      "target": "frontend",
+      "text": "Debug and fix why uploaded blog posts are not displaying on the blog listing page and ensure all published posts appear correctly",
+      "target": "both",
       "source": {
         "messageIds": [
-          "msg-recent-1"
+          "msg-latest"
         ],
         "quotes": [
-          "please use blue and green colour combination for my entire website"
+          "why my blog posts which I have uploaded not showing"
         ]
       },
       "acceptanceCriteria": [
-        "Primary colors use blue shades",
-        "Secondary/accent colors use green shades",
-        "Color palette maintains sufficient contrast for accessibility",
-        "Both light and dark mode variants are updated with blue-green theme"
+        "All uploaded blog posts with published status are visible on the blog listing page",
+        "Blog posts display with correct title, excerpt, image, and metadata",
+        "Posts are accessible via their individual detail pages"
       ]
     },
     {
       "id": "REQ-2",
-      "text": "Apply the new blue and green color scheme consistently across all components including navigation, cards, buttons, links, hero sections, and interactive elements",
-      "target": "frontend",
+      "text": "Add image upload functionality within the blog post rich text editor to allow inserting images in the middle of blog post content",
+      "target": "both",
       "source": {
         "messageIds": [
-          "msg-recent-1"
+          "msg-latest"
         ],
         "quotes": [
-          "please use blue and green colour combination for my entire website"
+          "can you create upload image option in the middle of my blog post"
         ]
       },
       "acceptanceCriteria": [
-        "All pages reflect the blue and green color theme",
-        "Navigation bar uses blue and green colors",
-        "Buttons and interactive elements follow the new color scheme",
-        "Hero sections and feature cards maintain visual consistency with the theme"
+        "Rich text editor (ReactQuill) includes an image upload button in the toolbar",
+        "Users can upload images and insert them at any position within the blog post content",
+        "Uploaded images are stored properly and display correctly in both editor and published post view",
+        "Image uploads integrate with existing blob storage system"
+      ]
+    },
+    {
+      "id": "REQ-3",
+      "text": "Restore the website color scheme to green theme as it appeared in earlier versions, replacing the current blue-green palette",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-latest"
+        ],
+        "quotes": [
+          "can you make look of my website like earlier as green"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Primary color palette uses green tones instead of blue-green",
+        "All UI components (buttons, cards, badges, links) reflect the green theme",
+        "Both light and dark mode variants use appropriate green color values",
+        "Theme colors are consistently applied across all pages"
       ]
     }
   ],
   "constraints": [
-    "Maintain the existing OKLCH color system structure in index.css",
-    "Preserve accessibility standards for color contrast ratios",
-    "Do not modify immutable paths: frontend/src/hooks/useInternetIdentity.ts, frontend/src/hooks/useActor.ts, frontend/src/main.tsx, frontend/src/components/ui"
+    "Maintain existing ReactQuill editor integration",
+    "Preserve blob storage architecture using MixinStorage",
+    "Do not modify immutable frontend paths (useInternetIdentity.ts, useActor.ts, main.tsx, components/ui)"
   ],
   "nonGoals": [
-    "Changing the technology stack or framework",
-    "Modifying backend functionality",
-    "Restructuring component architecture",
-    "Adding new features beyond color scheme changes"
+    "Changing the overall layout or structure of blog pages",
+    "Adding new blog post features beyond inline images",
+    "Modifying authentication or user management"
   ],
   "imageRequirements": {
     "required": [],

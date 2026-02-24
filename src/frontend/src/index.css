@@ -4,81 +4,81 @@
 
 @layer base {
   :root {
-    /* Blue and Green palette - Light mode */
-    --background: oklch(98% 0.01 220);  /* Soft blue-white */
-    --foreground: oklch(25% 0.04 220);  /* Deep blue-grey */
+    /* Green palette - Light mode */
+    --background: oklch(98% 0.01 145);  /* Soft green-white */
+    --foreground: oklch(25% 0.04 145);  /* Deep green-grey */
 
-    --card: oklch(99% 0.005 220);
-    --card-foreground: oklch(25% 0.04 220);
+    --card: oklch(99% 0.005 145);
+    --card-foreground: oklch(25% 0.04 145);
 
-    --popover: oklch(99% 0.005 220);
-    --popover-foreground: oklch(25% 0.04 220);
+    --popover: oklch(99% 0.005 145);
+    --popover-foreground: oklch(25% 0.04 145);
 
-    --primary: oklch(55% 0.20 240);  /* Rich blue */
-    --primary-foreground: oklch(98% 0.01 220);
+    --primary: oklch(55% 0.20 145);  /* Rich green */
+    --primary-foreground: oklch(98% 0.01 145);
 
-    --secondary: oklch(60% 0.18 150);  /* Fresh green */
-    --secondary-foreground: oklch(98% 0.01 220);
+    --secondary: oklch(60% 0.18 155);  /* Fresh mint green */
+    --secondary-foreground: oklch(98% 0.01 145);
 
-    --muted: oklch(92% 0.03 220);  /* Light blue-grey */
-    --muted-foreground: oklch(45% 0.04 220);
+    --muted: oklch(92% 0.03 145);  /* Light green-grey */
+    --muted-foreground: oklch(45% 0.04 145);
 
-    --accent: oklch(65% 0.20 180);  /* Teal (blue-green) */
-    --accent-foreground: oklch(25% 0.04 220);
+    --accent: oklch(65% 0.20 150);  /* Bright green accent */
+    --accent-foreground: oklch(25% 0.04 145);
 
     --destructive: oklch(55% 0.22 25);
-    --destructive-foreground: oklch(98% 0.01 220);
+    --destructive-foreground: oklch(98% 0.01 145);
 
-    --border: oklch(85% 0.05 220);
-    --input: oklch(85% 0.05 220);
-    --ring: oklch(55% 0.20 240);
+    --border: oklch(85% 0.05 145);
+    --input: oklch(85% 0.05 145);
+    --ring: oklch(55% 0.20 145);
 
     --radius: 0.5rem;
 
-    /* Custom blue and green colors */
-    --ocean-blue: oklch(58% 0.22 235);     /* Deep ocean blue */
-    --sky-blue: oklch(70% 0.18 245);       /* Bright sky blue */
+    /* Custom green colors */
+    --earth-green: oklch(48% 0.18 142);    /* Deep earth green */
+    --sage-green: oklch(70% 0.14 148);     /* Sage green */
     --forest-green: oklch(55% 0.18 145);   /* Forest green */
     --mint-green: oklch(75% 0.16 160);     /* Mint green */
-    --teal: oklch(62% 0.19 190);           /* Teal accent */
+    --lime-green: oklch(68% 0.20 138);     /* Lime green accent */
   }
 
   .dark {
-    /* Dark mode with blue and green */
-    --background: oklch(18% 0.03 220);
-    --foreground: oklch(95% 0.02 220);
+    /* Dark mode with green */
+    --background: oklch(18% 0.03 145);
+    --foreground: oklch(95% 0.02 145);
 
-    --card: oklch(20% 0.03 220);
-    --card-foreground: oklch(95% 0.02 220);
+    --card: oklch(20% 0.03 145);
+    --card-foreground: oklch(95% 0.02 145);
 
-    --popover: oklch(20% 0.03 220);
-    --popover-foreground: oklch(95% 0.02 220);
+    --popover: oklch(20% 0.03 145);
+    --popover-foreground: oklch(95% 0.02 145);
 
-    --primary: oklch(65% 0.20 240);
-    --primary-foreground: oklch(18% 0.03 220);
+    --primary: oklch(65% 0.20 145);
+    --primary-foreground: oklch(18% 0.03 145);
 
-    --secondary: oklch(68% 0.18 150);
-    --secondary-foreground: oklch(18% 0.03 220);
+    --secondary: oklch(68% 0.18 155);
+    --secondary-foreground: oklch(18% 0.03 145);
 
-    --muted: oklch(25% 0.03 220);
-    --muted-foreground: oklch(70% 0.03 220);
+    --muted: oklch(25% 0.03 145);
+    --muted-foreground: oklch(70% 0.03 145);
 
-    --accent: oklch(70% 0.20 180);
-    --accent-foreground: oklch(18% 0.03 220);
+    --accent: oklch(70% 0.20 150);
+    --accent-foreground: oklch(18% 0.03 145);
 
     --destructive: oklch(60% 0.22 25);
-    --destructive-foreground: oklch(95% 0.02 220);
+    --destructive-foreground: oklch(95% 0.02 145);
 
-    --border: oklch(30% 0.05 220);
-    --input: oklch(30% 0.05 220);
-    --ring: oklch(65% 0.20 240);
+    --border: oklch(30% 0.05 145);
+    --input: oklch(30% 0.05 145);
+    --ring: oklch(65% 0.20 145);
 
-    /* Custom blue and green colors - dark mode */
-    --ocean-blue: oklch(63% 0.22 235);
-    --sky-blue: oklch(75% 0.18 245);
+    /* Custom green colors - dark mode */
+    --earth-green: oklch(58% 0.18 142);
+    --sage-green: oklch(75% 0.14 148);
     --forest-green: oklch(60% 0.18 145);
     --mint-green: oklch(78% 0.16 160);
-    --teal: oklch(67% 0.19 190);
+    --lime-green: oklch(73% 0.20 138);
   }
 }
 
@@ -91,32 +91,96 @@
     font-feature-settings: "rlig" 1, "calt" 1;
     font-family: 'Inter', system-ui, -apple-system, sans-serif;
     font-size: 16px;
-    line-height: 1.7;
+    line-height: 1.6;
   }
+  
+  /* Typography hierarchy with proper spacing */
   h1, h2, h3, h4, h5, h6 {
     font-family: 'Playfair Display', Georgia, serif;
+    line-height: 1.3;
+    margin-bottom: 0.75rem;
+  }
+  
+  h1 {
+    font-size: 2.25rem;
+    line-height: 1.2;
+  }
+  
+  h2 {
+    font-size: 1.875rem;
+    line-height: 1.25;
+  }
+  
+  h3 {
+    font-size: 1.5rem;
+    line-height: 1.3;
+  }
+  
+  h4 {
+    font-size: 1.25rem;
+    line-height: 1.35;
+  }
+  
+  h5 {
+    font-size: 1.125rem;
+    line-height: 1.4;
+  }
+  
+  h6 {
+    font-size: 1rem;
+    line-height: 1.4;
+  }
+  
+  p {
+    line-height: 1.7;
+    margin-bottom: 1rem;
+  }
+  
+  /* Responsive typography */
+  @media (min-width: 768px) {
+    h1 {
+      font-size: 2.75rem;
+    }
+    h2 {
+      font-size: 2.25rem;
+    }
+    h3 {
+      font-size: 1.75rem;
+    }
+  }
+  
+  @media (min-width: 1024px) {
+    h1 {
+      font-size: 3rem;
+    }
+    h2 {
+      font-size: 2.5rem;
+    }
+    h3 {
+      font-size: 2rem;
+    }
   }
 }
 
 @layer utilities {
-  .text-ocean-blue {
-    color: var(--ocean-blue);
+  .text-earth-green {
+    color: var(--earth-green);
   }
-  .bg-ocean-blue {
-    background-color: var(--ocean-blue);
+  .bg-earth-green {
+    background-color: var(--earth-green);
   }
-  .border-ocean-blue {
-    border-color: var(--ocean-blue);
+  .border-earth-green {
+    border-color: var(--earth-green);
   }
   
-  .text-sky-blue {
-    color: var(--sky-blue);
+  .text-sage-green {
+    color: var(--sage-green);
   }
-  .bg-sky-blue {
-    background-color: var(--sky-blue);
+  .bg-sage-green {
+    background-color: var(--sage-green);
   }
-  .border-sky-blue {
-    border-color: var(--sky-blue);
+  .border-sage-green {
+    border-color: var(--sage-green);
   }
   
   .text-forest-green {
@@ -139,13 +203,13 @@
     border-color: var(--mint-green);
   }
   
-  .text-teal {
-    color: var(--teal);
+  .text-lime-green {
+    color: var(--lime-green);
   }
-  .bg-teal {
-    background-color: var(--teal);
+  .bg-lime-green {
+    background-color: var(--lime-green);
   }
-  .border-teal {
-    border-color: var(--teal);
+  .border-lime-green {
+    border-color: var(--lime-green);
   }
 }

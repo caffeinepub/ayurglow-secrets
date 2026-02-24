@@ -70,6 +70,7 @@ export function useCreatePost() {
       tags: string[];
       isPublished: boolean;
       image: ExternalBlob | null;
+      contentImages: ExternalBlob[];
     }) => {
       if (!actor) throw new Error('Actor not initialized');
       return actor.createPost(
@@ -84,7 +85,8 @@ export function useCreatePost() {
         post.publishedDate,
         post.tags,
         post.isPublished,
-        post.image
+        post.image,
+        post.contentImages
       );
     },
     onSuccess: () => {
@@ -113,6 +115,7 @@ export function useUpdatePost() {
       tags: string[];
       isPublished: boolean;
       image: ExternalBlob | null;
+      contentImages: ExternalBlob[];
     }) => {
       if (!actor) throw new Error('Actor not initialized');
       return actor.updatePost(
@@ -127,7 +130,8 @@ export function useUpdatePost() {
         post.publishedDate,
         post.tags,
         post.isPublished,
-        post.image
+        post.image,
+        post.contentImages
       );
     },
     onSuccess: (_, variables) => {

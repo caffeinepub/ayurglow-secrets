@@ -39,6 +39,7 @@ export const BlogPostView = IDL.Record({
   'category' : IDL.Text,
   'image' : IDL.Opt(ExternalBlob),
   'comments' : IDL.Vec(Comment),
+  'contentImages' : IDL.Vec(ExternalBlob),
 });
 
 export const idlService = IDL.Service({
@@ -83,6 +84,7 @@ export const idlService = IDL.Service({
         IDL.Vec(IDL.Text),
         IDL.Bool,
         IDL.Opt(ExternalBlob),
+        IDL.Vec(ExternalBlob),
       ],
       [],
       [],
@@ -106,6 +108,7 @@ export const idlService = IDL.Service({
         IDL.Vec(IDL.Text),
         IDL.Bool,
         IDL.Opt(ExternalBlob),
+        IDL.Vec(ExternalBlob),
       ],
       [],
       [],
@@ -146,6 +149,7 @@ export const idlFactory = ({ IDL }) => {
     'category' : IDL.Text,
     'image' : IDL.Opt(ExternalBlob),
     'comments' : IDL.Vec(Comment),
+    'contentImages' : IDL.Vec(ExternalBlob),
   });
   
   return IDL.Service({
@@ -190,6 +194,7 @@ export const idlFactory = ({ IDL }) => {
           IDL.Vec(IDL.Text),
           IDL.Bool,
           IDL.Opt(ExternalBlob),
+          IDL.Vec(ExternalBlob),
         ],
         [],
         [],
@@ -213,6 +218,7 @@ export const idlFactory = ({ IDL }) => {
           IDL.Vec(IDL.Text),
           IDL.Bool,
           IDL.Opt(ExternalBlob),
+          IDL.Vec(ExternalBlob),
         ],
         [],
         [],

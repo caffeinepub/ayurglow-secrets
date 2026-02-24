@@ -2,10 +2,10 @@
   "kind": "feature_evidence_report",
   "features": [
     {
-      "featureId": "feature-update-the-css-color-palette-in-frontend-src-index-css-to-use-blue-and-green-as-the-primary-color-combination-replacing-the-current-vibrant-color-system-electric-blue-coral-pink-lime-green-sunshine-yellow-vivid-orange-with-harmonious-blue-and-green-tones",
-      "featureTitle": "Update the CSS color palette in frontend/src/index.css to use blue and green as the primary color combination, replacing the current vibrant color system (electric-blue, coral-pink, lime-green, sunshine-yellow, vivid-orange) with harmonious blue and green tones",
+      "featureId": "feature-debug-and-fix-why-uploaded-blog-posts-are-not-displaying-on-the-blog-listing-page-and-ensure-all-published-posts-appear-correctly",
+      "featureTitle": "Debug and fix why uploaded blog posts are not displaying on the blog listing page and ensure all published posts appear correctly",
       "files": [
-        "frontend/src/index.css"
+        "frontend/src/hooks/useQueries.ts"
       ],
       "components": [
         "core-infrastructure@1.0.2",
@@ -21,10 +21,11 @@
       "confidence": "high"
     },
     {
-      "featureId": "feature-apply-the-new-blue-and-green-color-scheme-consistently-across-all-components-including-navigation-cards-buttons-links-hero-sections-and-interactive-elements",
-      "featureTitle": "Apply the new blue and green color scheme consistently across all components including navigation, cards, buttons, links, hero sections, and interactive elements",
+      "featureId": "feature-add-image-upload-functionality-within-the-blog-post-rich-text-editor-to-allow-inserting-images-in-the-middle-of-blog-post-content",
+      "featureTitle": "Add image upload functionality within the blog post rich text editor to allow inserting images in the middle of blog post content",
       "files": [
-        "frontend/tailwind.config.js"
+        "frontend/src/pages/CreateBlogPostPage.tsx",
+        "frontend/src/pages/EditBlogPostPage.tsx"
       ],
       "components": [
         "core-infrastructure@1.0.2",
@@ -36,6 +37,26 @@
       ],
       "testIds": [
         "REQ-2"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-restore-the-website-color-scheme-to-green-theme-as-it-appeared-in-earlier-versions-replacing-the-current-blue-green-palette",
+      "featureTitle": "Restore the website color scheme to green theme as it appeared in earlier versions, replacing the current blue-green palette",
+      "files": [
+        "frontend/src/index.css",
+        "frontend/tailwind.config.js"
+      ],
+      "components": [
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0",
+        "blob-storage@4.0.0"
+      ],
+      "testIds": [
+        "REQ-3"
       ],
       "confidence": "high"
     }

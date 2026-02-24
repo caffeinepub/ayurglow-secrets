@@ -7,9 +7,9 @@ import Time "mo:core/Time";
 import List "mo:core/List";
 import Storage "blob-storage/Storage";
 import MixinStorage "blob-storage/Mixin";
+import Migration "migration";
 
-
-
+(with migration = Migration.run)
 actor {
   type Comment = {
     author : Text;
@@ -30,6 +30,7 @@ actor {
     tags : [Text];
     isPublished : Bool;
     image : ?Storage.ExternalBlob;
+    contentImages : [Storage.ExternalBlob];
     comments : List.List<Comment>;
   };
 
@@ -46,6 +47,7 @@ actor {
     tags : [Text];
     isPublished : Bool;
     image : ?Storage.ExternalBlob;
+    contentImages : [Storage.ExternalBlob];
     comments : [Comment];
   };
 
@@ -66,6 +68,7 @@ actor {
     tags : [Text],
     isPublished : Bool,
     image : ?Storage.ExternalBlob,
+    contentImages : [Storage.ExternalBlob],
   ) : async () {
     let newPost : BlogPost = {
       id;
@@ -80,6 +83,7 @@ actor {
       tags;
       isPublished;
       image;
+      contentImages;
       comments = List.empty<Comment>();
     };
     blogPosts.add(id, newPost);
@@ -98,6 +102,7 @@ actor {
     tags : [Text],
     isPublished : Bool,
     image : ?Storage.ExternalBlob,
+    contentImages : [Storage.ExternalBlob],
   ) : async () {
     switch (blogPosts.get(id)) {
       case (null) { () };
@@ -115,6 +120,7 @@ actor {
           tags;
           isPublished;
           image;
+          contentImages;
           comments = existingPost.comments;
         };
         blogPosts.add(id, updatedPost);
@@ -129,7 +135,7 @@ actor {
   func toBlogPostView(post : BlogPost) : BlogPostView {
     {
       post with
-      comments = post.comments.toArray()
+      comments = post.comments.toArray();
     };
   };
 

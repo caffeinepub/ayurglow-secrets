@@ -1,39 +1,85 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Apply blue and green color scheme to entire website",
+  "title": "Fix blog post display, add inline image upload, and restore green theme",
   "requirements": [
     {
       "id": "REQ-1",
-      "summary": "Update the CSS color palette in frontend/src/index.css to use blue and green as the primary color combination, replacing the current vibrant color system with harmonious blue and green tones",
+      "summary": "Debug and fix why uploaded blog posts are not displaying on the blog listing page and ensure all published posts appear correctly",
       "acceptanceCriteria": [
-        "Primary colors use blue shades",
-        "Secondary/accent colors use green shades",
-        "Color palette maintains sufficient contrast for accessibility",
-        "Both light and dark mode variants are updated with blue-green theme"
+        "All uploaded blog posts with published status are visible on the blog listing page",
+        "Blog posts display with correct title, excerpt, image, and metadata",
+        "Posts are accessible via their individual detail pages"
       ],
       "file_operations": [
         {
-          "path": "frontend/src/index.css",
+          "path": "frontend/src/pages/BlogPage.tsx",
           "operation": "modify",
-          "description": "Replace the current vibrant color system (electric-blue, coral-pink, lime-green, sunshine-yellow, vivid-orange) with harmonious blue and green tones using the OKLCH color space. Update CSS custom properties for both light and dark themes including --primary (blue shades), --secondary (green shades), --accent (complementary blue-green), and other color variables while maintaining the existing OKLCH structure and accessibility contrast ratios."
+          "description": "Review and debug the published posts fetching and rendering logic. Verify the useGetPublishedPosts hook is correctly filtering and displaying posts. Add error boundary handling and detailed logging to identify why posts may not be appearing. Ensure the PostCard component receives all required props correctly."
+        },
+        {
+          "path": "frontend/src/hooks/useQueries.ts",
+          "operation": "modify",
+          "description": "Review the useGetPublishedPosts query implementation to ensure it correctly calls the backend getPublishedPosts method and handles the response. Add error handling and verify the query key and cache invalidation logic are correct."
+        },
+        {
+          "path": "frontend/src/components/PostCard.tsx",
+          "operation": "modify",
+          "description": "Verify the PostCard component correctly handles all blog post data including image rendering using ExternalBlob.getDirectURL(). Ensure proper fallback handling for missing images and that all metadata displays correctly."
+        },
+        {
+          "path": "frontend/src/pages/BlogPostDetailPage.tsx",
+          "operation": "modify",
+          "description": "Verify individual post detail pages correctly fetch and display full post data by slug. Ensure the post content, images, and metadata render properly and that navigation from the listing page works correctly."
         }
       ]
     },
     {
       "id": "REQ-2",
-      "summary": "Apply the new blue and green color scheme consistently across all components including navigation, cards, buttons, links, hero sections, and interactive elements",
+      "summary": "Add image upload functionality within the blog post rich text editor to allow inserting images in the middle of blog post content",
       "acceptanceCriteria": [
-        "All pages reflect the blue and green color theme",
-        "Navigation bar uses blue and green colors",
-        "Buttons and interactive elements follow the new color scheme",
-        "Hero sections and feature cards maintain visual consistency with the theme"
+        "Rich text editor (ReactQuill) includes an image upload button in the toolbar",
+        "Users can upload images and insert them at any position within the blog post content",
+        "Uploaded images are stored properly and display correctly in both editor and published post view",
+        "Image uploads integrate with existing blob storage system"
       ],
       "file_operations": [
         {
+          "path": "frontend/src/pages/CreateBlogPostPage.tsx",
+          "operation": "modify",
+          "description": "Extend the ReactQuill editor configuration to add a custom image upload handler in the toolbar. Implement an image handler that opens a file picker, converts the selected file to ExternalBlob using ExternalBlob.fromBytes(), and inserts the image URL into the editor at the current cursor position using getDirectURL(). Track uploaded content images in the contentImages state array and pass them to the createPost mutation. Verify the blob-storage component's usage instructions before implementing. Add upload progress indicators using withUploadProgress()."
+        },
+        {
+          "path": "frontend/src/pages/EditBlogPostPage.tsx",
+          "operation": "modify",
+          "description": "Apply the same ReactQuill image upload handler implementation as in CreateBlogPostPage. Ensure existing contentImages from the post are preserved and new uploads are appended to the array. Handle both new and existing ExternalBlob instances correctly when updating the post."
+        },
+        {
+          "path": "frontend/src/pages/BlogPostDetailPage.tsx",
+          "operation": "modify",
+          "description": "Ensure the post detail page correctly renders inline images from the content HTML. Verify that image URLs generated by getDirectURL() are accessible and display properly in the published post view."
+        }
+      ]
+    },
+    {
+      "id": "REQ-3",
+      "summary": "Restore the website color scheme to green theme as it appeared in earlier versions, replacing the current blue-green palette",
+      "acceptanceCriteria": [
+        "Primary color palette uses green tones instead of blue-green",
+        "All UI components (buttons, cards, badges, links) reflect the green theme",
+        "Both light and dark mode variants use appropriate green color values",
+        "Theme colors are consistently applied across all pages"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/index.css",
+          "operation": "modify",
+          "description": "Replace the current blue-green OKLCH color variables with green theme colors. Update --primary, --primary-foreground, --accent, --accent-foreground, and related color variables to use green hues (approximately 142-150 degrees in OKLCH) instead of the current blue-green values. Adjust both light and dark mode variants to maintain proper contrast and accessibility. Update any custom utility classes that reference theme colors."
+        },
+        {
           "path": "frontend/tailwind.config.js",
           "operation": "modify",
-          "description": "Review and ensure Tailwind configuration properly extends the new blue-green color system from CSS variables, verifying that all custom color utilities reference the updated OKLCH variables from index.css for consistent theming across components."
+          "description": "Update the Tailwind color configuration to align with the new green theme. Modify any HSL-based color variables or custom color definitions to use green tones. Ensure the theme colors referenced throughout the codebase (bg-primary, text-primary, border-primary, etc.) correctly map to the new green palette."
         }
       ]
     }

@@ -24,6 +24,7 @@ export interface BlogPostView {
   'category' : string,
   'image' : [] | [ExternalBlob],
   'comments' : Array<Comment>,
+  'contentImages' : Array<ExternalBlob>,
 }
 export interface Comment {
   'content' : string,
@@ -73,6 +74,7 @@ export interface _SERVICE {
       Array<string>,
       boolean,
       [] | [ExternalBlob],
+      Array<ExternalBlob>,
     ],
     undefined
   >,
@@ -95,6 +97,7 @@ export interface _SERVICE {
       Array<string>,
       boolean,
       [] | [ExternalBlob],
+      Array<ExternalBlob>,
     ],
     undefined
   >,

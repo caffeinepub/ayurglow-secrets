@@ -28,6 +28,7 @@ export interface BlogPostView {
     category: string;
     image?: ExternalBlob;
     comments: Array<Comment>;
+    contentImages: Array<ExternalBlob>;
 }
 export interface Comment {
     content: string;
@@ -36,11 +37,11 @@ export interface Comment {
 }
 export interface backendInterface {
     addComment(postId: string, author: string, content: string): Promise<boolean>;
-    createPost(id: string, title: string, slug: string, category: string, content: string, excerpt: string, readTime: bigint, author: string, publishedDate: bigint, tags: Array<string>, isPublished: boolean, image: ExternalBlob | null): Promise<void>;
+    createPost(id: string, title: string, slug: string, category: string, content: string, excerpt: string, readTime: bigint, author: string, publishedDate: bigint, tags: Array<string>, isPublished: boolean, image: ExternalBlob | null, contentImages: Array<ExternalBlob>): Promise<void>;
     deletePost(id: string): Promise<void>;
     getAllPosts(): Promise<Array<BlogPostView>>;
     getComments(postId: string): Promise<Array<Comment>>;
     getPost(id: string): Promise<BlogPostView | null>;
     getPublishedPosts(): Promise<Array<BlogPostView>>;
-    updatePost(id: string, title: string, slug: string, category: string, content: string, excerpt: string, readTime: bigint, author: string, publishedDate: bigint, tags: Array<string>, isPublished: boolean, image: ExternalBlob | null): Promise<void>;
+    updatePost(id: string, title: string, slug: string, category: string, content: string, excerpt: string, readTime: bigint, author: string, publishedDate: bigint, tags: Array<string>, isPublished: boolean, image: ExternalBlob | null, contentImages: Array<ExternalBlob>): Promise<void>;
 }

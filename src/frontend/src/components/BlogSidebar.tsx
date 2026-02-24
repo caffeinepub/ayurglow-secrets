@@ -57,9 +57,9 @@ export default function BlogSidebar({ posts }: BlogSidebarProps) {
   return (
     <aside className="space-y-6 lg:sticky lg:top-24">
       {/* Search Widget */}
-      <Card className="border-sage-green/20">
+      <Card className="border-sky-blue/20">
         <CardHeader>
-          <CardTitle className="text-lg font-serif text-earth-green">Search Remedies</CardTitle>
+          <CardTitle className="text-base md:text-lg font-serif text-ocean-blue">Search Remedies</CardTitle>
         </CardHeader>
         <CardContent>
           <div ref={searchContainerRef} className="relative">
@@ -82,9 +82,9 @@ export default function BlogSidebar({ posts }: BlogSidebarProps) {
       </Card>
 
       {/* Popular Posts */}
-      <Card className="border-sage-green/20">
+      <Card className="border-sky-blue/20">
         <CardHeader>
-          <CardTitle className="text-lg font-serif text-earth-green">Popular Posts</CardTitle>
+          <CardTitle className="text-base md:text-lg font-serif text-ocean-blue">Popular Posts</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           {popularPosts.map((post) => {
@@ -104,10 +104,10 @@ export default function BlogSidebar({ posts }: BlogSidebarProps) {
                   />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <h4 className="text-sm font-semibold text-earth-green line-clamp-2 group-hover:text-gold transition-colors">
+                  <h4 className="text-sm font-semibold text-ocean-blue line-clamp-2 group-hover:text-sky-blue transition-colors leading-snug mb-1">
                     {post.title}
                   </h4>
-                  <p className="text-xs text-warm-brown/60 mt-1">
+                  <p className="text-xs text-muted-foreground">
                     {new Date(Number(post.publishedDate)).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
                   </p>
                 </div>
@@ -118,21 +118,21 @@ export default function BlogSidebar({ posts }: BlogSidebarProps) {
       </Card>
 
       {/* Categories */}
-      <Card className="border-sage-green/20">
+      <Card className="border-sky-blue/20">
         <CardHeader>
-          <CardTitle className="text-lg font-serif text-earth-green">Categories</CardTitle>
+          <CardTitle className="text-base md:text-lg font-serif text-ocean-blue">Categories</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="space-y-2">
             {Object.entries(categories).map(([category, count]) => (
               <div 
                 key={category}
-                className="flex items-center justify-between py-2 border-b border-sage-green/10 last:border-0"
+                className="flex items-center justify-between py-2 border-b border-sky-blue/10 last:border-0"
               >
-                <span className="text-sm text-warm-brown/80 hover:text-earth-green transition-colors cursor-pointer">
+                <span className="text-sm text-foreground/80 hover:text-forest-green transition-colors cursor-pointer">
                   {category}
                 </span>
-                <Badge variant="secondary" className="bg-sage-green/20 text-earth-green">
+                <Badge variant="secondary" className="bg-mint-green/30 text-forest-green text-xs">
                   {count.toString()}
                 </Badge>
               </div>
