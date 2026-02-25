@@ -1,0 +1,36 @@
+{
+  "kind": "implementation_plan",
+  "version": "1.0",
+  "title": "Add image size option for blog post images",
+  "requirements": [
+    {
+      "id": "REQ-1",
+      "summary": "Add image size selector controls to blog post forms and apply selected sizes in the detail view",
+      "acceptanceCriteria": [
+        "An image size selector (dropdown or radio group) appears alongside each image upload field in CreateBlogPostPage and EditBlogPostPage.",
+        "Predefined size options are available: Small (25%), Medium (50%), Large (75%), Full Width (100%).",
+        "A custom option allows the user to enter explicit pixel or percentage width/height values.",
+        "The chosen image size is persisted with the post data (stored as image metadata or CSS class reference).",
+        "In BlogPostDetailPage, images are rendered with the width/height corresponding to the selected size option.",
+        "Existing posts without a size setting default to Full Width to preserve backward compatibility."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/pages/CreateBlogPostPage.tsx",
+          "operation": "modify",
+          "description": "Add an image size selector control (dropdown with options: Small 25%, Medium 50%, Large 75%, Full Width 100%, Custom) alongside the featured image upload field. Add state to track the selected size and custom width/height values. Pass the selected imageSize value to the createPost mutation as a string (e.g., 'small', 'medium', 'large', 'full', or 'custom:WxH'). Include form validation to ensure custom dimensions are provided when Custom is selected."
+        },
+        {
+          "path": "frontend/src/pages/EditBlogPostPage.tsx",
+          "operation": "modify",
+          "description": "Add an image size selector control (dropdown with options: Small 25%, Medium 50%, Large 75%, Full Width 100%, Custom) alongside the featured image upload field. Pre-populate the selector with the existing post's imageSize value if present, defaulting to Full Width if null. Add state to track the selected size and custom width/height values. Pass the updated imageSize value to the updatePost mutation. Include form validation to ensure custom dimensions are provided when Custom is selected."
+        },
+        {
+          "path": "frontend/src/pages/BlogPostDetailPage.tsx",
+          "operation": "modify",
+          "description": "Modify the featured image and content images rendering logic to apply inline width styles based on the post's imageSize field. Map 'small' to 25% width, 'medium' to 50%, 'large' to 75%, 'full' or null/undefined to 100%. For 'custom:WxH' format, parse and apply the specified dimensions. Ensure images maintain aspect ratio and are responsive (max-width: 100%). Default to Full Width (100%) for backward compatibility when imageSize is absent."
+        }
+      ]
+    }
+  ]
+}

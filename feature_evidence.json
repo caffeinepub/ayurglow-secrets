@@ -1,0 +1,26 @@
+{
+  "kind": "feature_evidence_report",
+  "features": [
+    {
+      "featureId": "feature-in-the-create-blog-post-and-edit-blog-post-admin-forms-add-an-image-size-selector-control-for-each-image-upload-field-featured-image-and-content-image-the-selector-should-offer-predefined-size-options-e-g-small-medium-large-full-width-and-a-custom-width-height-input-option-the-selected-size-should-control-the-rendered-dimensions-of-the-image-within-the-blog-post-detail-view",
+      "featureTitle": "In the Create Blog Post and Edit Blog Post admin forms, add an image size selector control for each image upload field (featured image and content image). The selector should offer predefined size options (e.g., Small, Medium, Large, Full Width) and a custom width/height input option. The selected size should control the rendered dimensions of the image within the blog post detail view.",
+      "files": [
+        "frontend/src/pages/BlogPostDetailPage.tsx",
+        "frontend/src/pages/CreateBlogPostPage.tsx",
+        "frontend/src/pages/EditBlogPostPage.tsx"
+      ],
+      "components": [
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0",
+        "blob-storage@4.0.0"
+      ],
+      "testIds": [
+        "REQ-1"
+      ],
+      "confidence": "high"
+    }
+  ]
+}
