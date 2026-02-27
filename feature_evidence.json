@@ -2,11 +2,10 @@
   "kind": "feature_evidence_report",
   "features": [
     {
-      "featureId": "feature-upgrade-the-blog-post-creation-and-editing-forms-to-include-1-a-featured-image-upload-field-at-the-top-of-the-form-before-title-content-with-image-size-fit-options-original-cover-contain-small-medium-large-display-size-selector-2-an-insert-image-button-within-the-content-editor-to-embed-images-inline-between-paragraphs-with-the-same-size-fit-options-for-each-inline-image-3-a-publication-date-picker-field-so-authors-can-schedule-or-set-the-publication-date-4-a-publish-immediately-toggle-when-enabled-the-post-is-published-instantly-upon-saving-when-disabled-it-saves-as-a-draft",
-      "featureTitle": "Upgrade the blog post creation and editing forms to include: (1) A featured image upload field at the top of the form (before title/content), with image size/fit options (original, cover, contain, small/medium/large display size selector). (2) An 'Insert Image' button within the content editor to embed images inline between paragraphs, with the same size/fit options for each inline image. (3) A publication date picker field so authors can schedule or set the publication date. (4) A 'Publish Immediately' toggle — when enabled, the post is published instantly upon saving; when disabled, it saves as a draft.",
+      "featureId": "feature-ensure-the-admin-panel-uses-the-correct-react-query-hook-that-fetches-all-blog-posts-including-unpublished-drafts-not-just-published-posts-so-admins-can-manage-all-content",
+      "featureTitle": "Ensure the admin panel uses the correct React Query hook that fetches ALL blog posts (including unpublished drafts), not just published posts, so admins can manage all content.",
       "files": [
-        "frontend/src/pages/CreateBlogPostPage.tsx",
-        "frontend/src/pages/EditBlogPostPage.tsx"
+        "frontend/src/hooks/useQueries.ts"
       ],
       "components": [
         "core-infrastructure@1.0.2",
@@ -18,47 +17,7 @@
         "authorization@4.0.0"
       ],
       "testIds": [
-        "REQ-8"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-ensure-the-blog-post-detail-page-renders-all-images-featured-and-inline-properly-with-correct-sizing-based-on-the-size-options-set-during-creation-images-must-not-be-broken-stretched-or-missing-apply-appropriate-css-object-fit-and-max-width-based-on-the-stored-size-option-for-each-image",
-      "featureTitle": "Ensure the blog post detail page renders all images (featured and inline) properly with correct sizing based on the size options set during creation. Images must not be broken, stretched, or missing. Apply appropriate CSS object-fit and max-width based on the stored size option for each image.",
-      "files": [
-        "frontend/src/pages/BlogPostDetailPage.tsx"
-      ],
-      "components": [
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0",
-        "blob-storage@4.0.0",
-        "authorization@4.0.0"
-      ],
-      "testIds": [
-        "REQ-9"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-ensure-the-comment-section-is-present-and-fully-functional-on-every-blog-post-detail-page-it-should-display-a-share-your-comment-heading-a-form-with-name-email-optional-and-comment-fields-a-submit-button-and-a-list-of-approved-comments-below-the-form-with-author-name-and-date",
-      "featureTitle": "Ensure the comment section is present and fully functional on every blog post detail page. It should display a 'Share Your Comment' heading, a form with name, email (optional), and comment fields, a submit button, and a list of approved comments below the form with author name and date.",
-      "files": [
-        "frontend/src/pages/BlogPostDetailPage.tsx"
-      ],
-      "components": [
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0",
-        "blob-storage@4.0.0",
-        "authorization@4.0.0"
-      ],
-      "testIds": [
-        "REQ-10"
+        "REQ-2"
       ],
       "confidence": "high"
     }

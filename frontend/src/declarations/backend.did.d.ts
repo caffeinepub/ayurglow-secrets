@@ -102,7 +102,7 @@ export interface _SERVICE {
     undefined
   >,
   'deletePost' : ActorMethod<[string], boolean>,
-  'getAllVisiblePosts' : ActorMethod<[], Array<BlogPostView>>,
+  'getAllPosts' : ActorMethod<[], Array<BlogPostView>>,
   'getCallerUserProfile' : ActorMethod<[], [] | [UserProfile]>,
   'getCallerUserRole' : ActorMethod<[], UserRole>,
   'getComments' : ActorMethod<[string], Array<Comment>>,

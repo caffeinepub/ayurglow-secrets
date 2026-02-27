@@ -1,307 +1,273 @@
 import { Link } from '@tanstack/react-router';
-import { Leaf, Shield, BookOpen, Sparkles, ArrowRight, Heart, Star } from 'lucide-react';
+import { ArrowRight, CheckCircle, Leaf, Star, Users, BookOpen } from 'lucide-react';
 import { useGetPublishedPosts } from '../hooks/useQueries';
 import PostCard from '../components/PostCard';
-import FeaturedPost from '../components/FeaturedPost';
+
+const offers = [
+  { emoji: '🌿', title: 'Natural Ayurvedic Health Remedies', desc: 'Time-tested herbal solutions for immunity, digestion, and overall wellness.' },
+  { emoji: '💆', title: 'Skin Care Tips for Natural Glow', desc: 'Achieve radiant, glowing skin with chemical-free Ayurvedic beauty secrets.' },
+  { emoji: '💇', title: 'Hair Fall & Hair Growth Treatments', desc: 'Strengthen roots and stimulate growth with ancient hair care wisdom.' },
+  { emoji: '🧘', title: 'Holistic Lifestyle & Wellness Advice', desc: 'Balance mind, body, and spirit through Ayurvedic daily routines.' },
+];
+
+const whyUs = [
+  '100% natural & Ayurvedic approach',
+  'Simple home remedies anyone can follow',
+  'Safe, affordable, and effective solutions',
+  'Suitable for all age groups',
+];
+
+const categories = [
+  { name: 'Health Remedies', path: '/health-remedies', image: '/assets/generated/category-health.dim_400x250.png', emoji: '🌿', color: 'from-primary/80 to-primary/60' },
+  { name: 'Skin Care', path: '/skin-care', image: '/assets/generated/category-skin.dim_400x250.png', emoji: '💆', color: 'from-secondary/80 to-secondary/60' },
+  { name: 'Hair Care', path: '/hair-care', image: '/assets/generated/category-hair.dim_400x250.png', emoji: '💇', color: 'from-leaf/80 to-leaf/60' },
+  { name: 'Weight Management', path: '/weight-management', image: '/assets/generated/category-weight.dim_400x250.png', emoji: '⚖️', color: 'from-calm/80 to-calm/60' },
+  { name: 'Lifestyle & Wellness', path: '/lifestyle-wellness', image: '/assets/generated/category-lifestyle.dim_400x250.png', emoji: '🧘', color: 'from-forest/80 to-forest/60' },
+];
+
+const stats = [
+  { icon: BookOpen, value: '100+', label: 'Ayurvedic Remedies' },
+  { icon: Users, value: '50K+', label: 'Happy Readers' },
+  { icon: Star, value: '5000+', label: 'Years of Wisdom' },
+  { icon: Leaf, value: '100%', label: 'Natural Ingredients' },
+];
 
 export default function HomePage() {
-  const { data: posts, isLoading } = useGetPublishedPosts();
-
-  const featuredPost = posts && posts.length > 0 ? posts[0] : null;
-  const recentPosts = posts && posts.length > 1 ? posts.slice(1, 4) : [];
+  const { data: posts = [], isLoading } = useGetPublishedPosts();
+  const latestPosts = posts.slice(0, 3);
 
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
       <section
-        className="relative min-h-[85vh] flex items-center justify-center overflow-hidden"
+        className="relative min-h-[90vh] flex items-center justify-center overflow-hidden"
         style={{
-          backgroundImage: 'url(/assets/generated/hero-natural-health.dim_1920x600.png)',
+          backgroundImage: `url('/assets/generated/hero-bg.dim_1920x1080.png')`,
           backgroundSize: 'cover',
           backgroundPosition: 'center',
         }}
       >
-        <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/20 to-black/50" />
-        <div className="relative z-10 text-center px-4 max-w-4xl mx-auto">
-          {/* Logo */}
+        <div className="absolute inset-0 ayur-hero-gradient" />
+        <div className="relative z-10 text-center px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto">
           <div className="flex justify-center mb-6">
             <img
               src="/assets/generated/ayurglow-logo.dim_400x120.png"
-              alt="AyurGlow Secrets Logo"
-              className="w-48 md:w-64 lg:w-72 object-contain drop-shadow-lg"
+              alt="AyurGlow Secrets"
+              className="h-16 md:h-20 w-auto brightness-0 invert"
+              onError={(e) => { e.currentTarget.style.display = 'none'; }}
             />
           </div>
-
-          <h1 className="font-heading text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight drop-shadow-md">
+          <div className="inline-flex items-center gap-2 bg-white/15 backdrop-blur-sm text-white text-sm font-medium px-4 py-2 rounded-full mb-6 border border-white/20">
+            <Leaf className="w-4 h-4" />
+            Ancient Wisdom, Modern Wellness
+          </div>
+          <h1 className="font-serif text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight">
             Welcome to AyurGlow Secrets
           </h1>
-          <p className="text-white/90 text-lg md:text-xl mb-4 max-w-2xl mx-auto drop-shadow">
-            Discover the ancient wisdom of Ayurveda for modern wellness. Natural remedies, holistic health, and timeless beauty secrets.
-          </p>
-          <p className="text-white/80 text-base md:text-lg mb-8 max-w-xl mx-auto drop-shadow">
-            Your trusted guide to natural health, radiant skin, and lustrous hair through the power of Ayurvedic traditions.
+          <p className="text-lg md:text-xl text-white/90 mb-8 max-w-2xl mx-auto leading-relaxed">
+            Ancient Ayurvedic Wisdom for Healthy Body, Glowing Skin & Strong Hair. Discover time-tested natural remedies rooted in ancient Indian wisdom.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
-              to="/blog"
-              className="inline-flex items-center gap-2 bg-earth-green text-white px-8 py-3 rounded-full font-semibold hover:bg-forest-green transition-colors shadow-lg"
-            >
-              Explore Blog <ArrowRight className="w-4 h-4" />
-            </Link>
-            <Link
               to="/health-remedies"
-              className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm text-white border border-white/40 px-8 py-3 rounded-full font-semibold hover:bg-white/30 transition-colors"
+              className="inline-flex items-center gap-2 bg-white text-primary font-semibold px-8 py-3.5 rounded-full hover:bg-white/90 transition-all shadow-lg hover:shadow-xl"
             >
-              View Remedies <Leaf className="w-4 h-4" />
+              Explore Remedies <ArrowRight className="w-4 h-4" />
             </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* What We Offer Section */}
-      <section className="py-16 bg-cream/50">
-        <div className="max-w-6xl mx-auto px-4">
-          <div className="text-center mb-12">
-            <h2 className="font-heading text-3xl md:text-4xl font-bold text-foreground mb-4">
-              What We Offer
-            </h2>
-            <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-              Comprehensive Ayurvedic knowledge for your complete wellness journey
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <div className="bg-white rounded-2xl p-6 shadow-soft border border-sage-green/20 text-center hover:shadow-md transition-shadow">
-              <div className="w-14 h-14 bg-earth-green/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                <img src="/assets/generated/icon-immunity.dim_128x128.png" alt="Health" className="w-8 h-8 object-contain" />
-              </div>
-              <h3 className="font-heading text-lg font-semibold text-foreground mb-2">Health Remedies</h3>
-              <p className="text-muted-foreground text-sm">Natural solutions for immunity, digestion, weight management, and more.</p>
-              <Link to="/health-remedies" className="inline-flex items-center gap-1 text-earth-green text-sm font-medium mt-3 hover:gap-2 transition-all">
-                Explore <ArrowRight className="w-3 h-3" />
-              </Link>
-            </div>
-
-            <div className="bg-white rounded-2xl p-6 shadow-soft border border-sage-green/20 text-center hover:shadow-md transition-shadow">
-              <div className="w-14 h-14 bg-earth-green/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                <img src="/assets/generated/icon-skin.dim_128x128.png" alt="Skin Care" className="w-8 h-8 object-contain" />
-              </div>
-              <h3 className="font-heading text-lg font-semibold text-foreground mb-2">Skin Care</h3>
-              <p className="text-muted-foreground text-sm">Ayurvedic beauty secrets for glowing, healthy, and youthful skin.</p>
-              <Link to="/skin-care" className="inline-flex items-center gap-1 text-earth-green text-sm font-medium mt-3 hover:gap-2 transition-all">
-                Explore <ArrowRight className="w-3 h-3" />
-              </Link>
-            </div>
-
-            <div className="bg-white rounded-2xl p-6 shadow-soft border border-sage-green/20 text-center hover:shadow-md transition-shadow">
-              <div className="w-14 h-14 bg-earth-green/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                <img src="/assets/generated/icon-hair.dim_128x128.png" alt="Hair Care" className="w-8 h-8 object-contain" />
-              </div>
-              <h3 className="font-heading text-lg font-semibold text-foreground mb-2">Hair Care</h3>
-              <p className="text-muted-foreground text-sm">Traditional hair treatments for growth, strength, and natural shine.</p>
-              <Link to="/hair-care" className="inline-flex items-center gap-1 text-earth-green text-sm font-medium mt-3 hover:gap-2 transition-all">
-                Explore <ArrowRight className="w-3 h-3" />
-              </Link>
-            </div>
-
-            <div className="bg-white rounded-2xl p-6 shadow-soft border border-sage-green/20 text-center hover:shadow-md transition-shadow">
-              <div className="w-14 h-14 bg-earth-green/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                <img src="/assets/generated/icon-wellness.dim_128x128.png" alt="Blog" className="w-8 h-8 object-contain" />
-              </div>
-              <h3 className="font-heading text-lg font-semibold text-foreground mb-2">Wellness Blog</h3>
-              <p className="text-muted-foreground text-sm">In-depth articles on Ayurvedic lifestyle, herbs, and holistic wellness.</p>
-              <Link to="/blog" className="inline-flex items-center gap-1 text-earth-green text-sm font-medium mt-3 hover:gap-2 transition-all">
-                Read Blog <ArrowRight className="w-3 h-3" />
-              </Link>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Why AyurGlow Secrets Section */}
-      <section className="py-16 bg-white">
-        <div className="max-w-6xl mx-auto px-4">
-          <div className="text-center mb-12">
-            <h2 className="font-heading text-3xl md:text-4xl font-bold text-foreground mb-4">
-              Why AyurGlow Secrets?
-            </h2>
-            <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-              We bring you authentic Ayurvedic wisdom backed by tradition and modern understanding
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div className="flex gap-4 items-start">
-              <div className="w-12 h-12 bg-earth-green/10 rounded-xl flex items-center justify-center flex-shrink-0">
-                <Leaf className="w-6 h-6 text-earth-green" />
-              </div>
-              <div>
-                <h3 className="font-heading text-xl font-semibold text-foreground mb-2">100% Natural Ingredients</h3>
-                <p className="text-muted-foreground">All our remedies use natural, plant-based ingredients that have been trusted for thousands of years in Ayurvedic practice.</p>
-              </div>
-            </div>
-
-            <div className="flex gap-4 items-start">
-              <div className="w-12 h-12 bg-earth-green/10 rounded-xl flex items-center justify-center flex-shrink-0">
-                <Shield className="w-6 h-6 text-earth-green" />
-              </div>
-              <div>
-                <h3 className="font-heading text-xl font-semibold text-foreground mb-2">Trusted Traditions</h3>
-                <p className="text-muted-foreground">Our knowledge is rooted in authentic Ayurvedic texts and practices passed down through generations of healers and practitioners.</p>
-              </div>
-            </div>
-
-            <div className="flex gap-4 items-start">
-              <div className="w-12 h-12 bg-earth-green/10 rounded-xl flex items-center justify-center flex-shrink-0">
-                <BookOpen className="w-6 h-6 text-earth-green" />
-              </div>
-              <div>
-                <h3 className="font-heading text-xl font-semibold text-foreground mb-2">Expert Knowledge</h3>
-                <p className="text-muted-foreground">Each remedy and article is carefully researched and presented with detailed instructions to ensure safe and effective application.</p>
-              </div>
-            </div>
-
-            <div className="flex gap-4 items-start">
-              <div className="w-12 h-12 bg-earth-green/10 rounded-xl flex items-center justify-center flex-shrink-0">
-                <Sparkles className="w-6 h-6 text-earth-green" />
-              </div>
-              <div>
-                <h3 className="font-heading text-xl font-semibold text-foreground mb-2">Holistic Approach</h3>
-                <p className="text-muted-foreground">We address health from a whole-body perspective, combining physical, mental, and spiritual wellness for complete balance.</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Blog Posts Section */}
-      <section className="py-16 bg-cream/30">
-        <div className="max-w-6xl mx-auto px-4">
-          <div className="flex items-center justify-between mb-10">
-            <div>
-              <h2 className="font-heading text-3xl md:text-4xl font-bold text-foreground mb-2">
-                Latest from the Blog
-              </h2>
-              <p className="text-muted-foreground">Discover our latest Ayurvedic insights and wellness tips</p>
-            </div>
             <Link
               to="/blog"
-              className="hidden md:inline-flex items-center gap-2 text-earth-green font-medium hover:gap-3 transition-all"
+              className="inline-flex items-center gap-2 bg-transparent border-2 border-white text-white font-semibold px-8 py-3.5 rounded-full hover:bg-white/10 transition-all"
             >
-              View All <ArrowRight className="w-4 h-4" />
+              Read Our Blog
             </Link>
           </div>
-
-          {isLoading ? (
-            <div className="flex justify-center py-12">
-              <div className="w-10 h-10 border-4 border-earth-green border-t-transparent rounded-full animate-spin" />
-            </div>
-          ) : posts && posts.length > 0 ? (
-            <div className="space-y-8">
-              {featuredPost && <FeaturedPost post={featuredPost} />}
-              {recentPosts.length > 0 && (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {recentPosts.map((post) => (
-                    <PostCard key={post.id} post={post} />
-                  ))}
-                </div>
-              )}
-            </div>
-          ) : (
-            <div className="text-center py-12 bg-white rounded-2xl border border-sage-green/20">
-              <Leaf className="w-12 h-12 text-earth-green/40 mx-auto mb-4" />
-              <p className="text-muted-foreground text-lg">No blog posts yet. Check back soon!</p>
-            </div>
-          )}
-
-          <div className="text-center mt-8 md:hidden">
-            <Link
-              to="/blog"
-              className="inline-flex items-center gap-2 text-earth-green font-medium"
-            >
-              View All Posts <ArrowRight className="w-4 h-4" />
-            </Link>
+        </div>
+        {/* Scroll indicator */}
+        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce">
+          <div className="w-6 h-10 border-2 border-white/50 rounded-full flex items-start justify-center pt-2">
+            <div className="w-1.5 h-3 bg-white/70 rounded-full" />
           </div>
         </div>
       </section>
 
-      {/* Category Cards Section */}
-      <section className="py-16 bg-white">
-        <div className="max-w-6xl mx-auto px-4">
-          <div className="text-center mb-12">
-            <h2 className="font-heading text-3xl md:text-4xl font-bold text-foreground mb-4">
-              Explore by Category
-            </h2>
-            <p className="text-muted-foreground text-lg">
-              Find the perfect Ayurvedic solution for your wellness needs
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <Link to="/health-remedies" className="group relative rounded-2xl overflow-hidden shadow-soft hover:shadow-md transition-shadow">
-              <div className="h-56 bg-gradient-to-br from-earth-green to-forest-green flex items-center justify-center">
-                <img src="/assets/generated/icon-immunity.dim_128x128.png" alt="Health Remedies" className="w-20 h-20 object-contain opacity-80 group-hover:scale-110 transition-transform duration-300" />
-              </div>
-              <div className="p-5 bg-white border border-sage-green/20 border-t-0 rounded-b-2xl">
-                <h3 className="font-heading text-xl font-bold text-foreground mb-1">Health Remedies</h3>
-                <p className="text-muted-foreground text-sm">Immunity, digestion, weight management & more</p>
-                <span className="inline-flex items-center gap-1 text-earth-green text-sm font-medium mt-2 group-hover:gap-2 transition-all">
-                  Explore <ArrowRight className="w-3 h-3" />
-                </span>
-              </div>
-            </Link>
-
-            <Link to="/skin-care" className="group relative rounded-2xl overflow-hidden shadow-soft hover:shadow-md transition-shadow">
-              <div className="h-56 bg-gradient-to-br from-warm-brown to-gold flex items-center justify-center">
-                <img src="/assets/generated/icon-skin.dim_128x128.png" alt="Skin Care" className="w-20 h-20 object-contain opacity-80 group-hover:scale-110 transition-transform duration-300" />
-              </div>
-              <div className="p-5 bg-white border border-sage-green/20 border-t-0 rounded-b-2xl">
-                <h3 className="font-heading text-xl font-bold text-foreground mb-1">Skin Care</h3>
-                <p className="text-muted-foreground text-sm">Natural glow, acne treatment, anti-aging & more</p>
-                <span className="inline-flex items-center gap-1 text-earth-green text-sm font-medium mt-2 group-hover:gap-2 transition-all">
-                  Explore <ArrowRight className="w-3 h-3" />
-                </span>
-              </div>
-            </Link>
-
-            <Link to="/hair-care" className="group relative rounded-2xl overflow-hidden shadow-soft hover:shadow-md transition-shadow">
-              <div className="h-56 bg-gradient-to-br from-ocean-blue to-teal flex items-center justify-center">
-                <img src="/assets/generated/icon-hair.dim_128x128.png" alt="Hair Care" className="w-20 h-20 object-contain opacity-80 group-hover:scale-110 transition-transform duration-300" />
-              </div>
-              <div className="p-5 bg-white border border-sage-green/20 border-t-0 rounded-b-2xl">
-                <h3 className="font-heading text-xl font-bold text-foreground mb-1">Hair Care</h3>
-                <p className="text-muted-foreground text-sm">Hair growth, dandruff control, oils & masks</p>
-                <span className="inline-flex items-center gap-1 text-earth-green text-sm font-medium mt-2 group-hover:gap-2 transition-all">
-                  Explore <ArrowRight className="w-3 h-3" />
-                </span>
-              </div>
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* Testimonials / Trust Section */}
-      <section className="py-16 bg-earth-green/5">
-        <div className="max-w-4xl mx-auto px-4 text-center">
-          <h2 className="font-heading text-3xl md:text-4xl font-bold text-foreground mb-4">
-            Trusted by Wellness Seekers
-          </h2>
-          <p className="text-muted-foreground text-lg mb-10">
-            Join thousands who have discovered the power of Ayurvedic wisdom
-          </p>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {[
-              { icon: Heart, label: 'Natural Remedies', value: '100+' },
-              { icon: Star, label: 'Happy Readers', value: '10K+' },
-              { icon: BookOpen, label: 'Expert Articles', value: '50+' },
-            ].map(({ icon: Icon, label, value }) => (
-              <div key={label} className="bg-white rounded-2xl p-6 shadow-soft border border-sage-green/20">
-                <Icon className="w-8 h-8 text-earth-green mx-auto mb-3" />
-                <div className="font-heading text-3xl font-bold text-foreground mb-1">{value}</div>
-                <div className="text-muted-foreground text-sm">{label}</div>
+      {/* Stats */}
+      <section className="bg-primary py-10">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+            {stats.map((stat) => (
+              <div key={stat.label} className="text-center">
+                <stat.icon className="w-6 h-6 text-primary-foreground/80 mx-auto mb-2" />
+                <div className="font-serif text-2xl md:text-3xl font-bold text-primary-foreground">{stat.value}</div>
+                <div className="text-primary-foreground/75 text-sm">{stat.label}</div>
               </div>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* What We Offer */}
+      <section className="py-16 md:py-20 bg-background">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h2 className="ayur-section-heading mb-3">What We Offer</h2>
+            <div className="ayur-divider" />
+            <p className="text-muted-foreground max-w-xl mx-auto mt-4">
+              Comprehensive Ayurvedic guidance for every aspect of your health and beauty journey.
+            </p>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {offers.map((offer) => (
+              <div
+                key={offer.title}
+                className="bg-card rounded-2xl p-6 border border-border shadow-card ayur-card-hover text-center"
+              >
+                <div className="text-4xl mb-4">{offer.emoji}</div>
+                <h3 className="font-serif text-lg font-semibold text-foreground mb-2">{offer.title}</h3>
+                <p className="text-muted-foreground text-sm leading-relaxed">{offer.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Why AyurGlow Secrets */}
+      <section className="py-16 md:py-20 bg-accent/30">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <div>
+              <h2 className="ayur-section-heading mb-3">Why AyurGlow Secrets?</h2>
+              <div className="w-16 h-1 bg-primary rounded-full mb-6" />
+              <p className="text-muted-foreground mb-8 leading-relaxed">
+                We believe true beauty and health begin from within. Through balanced nutrition, herbal remedies, and mindful living, Ayurveda offers sustainable healing without side effects.
+              </p>
+              <ul className="space-y-4">
+                {whyUs.map((point) => (
+                  <li key={point} className="flex items-start gap-3">
+                    <CheckCircle className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
+                    <span className="text-foreground font-medium">{point}</span>
+                  </li>
+                ))}
+              </ul>
+              <Link
+                to="/about"
+                className="inline-flex items-center gap-2 mt-8 text-primary font-semibold hover:gap-3 transition-all"
+              >
+                Learn More About Us <ArrowRight className="w-4 h-4" />
+              </Link>
+            </div>
+            <div className="relative">
+              <img
+                src="/assets/generated/hero-natural-health.dim_1920x600.png"
+                alt="Ayurvedic herbs and remedies"
+                className="rounded-3xl shadow-card-hover w-full object-cover h-80"
+                onError={(e) => {
+                  e.currentTarget.src = '/assets/generated/hero-bg.dim_1920x1080.png';
+                }}
+              />
+              <div className="absolute -bottom-4 -left-4 bg-primary text-primary-foreground rounded-2xl p-4 shadow-herb">
+                <div className="font-serif text-2xl font-bold">5000+</div>
+                <div className="text-primary-foreground/80 text-xs">Years of Ayurvedic Wisdom</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Categories */}
+      <section className="py-16 md:py-20 bg-background">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h2 className="ayur-section-heading mb-3">Explore Categories</h2>
+            <div className="ayur-divider" />
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-5">
+            {categories.map((cat) => (
+              <Link
+                key={cat.path}
+                to={cat.path}
+                className="group relative overflow-hidden rounded-2xl shadow-card ayur-card-hover"
+              >
+                <div className="aspect-[4/3] relative">
+                  <img
+                    src={cat.image}
+                    alt={cat.name}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    onError={(e) => {
+                      e.currentTarget.style.display = 'none';
+                    }}
+                  />
+                  <div className={`absolute inset-0 bg-gradient-to-t ${cat.color} to-transparent`} />
+                  <div className="absolute bottom-0 left-0 right-0 p-4 text-white">
+                    <div className="text-2xl mb-1">{cat.emoji}</div>
+                    <h3 className="font-serif font-semibold text-sm leading-tight">{cat.name}</h3>
+                  </div>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Latest Blog Posts */}
+      {(latestPosts.length > 0 || isLoading) && (
+        <section className="py-16 md:py-20 bg-muted/30">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex items-center justify-between mb-10">
+              <div>
+                <h2 className="ayur-section-heading mb-2">Latest Articles</h2>
+                <div className="w-16 h-1 bg-primary rounded-full" />
+              </div>
+              <Link
+                to="/blog"
+                className="inline-flex items-center gap-2 text-primary font-medium hover:gap-3 transition-all text-sm"
+              >
+                View All <ArrowRight className="w-4 h-4" />
+              </Link>
+            </div>
+            {isLoading ? (
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {[1, 2, 3].map((i) => (
+                  <div key={i} className="bg-card rounded-2xl overflow-hidden border border-border animate-pulse">
+                    <div className="h-48 bg-muted" />
+                    <div className="p-5 space-y-3">
+                      <div className="h-4 bg-muted rounded w-1/3" />
+                      <div className="h-5 bg-muted rounded w-full" />
+                      <div className="h-4 bg-muted rounded w-2/3" />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {latestPosts.map((post) => (
+                  <PostCard key={post.id} post={post} />
+                ))}
+              </div>
+            )}
+          </div>
+        </section>
+      )}
+
+      {/* About Section */}
+      <section className="py-16 md:py-20 bg-background">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <div className="inline-flex items-center justify-center w-16 h-16 bg-primary/10 rounded-full mb-6">
+            <Leaf className="w-8 h-8 text-primary" />
+          </div>
+          <h2 className="ayur-section-heading mb-3">About AyurGlow Secrets</h2>
+          <div className="ayur-divider" />
+          <p className="text-muted-foreground leading-relaxed mt-6 text-lg">
+            AyurGlow Secrets is a wellness platform dedicated to sharing the healing power of Ayurveda for a healthier life, glowing skin, and stronger hair. Inspired by ancient Ayurvedic texts and traditional Indian home remedies, our goal is to help people adopt natural solutions over chemical-based treatments.
+          </p>
+          <p className="text-muted-foreground leading-relaxed mt-4">
+            We believe true beauty and health begin from within. Through balanced nutrition, herbal remedies, and mindful living, Ayurveda offers sustainable healing without side effects. Our content is carefully researched and simplified to help you easily follow Ayurvedic practices in your daily life.
+          </p>
+          <Link
+            to="/about"
+            className="inline-flex items-center gap-2 mt-8 bg-primary text-primary-foreground font-semibold px-8 py-3 rounded-full hover:bg-primary/90 transition-all shadow-herb"
+          >
+            Read Our Story <ArrowRight className="w-4 h-4" />
+          </Link>
         </div>
       </section>
     </div>

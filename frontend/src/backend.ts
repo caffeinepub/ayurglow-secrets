@@ -164,7 +164,7 @@ export interface backendInterface {
     canCallerAccessAdminSection(): Promise<boolean>;
     createPost(id: string, title: string, slug: string, category: string, content: string, excerpt: string, readTime: bigint, author: string, tags: Array<string>, featuredImage: ImageMeta | null, inlineImages: Array<InlineImage>, isPublished: boolean, publishImmediately: boolean, publicationDate: bigint | null): Promise<void>;
     deletePost(id: string): Promise<boolean>;
-    getAllVisiblePosts(): Promise<Array<BlogPostView>>;
+    getAllPosts(): Promise<Array<BlogPostView>>;
     getCallerUserProfile(): Promise<UserProfile | null>;
     getCallerUserRole(): Promise<UserRole>;
     getComments(postId: string): Promise<Array<Comment>>;
@@ -347,17 +347,17 @@ export class Backend implements backendInterface {
             return result;
         }
     }
-    async getAllVisiblePosts(): Promise<Array<BlogPostView>> {
+    async getAllPosts(): Promise<Array<BlogPostView>> {
         if (this.processError) {
             try {
-                const result = await this.actor.getAllVisiblePosts();
+                const result = await this.actor.getAllPosts();
                 return from_candid_vec_n22(this._uploadFile, this._downloadFile, result);
             } catch (e) {
                 this.processError(e);
                 throw new Error("unreachable");
             }
         } else {
-            const result = await this.actor.getAllVisiblePosts();
+            const result = await this.actor.getAllPosts();
             return from_candid_vec_n22(this._uploadFile, this._downloadFile, result);
         }
     }

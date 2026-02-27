@@ -8,9 +8,7 @@ import Storage "blob-storage/Storage";
 import MixinStorage "blob-storage/Mixin";
 import AccessControl "authorization/access-control";
 import MixinAuthorization "authorization/MixinAuthorization";
-import Migration "migration";
 
-(with migration = Migration.run)
 actor {
   type Comment = {
     author : Text;
@@ -134,8 +132,8 @@ actor {
     publishImmediately : Bool,
     publicationDate : ?Int,
   ) : async () {
-    if (not (AccessControl.hasPermission(accessControlState, caller, #user))) {
-      Runtime.trap("Unauthorized: Only users can create posts");
+    if (not (AccessControl.hasPermission(accessControlState, caller, #admin))) {
+      Runtime.trap("Unauthorized: Only admins can create posts");
     };
     let newPost : BlogPost = {
       id;
@@ -175,8 +173,8 @@ actor {
     publishImmediately : Bool,
     publicationDate : ?Int,
   ) : async Bool {
-    if (not (AccessControl.hasPermission(accessControlState, caller, #user))) {
-      Runtime.trap("Unauthorized: Only users can update posts");
+    if (not (AccessControl.hasPermission(accessControlState, caller, #admin))) {
+      Runtime.trap("Unauthorized: Only admins can update posts");
     };
     switch (blogPosts.get(id)) {
       case (null) { false };
@@ -278,7 +276,7 @@ actor {
     iter.map(func(p) { toBlogPostView(p) }).toArray();
   };
 
-  public query ({ caller }) func getAllVisiblePosts() : async [BlogPostView] {
+  public query ({ caller }) func getAllPosts() : async [BlogPostView] {
     if (not (AccessControl.hasPermission(accessControlState, caller, #admin))) {
       Runtime.trap("Unauthorized: Only admins can view all posts");
     };

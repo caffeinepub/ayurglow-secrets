@@ -56,7 +56,7 @@ export function useGetAllVisiblePosts() {
     queryKey: ['allVisiblePosts'],
     queryFn: async () => {
       if (!actor) return [];
-      return actor.getAllVisiblePosts();
+      return actor.getAllPosts();
     },
     enabled: !!actor && !isFetching,
   });
@@ -259,19 +259,4 @@ export function useGetCallerUserProfile() {
     isLoading: actorFetching || query.isLoading,
     isFetched: !!actor && query.isFetched,
   };
-}
-
-export function useSaveCallerUserProfile() {
-  const { actor } = useActor();
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: async (profile: { name: string }) => {
-      if (!actor) throw new Error('Actor not available');
-      return actor.saveCallerUserProfile(profile);
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['currentUserProfile'] });
-    },
-  });
 }

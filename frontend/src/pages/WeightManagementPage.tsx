@@ -3,65 +3,49 @@ import { ArrowRight } from 'lucide-react';
 
 const subcategories = [
   {
-    title: 'Immunity Boosting',
-    desc: 'Strengthen your immune system with powerful Ayurvedic herbs and tonics.',
-    path: '/health-remedies/immunity',
-    emoji: '🛡️',
+    title: 'Fat Burning Drinks',
+    desc: 'Powerful Ayurvedic drinks that boost metabolism and help burn fat naturally.',
+    path: '/weight-management/fat-burning-drinks',
+    emoji: '🍵',
     color: 'bg-primary/10 border-primary/20',
     textColor: 'text-primary',
   },
   {
-    title: 'Digestion & Gut Health',
-    desc: 'Improve digestion, reduce bloating, and balance your digestive fire naturally.',
-    path: '/health-remedies/digestion',
-    emoji: '🌱',
+    title: 'Metabolism Boosters',
+    desc: 'Ayurvedic herbs and spices that fire up your metabolism for healthy weight loss.',
+    path: '/weight-management/metabolism-boosters',
+    emoji: '🔥',
     color: 'bg-secondary/10 border-secondary/20',
     textColor: 'text-secondary',
   },
   {
-    title: 'Weight Management',
-    desc: 'Achieve healthy weight balance with metabolism-boosting Ayurvedic remedies.',
-    path: '/health-remedies/weight-management',
-    emoji: '⚖️',
+    title: 'Healthy Weight Loss Recipes',
+    desc: 'Nutritious Ayurvedic recipes designed to support healthy, sustainable weight management.',
+    path: '/weight-management/weight-loss-recipes',
+    emoji: '🥗',
     color: 'bg-leaf/10 border-leaf/20',
     textColor: 'text-leaf',
   },
-  {
-    title: 'Diabetes & BP Support',
-    desc: 'Natural Ayurvedic support for managing blood sugar and blood pressure levels.',
-    path: '/health-remedies/diabetes-bp',
-    emoji: '❤️',
-    color: 'bg-calm/10 border-calm/20',
-    textColor: 'text-calm',
-  },
-  {
-    title: 'Stress & Sleep Solutions',
-    desc: 'Calm your mind and improve sleep quality with Ayurvedic herbs and practices.',
-    path: '/health-remedies/stress-sleep',
-    emoji: '🌙',
-    color: 'bg-forest/10 border-forest/20',
-    textColor: 'text-forest',
-  },
 ];
 
-export default function HealthRemediesPage() {
+export default function WeightManagementPage() {
   return (
     <div className="min-h-screen">
       {/* Hero */}
       <section
         className="relative py-20 text-white text-center overflow-hidden"
         style={{
-          backgroundImage: `url('/assets/generated/category-health.dim_400x250.png')`,
+          backgroundImage: `url('/assets/generated/category-weight.dim_400x250.png')`,
           backgroundSize: 'cover',
           backgroundPosition: 'center',
         }}
       >
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/90 to-forest/85" />
+        <div className="absolute inset-0 bg-gradient-to-br from-calm/90 to-primary/85" />
         <div className="relative z-10 max-w-3xl mx-auto px-4">
-          <div className="text-5xl mb-4">🌿</div>
-          <h1 className="font-serif text-4xl md:text-5xl font-bold mb-4">Health Remedies</h1>
+          <div className="text-5xl mb-4">⚖️</div>
+          <h1 className="font-serif text-4xl md:text-5xl font-bold mb-4">Weight Management</h1>
           <p className="text-white/85 text-lg">
-            Discover powerful Ayurvedic remedies for immunity, digestion, weight management, and more.
+            Achieve your ideal weight naturally with Ayurvedic wisdom and metabolism-boosting remedies.
           </p>
         </div>
       </section>
@@ -72,6 +56,9 @@ export default function HealthRemediesPage() {
           <div className="text-center mb-12">
             <h2 className="font-serif text-3xl font-bold text-foreground mb-3">Choose a Category</h2>
             <div className="w-12 h-1 bg-primary rounded-full mx-auto" />
+            <p className="text-muted-foreground mt-4 max-w-xl mx-auto">
+              Explore our collection of Ayurvedic weight management solutions for a healthier, balanced body.
+            </p>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {subcategories.map((cat) => (
@@ -89,6 +76,16 @@ export default function HealthRemediesPage() {
               </Link>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* Info Section */}
+      <section className="py-12 bg-accent/20">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h2 className="font-serif text-2xl font-bold text-foreground mb-4">Ayurvedic Approach to Weight Management</h2>
+          <p className="text-muted-foreground leading-relaxed">
+            Ayurveda views weight management as a holistic process involving proper digestion (Agni), balanced doshas, and mindful eating. Rather than crash diets, Ayurveda recommends sustainable lifestyle changes, specific herbs, and dietary adjustments tailored to your body type (Prakriti) for long-term results.
+          </p>
         </div>
       </section>
     </div>

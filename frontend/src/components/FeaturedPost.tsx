@@ -7,7 +7,7 @@ interface FeaturedPostProps {
 }
 
 function formatPostDate(post: BlogPostView): string {
-  const timestamp = post.publishedDate ?? post.createdDate;
+  const timestamp = post.publicationDate ?? post.publishedDate ?? post.createdDate;
   return new Date(Number(timestamp) / 1_000_000).toLocaleDateString('en-US', {
     year: 'numeric',
     month: 'long',
@@ -22,15 +22,16 @@ export default function FeaturedPost({ post }: FeaturedPostProps) {
   const formattedDate = formatPostDate(post);
 
   return (
-    <article className="relative rounded-2xl overflow-hidden shadow-md group">
-      <Link to="/blog/$slug" params={{ slug: post.slug }} className="block">
+    <article className="relative rounded-2xl overflow-hidden shadow-card-hover group">
+      <Link to="/blog/$postId" params={{ postId: post.slug }} className="block">
         <div className="relative h-80 md:h-96">
           <img
             src={imageUrl}
             alt={post.title}
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
             onError={(e) => {
-              (e.target as HTMLImageElement).src = '/assets/generated/blog-featured-placeholder.dim_800x450.png';
+              (e.target as HTMLImageElement).src =
+                '/assets/generated/blog-featured-placeholder.dim_800x450.png';
             }}
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
@@ -38,18 +39,16 @@ export default function FeaturedPost({ post }: FeaturedPostProps) {
 
         <div className="absolute inset-0 flex flex-col justify-end p-6 md:p-8">
           <div className="mb-3">
-            <span className="bg-earth-green text-white text-xs font-medium px-3 py-1 rounded-full">
+            <span className="bg-primary text-primary-foreground text-xs font-medium px-3 py-1 rounded-full">
               Featured · {post.category}
             </span>
           </div>
 
-          <h2 className="font-heading text-2xl md:text-3xl font-bold text-white mb-3 line-clamp-2 group-hover:text-cream transition-colors">
+          <h2 className="font-serif text-2xl md:text-3xl font-bold text-white mb-3 line-clamp-2 group-hover:text-white/90 transition-colors">
             {post.title}
           </h2>
 
-          <p className="text-white/80 text-sm md:text-base line-clamp-2 mb-4">
-            {post.excerpt}
-          </p>
+          <p className="text-white/80 text-sm md:text-base line-clamp-2 mb-4">{post.excerpt}</p>
 
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4 text-white/70 text-xs">
@@ -67,7 +66,7 @@ export default function FeaturedPost({ post }: FeaturedPostProps) {
               </span>
             </div>
 
-            <span className="flex items-center gap-1 text-cream text-sm font-medium group-hover:gap-2 transition-all">
+            <span className="flex items-center gap-1 text-white text-sm font-medium group-hover:gap-2 transition-all">
               Read More <ArrowRight className="w-4 h-4" />
             </span>
           </div>

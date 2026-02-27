@@ -1,36 +1,18 @@
 {
   "schemaVersion": "1.0.0",
   "projectStateVersion": 3,
-  "summary": "AyurGlow Secrets – an Ayurvedic wellness blog/website with categories for Health Remedies, Skin Care, Hair Care, Weight Management, and Lifestyle. Features a blue and green color scheme, custom logo, hero section, About Us, social media links, and a blog system with image upload, image sizing, comment section, publication date, and publish-immediately options. Monetization via Google AdSense and affiliate marketing.",
-  "architectural_notes": [
-    "Design inspired by naturalremedytips.com style (not copied) — magazine-style blog layout",
-    "Do not include any 'Built with Caffeine.ai' attribution anywhere on the site"
+  "summary": "Ayurvedic/wellness blog website with homepage, blue-green theme, logo, blog with image upload, comment section, and category pages. Admin panel blog post visibility issue being investigated.",
+  "architectural_notes": [],
+  "known_issues": [
+    "Blog posts not showing in admin panel"
   ],
-  "known_issues": [],
-  "isFixRequest": false,
-  "imageRequirements": "## Required Images\n- AyurGlow Secrets logo with a stylized lotus or herb leaf combined with a glowing radiance motif, site name in elegant serif font, green and teal blue color palette (ayurglow-logo.dim_300x80.png)\n- Hero section background with lush green Ayurvedic herbs, turmeric, neem leaves, and gentle golden light on a deep green gradient (hero-bg.dim_1440x600.png)\n- Health Remedies category card illustration with Ayurvedic herbs like ashwagandha and tulsi in green tones (category-health.dim_400x250.png)\n- Skin Care category card illustration with rose petals, saffron strands, and aloe vera in soft teal and pink tones (category-skin.dim_400x250.png)\n- Hair Care category card illustration with hibiscus flowers, coconut, and amla in deep green and blue tones (category-hair.dim_400x250.png)\n- Weight Management category card illustration with lemon, ginger, and green tea leaves in fresh green tones (category-weight.dim_400x250.png)\n- Lifestyle category card illustration with a serene yoga silhouette at sunrise in blue and golden tones (category-lifestyle.dim_400x250.png)",
+  "isFixRequest": true,
   "existing_features": [
     {
-      "id": "feature-upgrade-the-blog-post-creation-and-editing-forms-to-include-1-a-featured-image-upload-field-at-the-top-of-the-form-before-title-content-with-image-size-fit-options-original-cover-contain-small-medium-large-display-size-selector-2-an-insert-image-button-within-the-content-editor-to-embed-images-inline-between-paragraphs-with-the-same-size-fit-options-for-each-inline-image-3-a-publication-date-picker-field-so-authors-can-schedule-or-set-the-publication-date-4-a-publish-immediately-toggle-when-enabled-the-post-is-published-instantly-upon-saving-when-disabled-it-saves-as-a-draft",
-      "title": "Upgrade the blog post creation and editing forms to include: (1) A featured image upload field at the top of the form (before title/content), with image size/fit options (original, cover, contain, small/medium/large display size selector). (2) An 'Insert Image' button within the content editor to embed images inline between paragraphs, with the same size/fit options for each inline image. (3) A publication date picker field so authors can schedule or set the publication date. (4) A 'Publish Immediately' toggle — when enabled, the post is published instantly upon saving; when disabled, it saves as a draft.",
+      "id": "feature-ensure-the-admin-panel-uses-the-correct-react-query-hook-that-fetches-all-blog-posts-including-unpublished-drafts-not-just-published-posts-so-admins-can-manage-all-content",
+      "title": "Ensure the admin panel uses the correct React Query hook that fetches ALL blog posts (including unpublished drafts), not just published posts, so admins can manage all content.",
       "reqIds": [
-        "REQ-8"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-ensure-the-blog-post-detail-page-renders-all-images-featured-and-inline-properly-with-correct-sizing-based-on-the-size-options-set-during-creation-images-must-not-be-broken-stretched-or-missing-apply-appropriate-css-object-fit-and-max-width-based-on-the-stored-size-option-for-each-image",
-      "title": "Ensure the blog post detail page renders all images (featured and inline) properly with correct sizing based on the size options set during creation. Images must not be broken, stretched, or missing. Apply appropriate CSS object-fit and max-width based on the stored size option for each image.",
-      "reqIds": [
-        "REQ-9"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-ensure-the-comment-section-is-present-and-fully-functional-on-every-blog-post-detail-page-it-should-display-a-share-your-comment-heading-a-form-with-name-email-optional-and-comment-fields-a-submit-button-and-a-list-of-approved-comments-below-the-form-with-author-name-and-date",
-      "title": "Ensure the comment section is present and fully functional on every blog post detail page. It should display a 'Share Your Comment' heading, a form with name, email (optional), and comment fields, a submit button, and a list of approved comments below the form with author name and date.",
-      "reqIds": [
-        "REQ-10"
+        "REQ-2"
       ],
       "version": 1
     }
@@ -38,131 +20,29 @@
   "new_feature_requests": [
     {
       "id": "AR-1",
-      "summary": "Build full AyurGlow Secrets website with hero section, tagline, What We Offer, Why AyurGlow, and About Us content",
+      "summary": "Fix admin panel so blog posts display and can be edited properly",
       "reqIds": [],
       "status": "pending"
     },
     {
       "id": "AR-2",
-      "summary": "Category structure: Health Remedies, Skin Care, Hair Care, Weight Management, Lifestyle — all clickable and opening relevant content",
-      "reqIds": [],
-      "status": "pending"
-    },
-    {
-      "id": "AR-3",
-      "summary": "Blog system with image upload (beginning + in-between content), image size options, comment section, publication date, and publish-immediately toggle",
-      "reqIds": [],
-      "status": "pending"
-    },
-    {
-      "id": "AR-4",
-      "summary": "Blue and green color scheme with custom AyurGlow Secrets logo",
-      "reqIds": [],
-      "status": "pending"
-    },
-    {
-      "id": "AR-5",
-      "summary": "Social media links section (Instagram, Facebook, YouTube, etc.) in footer as 'Connect With Us'",
-      "reqIds": [],
-      "status": "pending"
-    },
-    {
-      "id": "AR-6",
-      "summary": "Remove 'Built with Caffeine.ai' branding from the website",
-      "reqIds": [],
-      "status": "pending"
-    },
-    {
-      "id": "AR-7",
-      "summary": "Redesign the entire frontend with a cohesive blue and green color palette (emerald/forest green + teal/ocean blue tones). Apply consistently across all pages, navigation, buttons, cards, hero sections, and footer. Replace any purple, orange, or other off-brand accent colors throughout the app.",
+      "summary": "Fix the admin panel (AdminPostsPage) so that all blog posts are fetched and displayed correctly in the posts list table, including posts created via the Create Blog Post form.",
       "reqIds": [
         "REQ-1"
       ],
       "status": "pending"
     },
     {
-      "id": "AR-8",
-      "summary": "Create and display an AyurGlow Secrets logo in the site header/navigation. The logo should combine leaf/herb and glow/radiance motifs with the site name 'AyurGlow Secrets' in an elegant serif or organic font. Display it in the navigation bar and footer.",
-      "reqIds": [
-        "REQ-2"
-      ],
-      "status": "pending"
-    },
-    {
-      "id": "AR-9",
-      "summary": "Rebuild the Homepage with the following exact sections: (1) Hero Section with title 'Welcome to AyurGlow Secrets', the tagline 'Ancient Ayurvedic Wisdom for Healthy Body, Glowing Skin & Strong Hair', the intro paragraph, and a prominent CTA button. (2) 'What We Offer' section with four feature tiles: 🌿 Natural Ayurvedic Health Remedies, 💆 Skin Care Tips for Natural Glow, 💇 Hair Fall & Hair Growth Treatments, 🧘 Holistic Lifestyle & Wellness Advice. (3) 'Why AyurGlow Secrets?' section listing: 100% natural & Ayurvedic approach, Simple home remedies, Safe, affordable, and effective, Suitable for all age groups. (4) Featured blog posts section. (5) Recent posts section.",
+      "id": "AR-4",
+      "summary": "Verify and fix the backend getAllPosts (or equivalent) method to correctly return all blog posts to admin callers, ensuring the Motoko actor's access control does not accidentally filter out posts for anonymous or non-admin callers when accessed from the admin panel.",
       "reqIds": [
         "REQ-3"
-      ],
-      "status": "pending"
-    },
-    {
-      "id": "AR-10",
-      "summary": "Rebuild the About Us page with the Ayurvedic-tone content provided: platform mission about sharing Ayurvedic healing power, the belief statement about beauty and health beginning from within, and the note about content being carefully researched and simplified. Present in styled sections with Ayurvedic visual motifs.",
-      "reqIds": [
-        "REQ-4"
-      ],
-      "status": "pending"
-    },
-    {
-      "id": "AR-11",
-      "summary": "Ensure all six main category landing pages exist and are fully accessible from navigation and homepage: (1) Health Remedies — with subcategories: Immunity Boosting, Digestion & Gut Health, Weight Management, Diabetes & BP Support, Stress & Sleep Solutions. (2) Skin Care — with subcategories: Natural Glow Remedies, Acne & Pimples, Pigmentation & Dark Spots, Anti-Aging Ayurveda, DIY Herbal Face Packs. (3) Hair Care — with subcategories: Hair Fall Treatment, Hair Growth Remedies, Dandruff & Scalp Care, Grey Hair Solutions, Ayurvedic Oils & Masks. (4) Weight Management — with dedicated subcategory pages for Ayurvedic weight loss remedies. (5) Lifestyle — with subcategory pages covering Ayurvedic daily routines, mindful living, and wellness tips. Each subcategory card must be clickable and open a functional remedy detail page.",
-      "reqIds": [
-        "REQ-5"
-      ],
-      "status": "pending"
-    },
-    {
-      "id": "AR-12",
-      "summary": "Add dedicated Weight Management category pages with Ayurvedic remedy content. Create a Weight Management landing page and at least three subcategory pages covering: (a) Ayurvedic herbs and teas for weight loss (e.g., Triphala, Guggul, Ginger), (b) Ayurvedic diet and metabolism remedies, (c) Yoga and lifestyle tips for weight management. Each page should follow the same card-based remedy layout used by other category pages.",
-      "reqIds": [
-        "REQ-6"
-      ],
-      "status": "pending"
-    },
-    {
-      "id": "AR-13",
-      "summary": "Add dedicated Lifestyle category pages with Ayurvedic wellness content. Create a Lifestyle landing page and at least three subcategory pages covering: (a) Daily Ayurvedic routine (Dinacharya), (b) Stress management and mental wellness, (c) Ayurvedic nutrition and seasonal eating. Each page should follow the same card-based layout used by other category pages.",
-      "reqIds": [
-        "REQ-7"
-      ],
-      "status": "pending"
-    },
-    {
-      "id": "AR-17",
-      "summary": "Rebuild the Footer with a 'Connect With Us' social media section. Display clickable social media icons and links for Instagram, Facebook, YouTube, and Twitter/X. Use placeholder '#' hrefs since actual URLs are not provided. The footer should also include: site logo, quick navigation links, category links, legal links (Privacy Policy, Terms of Service), and copyright notice. Remove any 'Built with Caffeine.ai' branding or attribution text.",
-      "reqIds": [
-        "REQ-11"
-      ],
-      "status": "pending"
-    },
-    {
-      "id": "AR-18",
-      "summary": "Update the backend BlogPost data model to include a publicationDate field (storing an ISO date string or timestamp) and ensure the existing isPublished boolean field is used for the publish-immediately toggle. When a post is saved with publish-immediately=true, set isPublished=true and publicationDate to the current timestamp. When saved with publish-immediately=false, set isPublished=false.",
-      "reqIds": [
-        "REQ-12"
-      ],
-      "status": "pending"
-    },
-    {
-      "id": "AR-19",
-      "summary": "Pre-populate the blog section with the 10 SEO blog post topics as draft placeholder posts (with stub content and appropriate categories) so the admin dashboard and blog listing show initial content. Topics: 1. Ayurvedic Remedies to Stop Hair Fall Naturally (Hair Care), 2. Best Ayurvedic Herbs for Glowing Skin (Skin Care), 3. How to Reduce Hair Fall Due to Stress – Ayurvedic Guide (Hair Care), 4. Triphala Benefits for Skin, Hair & Digestion (Health Remedies), 5. Home Remedies for Pimples Using Ayurveda (Skin Care), 6. Ayurvedic Diet for Healthy Hair Growth (Hair Care), 7. Aloe Vera Benefits for Skin and Hair in Ayurveda (Skin Care), 8. Causes of Hair Fall in Women and Ayurvedic Solutions (Hair Care), 9. Daily Ayurvedic Routine for Healthy Body & Mind (Lifestyle), 10. Best Ayurvedic Oils for Hair Growth and Thickness (Hair Care).",
-      "reqIds": [
-        "REQ-13"
-      ],
-      "status": "pending"
-    },
-    {
-      "id": "AR-20",
-      "summary": "Update the main navigation to include all six categories in the dropdown: Health Remedies, Skin Care, Hair Care, Weight Management, Lifestyle. Ensure the dropdown is accessible on both desktop and mobile. Navigation links should use the blue/green theme with hover states.",
-      "reqIds": [
-        "REQ-14"
       ],
       "status": "pending"
     }
   ],
   "gameProjectType": "none",
-  "projectName": "AyurGlow Secrets",
+  "projectName": "Ayurvedic Blog",
   "clarification_mode": "instant",
   "clarification_rounds": 0
 }

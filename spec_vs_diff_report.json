@@ -1,64 +1,32 @@
 {
   "kind": "spec_vs_diff_report",
   "version": "1.0",
-  "generatedAt": "2026-02-27T17:49:38.926Z",
-  "summary": "The diff implements most of the requested requirements including blog system upgrades, backend data model changes, frontend form updates, color scheme changes, logo/navigation updates, and footer rebuilding. However, several requirements have only partial evidence or are missing entirely from the diff: the dedicated Weight Management and Lifestyle subcategory pages with full remedy content (REQ-6, REQ-7), the 10 pre-seeded draft blog posts (REQ-13), and some specific homepage sections (REQ-3 exact content). The diff references file summaries for many pages but lacks actual content to verify all subcategory pages and seeded posts exist.",
+  "generatedAt": "2026-02-27T18:51:31.186Z",
+  "summary": "The diff implements fixes across frontend hooks, the admin page, and the backend to address the three requirements. REQ-2 is clearly addressed (useGetAllVisiblePosts fixed to call getAllPosts()). REQ-1 is addressed per the file summary for AdminPostsPage. REQ-3 is partially addressed in backend/main.mo. However, the backend diff is truncated, making it impossible to fully verify REQ-3's access control fix.",
   "missing_requirements": [
     {
-      "id": "REQ-6",
-      "requirement": "Add dedicated Weight Management category pages with at least three subcategory pages (herbs/teas for weight loss, Ayurvedic diet/metabolism, yoga/lifestyle tips), each with at least 3 remedies including ingredients, steps, benefits, and frequency.",
-      "reason": "The file summaries mention HealthRemediesPage, SkinCarePage, HairCarePage but no WeightManagementPage subcategory pages are listed. The diff shows no files for /weight-management/ subcategory routes with remedy content.",
+      "id": "REQ-3",
+      "requirement": "Verify and fix the backend getAllPosts method to correctly return all blog posts regardless of publish status, callable without authentication for listing, while keeping CRUD operations admin-protected.",
+      "reason": "The backend/main.mo diff is truncated and does not show the getAllPosts method implementation or its access control. It is impossible to confirm from the diff whether getAllPosts is a public query (no auth required) returning all posts regardless of isPublished status.",
       "evidence": [
-        "frontend-file-summaries.txt"
-      ]
-    },
-    {
-      "id": "REQ-7",
-      "requirement": "Add dedicated Lifestyle category pages with at least three subcategory pages (Dinacharya, stress management, Ayurvedic nutrition/seasonal eating), each with meaningful Ayurvedic lifestyle content.",
-      "reason": "No Lifestyle subcategory page files appear in the diff or file summaries. The file summaries only reference HealthRemediesPage, SkinCarePage, HairCarePage as category pages.",
-      "evidence": [
-        "frontend-file-summaries.txt"
-      ]
-    },
-    {
-      "id": "REQ-13",
-      "requirement": "Pre-populate the blog section with 10 SEO blog post topics as draft placeholder posts with correct titles, categories, saved as drafts.",
-      "reason": "No seeding logic, migration data, or initialization code for the 10 pre-defined blog posts is visible in any of the diff files. The backend/main.mo and migration.mo show data model changes but no pre-seeded post data.",
-      "evidence": [
-        "backend/main.mo",
-        "backend/migration.mo"
-      ]
-    },
-    {
-      "id": "REQ-5",
-      "requirement": "All six main category landing pages with subcategories must exist and be navigable with no broken links. Weight Management and Lifestyle must each have at least 3 subcategory pages.",
-      "reason": "Weight Management and Lifestyle subcategory pages are not evidenced in the diff. File summaries only show Health Remedies, Skin Care, and Hair Care category pages.",
-      "evidence": [
-        "frontend-file-summaries.txt"
+        "backend/main.mo"
       ]
     }
   ],
   "hallucinated_features": [
     {
-      "description": "A migration module (backend/migration.mo) was added to migrate old BlogPost data to the new schema.",
-      "reason": "The build request only specified updating the backend BlogPost model (REQ-12) within the single main actor file. A separate migration module file was not requested, and the constraint explicitly says to keep all Motoko backend logic within backend/main.mo.",
+      "description": "CreateBlogPostPage and EditBlogPostPage routes mounted without AdminRoute wrapper",
+      "reason": "The build request does not mention removing AdminRoute guards from CreateBlogPostPage or EditBlogPostPage. This is a routing/access-control change not requested in any REQ.",
       "evidence": [
-        "backend/migration.mo"
+        "frontend-file-summaries.txt"
       ]
     }
   ],
   "confidence": 0.72,
   "changed_files": [
     "backend/main.mo",
-    "backend/migration.mo",
     "frontend-file-summaries.txt",
-    "frontend/src/components/BlogSidebar.tsx",
-    "frontend/src/components/FeaturedPost.tsx",
-    "frontend/src/components/PostCard.tsx",
     "frontend/src/hooks/useQueries.ts",
-    "frontend/src/pages/BlogPostDetailPage.tsx",
-    "frontend/src/pages/CreateBlogPostPage.tsx",
-    "frontend/src/pages/EditBlogPostPage.tsx",
     "project_state.json"
   ]
 }

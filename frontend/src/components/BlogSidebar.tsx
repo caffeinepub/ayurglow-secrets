@@ -19,11 +19,14 @@ export default function BlogSidebar({ posts }: BlogSidebarProps) {
 
   const popularPosts = posts.slice(0, 5);
 
-  const categories = posts.reduce((acc, post) => {
-    const category = post.category;
-    acc[category] = (acc[category] || 0) + 1;
-    return acc;
-  }, {} as Record<string, number>);
+  const categories = posts.reduce(
+    (acc, post) => {
+      const category = post.category;
+      acc[category] = (acc[category] || 0) + 1;
+      return acc;
+    },
+    {} as Record<string, number>
+  );
 
   useEffect(() => {
     setShowResults(searchQuery.length > 0);
@@ -38,7 +41,6 @@ export default function BlogSidebar({ posts }: BlogSidebarProps) {
         setShowResults(false);
       }
     };
-
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
@@ -57,9 +59,11 @@ export default function BlogSidebar({ posts }: BlogSidebarProps) {
   return (
     <aside className="space-y-6 lg:sticky lg:top-24">
       {/* Search Widget */}
-      <Card className="border-sage-green/20">
+      <Card className="border-border">
         <CardHeader>
-          <CardTitle className="text-base md:text-lg font-serif text-earth-green">Search Remedies</CardTitle>
+          <CardTitle className="text-base md:text-lg font-serif text-primary">
+            Search Remedies
+          </CardTitle>
         </CardHeader>
         <CardContent>
           <div ref={searchContainerRef} className="relative">
@@ -82,62 +86,77 @@ export default function BlogSidebar({ posts }: BlogSidebarProps) {
       </Card>
 
       {/* Popular Posts */}
-      <Card className="border-sage-green/20">
-        <CardHeader>
-          <CardTitle className="text-base md:text-lg font-serif text-earth-green">Popular Posts</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          {popularPosts.map((post) => {
-            const imageUrl = post.featuredImage?.blob
-              ? post.featuredImage.blob.getDirectURL()
-              : '/assets/generated/blog-ayurveda-herbs.dim_1200x600.png';
-            return (
-              <Link
-                key={post.id}
-                to="/blog/$slug"
-                params={{ slug: post.slug }}
-                className="flex gap-3 group"
-              >
-                <div className="w-20 h-20 flex-shrink-0 rounded-lg overflow-hidden">
-                  <img
-                    src={imageUrl}
-                    alt={post.title}
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-                    onError={(e) => {
-                      (e.target as HTMLImageElement).src = '/assets/generated/blog-ayurveda-herbs.dim_1200x600.png';
-                    }}
-                  />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <h4 className="text-sm font-semibold text-earth-green line-clamp-2 group-hover:text-forest-green transition-colors leading-snug mb-1">
-                    {post.title}
-                  </h4>
-                  <p className="text-xs text-muted-foreground">
-                    {new Date(Number(post.publishedDate ?? post.createdDate) / 1_000_000).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
-                  </p>
-                </div>
-              </Link>
-            );
-          })}
-        </CardContent>
-      </Card>
+      {popularPosts.length > 0 && (
+        <Card className="border-border">
+          <CardHeader>
+            <CardTitle className="text-base md:text-lg font-serif text-primary">
+              Popular Posts
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            {popularPosts.map((post) => {
+              const imageUrl = post.featuredImage?.blob
+                ? post.featuredImage.blob.getDirectURL()
+                : '/assets/generated/blog-ayurveda-herbs.dim_1200x600.png';
+              return (
+                <Link
+                  key={post.id}
+                  to="/blog/$postId"
+                  params={{ postId: post.slug }}
+                  className="flex gap-3 group"
+                >
+                  <div className="w-20 h-20 flex-shrink-0 rounded-lg overflow-hidden">
+                    <img
+                      src={imageUrl}
+                      alt={post.title}
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).src =
+                          '/assets/generated/blog-ayurveda-herbs.dim_1200x600.png';
+                      }}
+                    />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <h4 className="text-sm font-semibold text-primary line-clamp-2 group-hover:text-forest transition-colors leading-snug mb-1">
+                      {post.title}
+                    </h4>
+                    <p className="text-xs text-muted-foreground">
+                      {new Date(
+                        Number(post.publicationDate ?? post.publishedDate ?? post.createdDate) /
+                          1_000_000
+                      ).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                    </p>
+                  </div>
+                </Link>
+              );
+            })}
+          </CardContent>
+        </Card>
+      )}
 
       {/* Categories */}
-      <Card className="border-sage-green/20">
-        <CardHeader>
-          <CardTitle className="text-base md:text-lg font-serif text-earth-green">Categories</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-2">
-          {Object.entries(categories).map(([category, count]) => (
-            <div key={category} className="flex items-center justify-between py-2 border-b border-sage-green/10 last:border-0">
-              <span className="text-sm text-foreground/80">{category}</span>
-              <Badge variant="outline" className="border-sage-green/30 text-earth-green text-xs">
-                {count}
-              </Badge>
-            </div>
-          ))}
-        </CardContent>
-      </Card>
+      {Object.keys(categories).length > 0 && (
+        <Card className="border-border">
+          <CardHeader>
+            <CardTitle className="text-base md:text-lg font-serif text-primary">
+              Categories
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-2">
+            {Object.entries(categories).map(([category, count]) => (
+              <div
+                key={category}
+                className="flex items-center justify-between py-2 border-b border-border last:border-0"
+              >
+                <span className="text-sm text-foreground/80">{category}</span>
+                <Badge variant="outline" className="text-xs">
+                  {count}
+                </Badge>
+              </div>
+            ))}
+          </CardContent>
+        </Card>
+      )}
     </aside>
   );
 }

@@ -1,301 +1,44 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "AyurGlow Secrets Full Redesign – Blue/Green Theme, Blog System & All Categories",
+  "title": "Fix admin panel blog post display and editing",
   "requirements": [
     {
       "id": "REQ-1",
-      "summary": "Apply blue/green color palette across entire frontend",
+      "summary": "Fix the admin panel (AdminPostsPage) so that all blog posts are fetched and displayed correctly in the posts list table, including posts created via the Create Blog Post form",
       "acceptanceCriteria": [
-        "All primary buttons, links, and accents use shades of green and blue only",
-        "Hero sections, category cards, and remedy pages all reflect the blue/green palette",
-        "No purple, orange, or unrelated accent colors remain",
-        "Dark and light text remain readable on all colored backgrounds"
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/index.css",
-          "operation": "modify",
-          "description": "Replace OKLCH color custom properties with blue/green palette: use emerald/forest green tones (--primary), teal/ocean blue tones (--secondary), and ensure all accent colors use only blue/green spectrum. Remove any purple, orange, or off-brand accent definitions. Maintain readable contrast ratios for text on colored backgrounds."
-        },
-        {
-          "path": "frontend/tailwind.config.js",
-          "operation": "modify",
-          "description": "Update Tailwind theme color tokens to reference the new blue/green CSS custom properties. Ensure all utility classes (bg-, text-, border-) map to the emerald/teal palette. Remove any purple/orange color definitions."
-        }
-      ]
-    },
-    {
-      "id": "REQ-2",
-      "summary": "Display AyurGlow Secrets logo in header and footer",
-      "acceptanceCriteria": [
-        "Logo is visible in the top navigation bar on all pages",
-        "Logo is also displayed in the footer branding area",
-        "Logo uses the green/blue palette and conveys an Ayurvedic/natural feel"
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/components/Navigation.tsx",
-          "operation": "modify",
-          "description": "Replace current brand text/logo with the generated AyurGlow Secrets logo image using the workspace path frontend/public/assets/generated/ayurglow-logo.dim_400x120.png. Ensure the logo links to the homepage and displays at an appropriate size in the navigation bar."
-        },
-        {
-          "path": "frontend/src/components/Footer.tsx",
-          "operation": "modify",
-          "description": "Update the footer branding section to display the generated AyurGlow Secrets logo image using the workspace path frontend/public/assets/generated/ayurglow-logo.dim_400x120.png. Position it prominently in the footer alongside site description or tagline."
-        }
-      ]
-    },
-    {
-      "id": "REQ-3",
-      "summary": "Rebuild Homepage with Hero, What We Offer, Why AyurGlow, Featured & Recent Posts sections",
-      "acceptanceCriteria": [
-        "Hero section displays the exact title, tagline, and intro text provided",
-        "What We Offer section shows all four items with icons",
-        "Why AyurGlow Secrets section lists all four benefits",
-        "Featured and recent blog post sections render posts from the backend",
-        "All sections are mobile-responsive"
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/pages/HomePage.tsx",
-          "operation": "modify",
-          "description": "Rebuild the homepage with the following sections: (1) Hero Section with title 'Welcome to AyurGlow Secrets', tagline 'Ancient Ayurvedic Wisdom for Healthy Body, Glowing Skin & Strong Hair', intro paragraph, and a CTA button linking to /blog or /about. Use the generated hero background image frontend/public/assets/generated/hero-background.dim_1920x1080.png. (2) 'What We Offer' section with four feature tiles: 🌿 Natural Ayurvedic Health Remedies, 💆 Skin Care Tips for Natural Glow, 💇 Hair Fall & Hair Growth Treatments, 🧘 Holistic Lifestyle & Wellness Advice. Use generated icons from frontend/public/assets/generated/icon-*.dim_128x128.png where appropriate. (3) 'Why AyurGlow Secrets?' section listing: 100% natural & Ayurvedic approach, Simple home remedies, Safe, affordable, and effective, Suitable for all age groups. (4) Featured blog posts section using the FeaturedPost component. (5) Recent posts section using PostCard components. Ensure all sections use the blue/green palette and are fully responsive."
-        }
-      ]
-    },
-    {
-      "id": "REQ-4",
-      "summary": "Rebuild About Us page with Ayurvedic mission and philosophy content",
-      "acceptanceCriteria": [
-        "About page displays the full mission statement and belief paragraph",
-        "Page uses blue/green styling with icons or decorative elements",
-        "Content is clearly organized and readable"
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/pages/AboutPage.tsx",
-          "operation": "modify",
-          "description": "Replace existing content with Ayurvedic-tone copy: Platform mission about sharing Ayurvedic healing power, the belief statement about beauty and health beginning from within, and the note about content being carefully researched and simplified. Present in styled Card sections with leaf/herb decorative icons. Use the blue/green palette throughout and ensure mobile responsiveness."
-        }
-      ]
-    },
-    {
-      "id": "REQ-5",
-      "summary": "Ensure all six category landing pages exist and are fully accessible",
-      "acceptanceCriteria": [
-        "All six category pages are accessible from the main navigation dropdown",
-        "Each category page displays subcategory cards that link to their respective remedy pages",
-        "Weight Management and Lifestyle category pages exist with at least 3 subcategory pages each",
-        "All subcategory links navigate to a functioning page with remedy content",
-        "No broken links or 404 pages for any listed category or subcategory"
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/pages/HealthRemediesPage.tsx",
-          "operation": "modify",
-          "description": "Update the Health Remedies landing page to use the blue/green palette in the hero section and subcategory cards. Use the generated category card image frontend/public/assets/generated/category-health.dim_400x250.png if appropriate. Ensure all five subcategory links (Immunity Boosting, Digestion & Gut Health, Weight Management, Diabetes & BP Support, Stress & Sleep Solutions) are clickable and route to their respective pages."
-        },
-        {
-          "path": "frontend/src/pages/SkinCarePage.tsx",
-          "operation": "modify",
-          "description": "Update the Skin Care landing page to use the blue/green palette. Use the generated category card image frontend/public/assets/generated/category-skin.dim_400x250.png if appropriate. Ensure all five subcategory links (Natural Glow Remedies, Acne & Pimples, Pigmentation & Dark Spots, Anti-Aging Ayurveda, DIY Herbal Face Packs) are clickable and route to their respective pages."
-        },
-        {
-          "path": "frontend/src/pages/HairCarePage.tsx",
-          "operation": "modify",
-          "description": "Update the Hair Care landing page to use the blue/green palette. Use the generated category card image frontend/public/assets/generated/category-hair.dim_400x250.png if appropriate. Ensure all five subcategory links (Hair Fall Treatment, Hair Growth Remedies, Dandruff & Scalp Care, Grey Hair Solutions, Ayurvedic Oils & Masks) are clickable and route to their respective pages."
-        }
-      ]
-    },
-    {
-      "id": "REQ-6",
-      "summary": "Add dedicated Weight Management category pages with Ayurvedic remedy content",
-      "acceptanceCriteria": [
-        "Weight Management landing page exists at /weight-management route",
-        "At least 3 subcategory remedy pages exist under /weight-management/",
-        "Each subcategory page has at least 3 remedies with ingredients, steps, benefits, and frequency",
-        "Weight Management appears in the main navigation dropdown"
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/pages/WeightManagementPage.tsx",
-          "operation": "create",
-          "description": "Create the Weight Management landing page at route /weight-management with a hero section and a grid of three subcategory cards: (1) Ayurvedic Herbs & Teas for Weight Loss, (2) Ayurvedic Diet & Metabolism Remedies, (3) Yoga & Lifestyle Tips for Weight Management. Use the generated category card image frontend/public/assets/generated/category-weight.dim_400x250.png in the hero or card backgrounds. Apply the blue/green palette. Each card should link to its respective subcategory page."
-        },
-        {
-          "path": "frontend/src/pages/weight-management/HerbsTeasPage.tsx",
-          "operation": "create",
-          "description": "Create a subcategory page for Ayurvedic Herbs & Teas for Weight Loss at route /weight-management/herbs-teas. Include at least three remedies with ingredients (e.g., Triphala powder, Guggul capsules, Ginger tea), application steps, benefits, and frequency. Follow the same card-based layout pattern used in other remedy pages (e.g., frontend/src/pages/health-remedies/ImmunityBoostingPage.tsx). Use the blue/green palette."
-        },
-        {
-          "path": "frontend/src/pages/weight-management/DietMetabolismPage.tsx",
-          "operation": "create",
-          "description": "Create a subcategory page for Ayurvedic Diet & Metabolism Remedies at route /weight-management/diet-metabolism. Include at least three remedies with ingredients (e.g., warm lemon water, green tea, apple cider vinegar), application steps, benefits, and frequency. Follow the same card-based layout pattern used in other remedy pages. Use the blue/green palette."
-        },
-        {
-          "path": "frontend/src/pages/weight-management/YogaLifestylePage.tsx",
-          "operation": "create",
-          "description": "Create a subcategory page for Yoga & Lifestyle Tips for Weight Management at route /weight-management/yoga-lifestyle. Include at least three tips/remedies covering yoga poses (e.g., Surya Namaskar, Kapalbhati), walking routines, and mindful eating practices. Follow the same card-based layout pattern used in other remedy pages. Use the blue/green palette."
-        },
-        {
-          "path": "frontend/src/App.tsx",
-          "operation": "modify",
-          "description": "Register the Weight Management landing page and its three subcategory pages in the TanStack Router route configuration: /weight-management (WeightManagementPage), /weight-management/herbs-teas (HerbsTeasPage), /weight-management/diet-metabolism (DietMetabolismPage), /weight-management/yoga-lifestyle (YogaLifestylePage). Ensure all routes are wrapped in the Layout component."
-        }
-      ]
-    },
-    {
-      "id": "REQ-7",
-      "summary": "Add dedicated Lifestyle category pages with Ayurvedic wellness content",
-      "acceptanceCriteria": [
-        "Lifestyle landing page exists at /lifestyle route",
-        "At least 3 subcategory pages exist under /lifestyle/",
-        "Each subcategory page has meaningful Ayurvedic lifestyle content with tips and guidance",
-        "Lifestyle appears in the main navigation dropdown"
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/pages/LifestylePage.tsx",
-          "operation": "create",
-          "description": "Create the Lifestyle landing page at route /lifestyle with a hero section and a grid of three subcategory cards: (1) Daily Ayurvedic Routine (Dinacharya), (2) Stress Management & Mental Wellness, (3) Ayurvedic Nutrition & Seasonal Eating. Use the generated category card image frontend/public/assets/generated/category-lifestyle.dim_400x250.png in the hero or card backgrounds. Apply the blue/green palette. Each card should link to its respective subcategory page."
-        },
-        {
-          "path": "frontend/src/pages/lifestyle/DinacharyadPage.tsx",
-          "operation": "create",
-          "description": "Create a subcategory page for Daily Ayurvedic Routine (Dinacharya) at route /lifestyle/dinacharya. Include at least three sections covering morning routines (e.g., tongue scraping, oil pulling, meditation), meal timing, and evening wind-down practices. Present as styled cards with steps and benefits. Follow the same card-based layout pattern used in other remedy pages. Use the blue/green palette."
-        },
-        {
-          "path": "frontend/src/pages/lifestyle/StressManagementPage.tsx",
-          "operation": "create",
-          "description": "Create a subcategory page for Stress Management & Mental Wellness at route /lifestyle/stress-management. Include at least three Ayurvedic practices covering breathing exercises (Pranayama), meditation techniques, and herbal teas (e.g., Ashwagandha, Brahmi). Present as styled cards with instructions and benefits. Follow the same card-based layout pattern used in other remedy pages. Use the blue/green palette."
-        },
-        {
-          "path": "frontend/src/pages/lifestyle/NutritionPage.tsx",
-          "operation": "create",
-          "description": "Create a subcategory page for Ayurvedic Nutrition & Seasonal Eating at route /lifestyle/nutrition. Include at least three sections covering seasonal eating principles, Ayurvedic food combining rules, and dosha-specific dietary tips. Present as styled cards with guidance and examples. Follow the same card-based layout pattern used in other remedy pages. Use the blue/green palette."
-        },
-        {
-          "path": "frontend/src/App.tsx",
-          "operation": "modify",
-          "description": "Register the Lifestyle landing page and its three subcategory pages in the TanStack Router route configuration: /lifestyle (LifestylePage), /lifestyle/dinacharya (DinacharyadPage), /lifestyle/stress-management (StressManagementPage), /lifestyle/nutrition (NutritionPage). Ensure all routes are wrapped in the Layout component."
-        }
-      ]
-    },
-    {
-      "id": "REQ-8",
-      "summary": "Upgrade blog post creation and editing forms with featured image, inline images, publication date, and publish toggle",
-      "acceptanceCriteria": [
-        "Featured image upload appears at the top of create/edit post forms",
-        "Image size/display options (small, medium, large, cover, contain) are available for the featured image",
-        "An 'Insert Image Here' button is available within the content/body editor to add images between paragraphs",
-        "Inline images also have size/fit options",
-        "A date picker field allows setting a publication date",
-        "A 'Publish Immediately' toggle exists; when ON, the post is published on save; when OFF, it saves as draft",
-        "Backend stores the publication date and published state accordingly"
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/pages/CreateBlogPostPage.tsx",
-          "operation": "modify",
-          "description": "Add a featured image upload section at the top of the form (before title field) using the blob-storage ExternalBlob component. Include dropdowns for image size (small, medium, large) and fit (original, cover, contain). Add an 'Insert Image' button within the content editor to embed inline images between paragraphs, with the same size/fit options for each inline image. Store inline images in an array with position indexes. Add a publication date picker field (using a date input or date picker library). Add a 'Publish Immediately' toggle checkbox. When the toggle is ON, set isPublished=true and publicationDate to the current timestamp on submit. When OFF, set isPublished=false. Verify the blob-storage component's usage instructions before implementing. Use the useCreatePost mutation hook and pass featuredImage (ImageMeta | null), inlineImages (Array<InlineImage>), publicationDate (bigint | null), and publishImmediately (boolean) to the backend createPost method."
-        },
-        {
-          "path": "frontend/src/pages/EditBlogPostPage.tsx",
-          "operation": "modify",
-          "description": "Add the same featured image upload section with size/fit options, inline image insertion with size/fit options, publication date picker, and 'Publish Immediately' toggle as in CreateBlogPostPage. Pre-populate the featured image, inline images, publication date, and publish state from the fetched post data. Allow replacing the featured image and editing inline images. Verify the blob-storage component's usage instructions before implementing. Use the useUpdatePost mutation hook and pass the updated featuredImage, inlineImages, publicationDate, and publishImmediately to the backend updatePost method."
-        }
-      ]
-    },
-    {
-      "id": "REQ-9",
-      "summary": "Ensure blog post detail page renders all images properly with correct sizing",
-      "acceptanceCriteria": [
-        "Featured image on blog detail page renders correctly without being broken or distorted",
-        "Inline images within blog content render at their configured size",
-        "Image size options (small/medium/large) apply correct max-width values",
-        "Cover/contain fit options apply correct CSS object-fit values",
-        "No broken image icons appear on any blog post page"
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/pages/BlogPostDetailPage.tsx",
-          "operation": "modify",
-          "description": "Update the blog detail page to render the featured image using the ExternalBlob.getDirectURL() method. Apply CSS classes based on the stored size option (small: max-w-sm, medium: max-w-md, large: max-w-lg, full-width for original) and fit option (object-cover, object-contain, or no object-fit for original). For inline images within the content, use the existing imageUtils.ts functions to inject resolved blob URLs and apply CSS classes based on the stored size and fit options for each inline image. Ensure all images display without being broken, stretched, or missing."
-        }
-      ]
-    },
-    {
-      "id": "REQ-10",
-      "summary": "Ensure comment section is present and functional on every blog post detail page",
-      "acceptanceCriteria": [
-        "Comment section with 'Share Your Comment' heading appears below every blog post",
-        "Comment form has at minimum: name field, comment textarea, and submit button",
-        "Submitted comments appear in the list with author name and timestamp",
-        "Comment section is styled consistently with the blue/green theme"
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/pages/BlogPostDetailPage.tsx",
-          "operation": "modify",
-          "description": "Ensure the CommentSection component is rendered below the blog post content on the detail page. Pass the post ID as a prop to the CommentSection. Verify that the component displays a 'Share Your Comment' heading, a form with name, email (optional), and comment textarea, a submit button, and a list of approved comments with author name and timestamp. Apply the blue/green palette to the comment section styling."
-        },
-        {
-          "path": "frontend/src/components/CommentSection.tsx",
-          "operation": "modify",
-          "description": "Update the CommentSection component to ensure it uses the blue/green color palette for form fields, buttons, and comment cards. Verify that the 'Share Your Comment' heading is displayed. Ensure the form includes name, email (optional), and comment fields with a submit button. Ensure submitted comments are fetched using the useQuery hook for getComments and displayed with author name and timestamp. Use the backend addComment method via a mutation hook to submit new comments."
-        }
-      ]
-    },
-    {
-      "id": "REQ-11",
-      "summary": "Rebuild Footer with Connect With Us social media section and remove Caffeine.ai branding",
-      "acceptanceCriteria": [
-        "Footer has a 'Connect With Us' section with Instagram, Facebook, YouTube, and Twitter/X icons",
-        "All social icons are clickable (href='#' or external links)",
-        "No 'Built with Caffeine.ai' text or attribution is visible anywhere on the site",
-        "Footer includes site logo, quick links, category links, and legal links",
-        "Footer uses the blue/green color scheme"
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/components/Footer.tsx",
-          "operation": "modify",
-          "description": "Rebuild the Footer component with the following sections: (1) Site logo (using frontend/public/assets/generated/ayurglow-logo.dim_400x120.png). (2) Quick navigation links (Home, About, Blog, Categories). (3) Category links (Health Remedies, Skin Care, Hair Care, Weight Management, Lifestyle). (4) Legal links (Privacy Policy, Terms of Service). (5) A 'Connect With Us' section with clickable social media icons and links for Instagram, Facebook, YouTube, and Twitter/X (use placeholder '#' hrefs or icon components like react-icons). (6) Copyright notice with the current year and 'AyurGlow Secrets. All rights reserved.' Remove any 'Built with Caffeine.ai' branding or attribution text. Apply the blue/green color palette throughout the footer. Ensure the footer is mobile-responsive."
-        }
-      ]
-    },
-    {
-      "id": "REQ-13",
-      "summary": "Pre-populate blog section with 10 SEO blog post topics as draft placeholders",
-      "acceptanceCriteria": [
-        "Admin posts page shows 10 pre-seeded blog post entries",
-        "Each post has the correct title and category assigned",
-        "Posts are saved as drafts (not published) by default",
-        "Posts are editable and publishable from the admin dashboard"
+        "All blog posts (published and draft) appear in the admin panel list when navigating to the admin page",
+        "Each post row shows the post title, category, publish status, and action buttons (edit, delete, toggle publish)",
+        "The edit button navigates to the EditBlogPostPage for the selected post",
+        "The delete button triggers a confirmation dialog and removes the post on confirmation",
+        "The toggle publish button correctly switches a post between published and draft states",
+        "Loading and empty states are handled gracefully with appropriate messages"
       ],
       "file_operations": [
         {
           "path": "frontend/src/pages/AdminPostsPage.tsx",
           "operation": "modify",
-          "description": "Add a 'Seed Sample Posts' button to the admin posts page that creates 10 draft blog posts with the following titles and categories: (1) 'Ayurvedic Remedies to Stop Hair Fall Naturally' (Hair Care), (2) 'Best Ayurvedic Herbs for Glowing Skin' (Skin Care), (3) 'How to Reduce Hair Fall Due to Stress – Ayurvedic Guide' (Hair Care), (4) 'Triphala Benefits for Skin, Hair & Digestion' (Health Remedies), (5) 'Home Remedies for Pimples Using Ayurveda' (Skin Care), (6) 'Ayurvedic Diet for Healthy Hair Growth' (Hair Care), (7) 'Aloe Vera Benefits for Skin and Hair in Ayurveda' (Skin Care), (8) 'Causes of Hair Fall in Women and Ayurvedic Solutions' (Hair Care), (9) 'Daily Ayurvedic Routine for Healthy Body & Mind' (Lifestyle), (10) 'Best Ayurvedic Oils for Hair Growth and Thickness' (Hair Care). Use the useCreatePost mutation hook to create each post with stub content (e.g., 'This is a placeholder post. Edit to add full content.'), a generated slug, empty excerpt, read time of 5 minutes, author 'Admin', empty tags array, no featured image, no inline images, isPublished=false, publishImmediately=false, and publicationDate=null. Ensure the button is only visible if fewer than 10 posts exist. After seeding, display a success message."
+          "description": "Update the AdminPostsPage component to properly fetch and display all blog posts (including drafts) using the useGetAllVisiblePosts hook. Ensure the posts list table shows title, category, publish status (with visual distinction for drafts via a badge), and action buttons (edit, delete, toggle publish). Wire the edit button to navigate to EditBlogPostPage with the post ID. Implement a confirmation dialog for the delete action. Ensure the toggle publish button correctly updates the post's published state. Add proper loading spinner and empty state messaging when no posts exist. Verify that newly created posts from the Create Blog Post form appear in the list immediately after creation."
         }
       ]
     },
     {
-      "id": "REQ-14",
-      "summary": "Update main navigation to include all six categories with blue/green theme",
+      "id": "REQ-2",
+      "summary": "Ensure the admin panel uses the correct React Query hook that fetches ALL blog posts (including unpublished drafts), not just published posts, so admins can manage all content",
       "acceptanceCriteria": [
-        "Navigation dropdown includes all six categories",
-        "Weight Management and Lifestyle are listed alongside existing categories",
-        "Dropdown works on mobile (hamburger menu or accordion)",
-        "Navigation uses blue/green color scheme with visible hover states"
+        "AdminPostsPage calls the hook that retrieves all visible posts (useGetAllPosts or equivalent), not the published-only hook",
+        "Draft posts are visible in the admin list and are visually distinguished from published posts (e.g., a 'Draft' badge)"
       ],
       "file_operations": [
         {
-          "path": "frontend/src/components/Navigation.tsx",
+          "path": "frontend/src/hooks/useQueries.ts",
           "operation": "modify",
-          "description": "Update the Navigation component to include all six categories in the dropdown: Health Remedies, Skin Care, Hair Care, Weight Management, Lifestyle. Ensure the dropdown is accessible on both desktop (hover or click) and mobile (hamburger menu or accordion). Apply the blue/green color palette to the navigation bar, links, and dropdown with visible hover states. Ensure the dropdown links route to the correct category landing pages: /health-remedies, /skin-care, /hair-care, /weight-management, /lifestyle."
+          "description": "Review and ensure the useGetAllVisiblePosts hook (or equivalent) correctly calls the backend's getAllPosts method to fetch all blog posts regardless of publish status. Verify the hook is properly exported and available for use in AdminPostsPage. If the hook does not exist or is incorrectly named, add or rename it to useGetAllVisiblePosts for clarity. Ensure it uses the actor's getAllPosts method from the backend interface."
+        },
+        {
+          "path": "frontend/src/pages/AdminPostsPage.tsx",
+          "operation": "modify",
+          "description": "Replace any usage of useGetPublishedPosts with useGetAllVisiblePosts (or the correct hook that fetches all posts) to ensure draft posts are included in the admin panel list. Add visual distinction for draft posts by rendering a 'Draft' badge or label next to unpublished posts in the table rows. Ensure the component correctly handles the data structure returned by the all-posts hook."
         }
       ]
     }

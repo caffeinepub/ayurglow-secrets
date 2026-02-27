@@ -71,7 +71,7 @@ export interface backendInterface {
     canCallerAccessAdminSection(): Promise<boolean>;
     createPost(id: string, title: string, slug: string, category: string, content: string, excerpt: string, readTime: bigint, author: string, tags: Array<string>, featuredImage: ImageMeta | null, inlineImages: Array<InlineImage>, isPublished: boolean, publishImmediately: boolean, publicationDate: bigint | null): Promise<void>;
     deletePost(id: string): Promise<boolean>;
-    getAllVisiblePosts(): Promise<Array<BlogPostView>>;
+    getAllPosts(): Promise<Array<BlogPostView>>;
     getCallerUserProfile(): Promise<UserProfile | null>;
     getCallerUserRole(): Promise<UserRole>;
     getComments(postId: string): Promise<Array<Comment>>;

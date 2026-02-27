@@ -14,11 +14,7 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 import { toast } from 'sonner';
-import {
-  useGetAllVisiblePosts,
-  useDeletePost,
-  useSetPublishedState,
-} from '../hooks/useQueries';
+import { useGetAllVisiblePosts, useDeletePost, useSetPublishedState } from '../hooks/useQueries';
 import { BlogPostView } from '../backend';
 
 export default function AdminPostsPage() {
@@ -31,11 +27,11 @@ export default function AdminPostsPage() {
   const [postToDelete, setPostToDelete] = useState<BlogPostView | null>(null);
 
   const handleCreatePost = () => {
-    navigate({ to: '/admin/create-post' });
+    navigate({ to: '/admin/create' });
   };
 
   const handleEditPost = (post: BlogPostView) => {
-    navigate({ to: '/admin/edit-post/$id', params: { id: post.id } });
+    navigate({ to: '/admin/edit/$postId', params: { postId: post.id } });
   };
 
   const handleDeleteClick = (post: BlogPostView) => {
@@ -48,7 +44,7 @@ export default function AdminPostsPage() {
     try {
       await deletePostMutation.mutateAsync(postToDelete.id);
       toast.success('Post deleted successfully');
-    } catch (err) {
+    } catch {
       toast.error('Failed to delete post');
     } finally {
       setDeleteDialogOpen(false);
@@ -66,7 +62,7 @@ export default function AdminPostsPage() {
         });
         toast.success('Post unpublished');
       } else {
-        const now = BigInt(Date.now()) * BigInt(1_000_000); // nanoseconds
+        const now = BigInt(Date.now()) * BigInt(1_000_000);
         await setPublishedStateMutation.mutateAsync({
           id: post.id,
           isPublished: true,
@@ -74,8 +70,9 @@ export default function AdminPostsPage() {
         });
         toast.success('Post published');
       }
-    } catch (err: any) {
-      toast.error(err?.message || 'Failed to update post status');
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Failed to update post status';
+      toast.error(msg);
     }
   };
 
@@ -105,9 +102,7 @@ export default function AdminPostsPage() {
   }
 
   const sortedPosts = [...(posts || [])].sort((a, b) => {
-    const aTime = Number(a.createdDate);
-    const bTime = Number(b.createdDate);
-    return bTime - aTime;
+    return Number(b.createdDate) - Number(a.createdDate);
   });
 
   return (
@@ -160,11 +155,21 @@ export default function AdminPostsPage() {
               <table className="w-full">
                 <thead>
                   <tr className="border-b border-border bg-muted/50">
-                    <th className="text-left px-4 py-3 text-sm font-medium text-muted-foreground">Title</th>
-                    <th className="text-left px-4 py-3 text-sm font-medium text-muted-foreground hidden md:table-cell">Category</th>
-                    <th className="text-left px-4 py-3 text-sm font-medium text-muted-foreground hidden sm:table-cell">Status</th>
-                    <th className="text-left px-4 py-3 text-sm font-medium text-muted-foreground hidden lg:table-cell">Created</th>
-                    <th className="text-right px-4 py-3 text-sm font-medium text-muted-foreground">Actions</th>
+                    <th className="text-left px-4 py-3 text-sm font-medium text-muted-foreground">
+                      Title
+                    </th>
+                    <th className="text-left px-4 py-3 text-sm font-medium text-muted-foreground hidden md:table-cell">
+                      Category
+                    </th>
+                    <th className="text-left px-4 py-3 text-sm font-medium text-muted-foreground hidden sm:table-cell">
+                      Status
+                    </th>
+                    <th className="text-left px-4 py-3 text-sm font-medium text-muted-foreground hidden lg:table-cell">
+                      Created
+                    </th>
+                    <th className="text-right px-4 py-3 text-sm font-medium text-muted-foreground">
+                      Actions
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
@@ -177,8 +182,12 @@ export default function AdminPostsPage() {
                     >
                       <td className="px-4 py-3">
                         <div>
-                          <p className="font-medium text-foreground text-sm line-clamp-1">{post.title}</p>
-                          <p className="text-xs text-muted-foreground mt-0.5 line-clamp-1">{post.excerpt}</p>
+                          <p className="font-medium text-foreground text-sm line-clamp-1">
+                            {post.title}
+                          </p>
+                          <p className="text-xs text-muted-foreground mt-0.5 line-clamp-1">
+                            {post.excerpt}
+                          </p>
                         </div>
                       </td>
                       <td className="px-4 py-3 hidden md:table-cell">
@@ -190,7 +199,9 @@ export default function AdminPostsPage() {
                         </Badge>
                       </td>
                       <td className="px-4 py-3 hidden lg:table-cell">
-                        <span className="text-sm text-muted-foreground">{formatDate(post.createdDate)}</span>
+                        <span className="text-sm text-muted-foreground">
+                          {formatDate(post.createdDate)}
+                        </span>
                       </td>
                       <td className="px-4 py-3">
                         <div className="flex items-center justify-end gap-1">

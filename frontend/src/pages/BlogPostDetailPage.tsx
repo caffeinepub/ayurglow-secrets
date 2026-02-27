@@ -9,20 +9,23 @@ import { ImageSize } from '../backend';
 
 function getInlineImageSizeClass(size: ImageSize): string {
   switch (size) {
-    case ImageSize.small: return 'max-w-xs';
-    case ImageSize.medium: return 'max-w-md';
-    case ImageSize.large: return 'max-w-lg';
-    default: return 'max-w-full';
+    case ImageSize.small:
+      return 'max-w-xs';
+    case ImageSize.medium:
+      return 'max-w-md';
+    case ImageSize.large:
+      return 'max-w-lg';
+    default:
+      return 'max-w-full';
   }
 }
 
 export default function BlogPostDetailPage() {
-  const { slug } = useParams({ from: '/blog/$slug' });
+  const { postId } = useParams({ from: '/blog/$postId' });
   const navigate = useNavigate();
 
-  const { data: post, isLoading, error } = useGetPostBySlug(slug);
+  const { data: post, isLoading, error } = useGetPostBySlug(postId);
 
-  // Resolve inline image URLs in content by replacing placeholder src with blob direct URLs
   const resolvedContent = useMemo(() => {
     if (!post) return '';
     if (!post.inlineImages || post.inlineImages.length === 0) return post.content;
@@ -147,26 +150,20 @@ export default function BlogPostDetailPage() {
         {/* Article header */}
         <article>
           <header className="mb-8">
-            {/* Category badge */}
             <div className="mb-4">
               <Badge variant="secondary" className="text-xs uppercase tracking-wide">
                 {post.category}
               </Badge>
             </div>
 
-            {/* Title */}
             <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-foreground font-serif leading-tight mb-4">
               {post.title}
             </h1>
 
-            {/* Excerpt */}
             {post.excerpt && (
-              <p className="text-lg text-muted-foreground leading-relaxed mb-6">
-                {post.excerpt}
-              </p>
+              <p className="text-lg text-muted-foreground leading-relaxed mb-6">{post.excerpt}</p>
             )}
 
-            {/* Meta info */}
             <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground border-b border-border pb-6">
               {post.author && (
                 <div className="flex items-center gap-1.5">
@@ -177,7 +174,7 @@ export default function BlogPostDetailPage() {
               {displayDate && (
                 <div className="flex items-center gap-1.5">
                   <Calendar className="w-4 h-4" />
-                  <span>{displayDate}</span>
+                  <span>Published on {displayDate}</span>
                 </div>
               )}
               {post.readTime && (
@@ -188,7 +185,6 @@ export default function BlogPostDetailPage() {
               )}
             </div>
 
-            {/* Tags */}
             {post.tags && post.tags.length > 0 && (
               <div className="flex flex-wrap items-center gap-2 mt-4">
                 <Tag className="w-4 h-4 text-muted-foreground" />

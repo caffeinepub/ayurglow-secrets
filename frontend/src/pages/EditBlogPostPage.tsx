@@ -3,7 +3,6 @@ import { useNavigate, useParams } from '@tanstack/react-router';
 import { useGetPost, useUpdatePost } from '../hooks/useQueries';
 import { ExternalBlob, ImageMeta, ImageFit, ImageSize } from '../backend';
 import { injectBlobIndexAttributes } from '../utils/imageUtils';
-import { useInternetIdentity } from '../hooks/useInternetIdentity';
 
 interface FormData {
   title: string;
@@ -25,17 +24,15 @@ const CATEGORIES = [
   'Skin Care',
   'Hair Care',
   'Weight Management',
-  'Lifestyle',
-  'Wellness',
+  'Lifestyle & Wellness',
   'Ayurveda',
   'Nutrition',
 ];
 
 export default function EditBlogPostPage() {
   const navigate = useNavigate();
-  const { id: postId } = useParams({ from: '/admin/edit-post/$id' });
+  const { postId } = useParams({ from: '/admin/edit/$postId' });
   const updatePost = useUpdatePost();
-  const { identity } = useInternetIdentity();
 
   const { data: post, isLoading: postLoading } = useGetPost(postId);
 
@@ -63,7 +60,6 @@ export default function EditBlogPostPage() {
 
   useEffect(() => {
     if (post) {
-      // Derive publication date string for the date input
       let pubDateStr = '';
       if (post.publicationDate) {
         const ms = Number(post.publicationDate) / 1_000_000;
@@ -94,17 +90,6 @@ export default function EditBlogPostPage() {
       }
     }
   }, [post]);
-
-  if (!identity) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
-        <div className="text-center p-8">
-          <h2 className="text-2xl font-bold text-foreground mb-4">Login Required</h2>
-          <p className="text-muted-foreground">Please log in to edit blog posts.</p>
-        </div>
-      </div>
-    );
-  }
 
   if (postLoading) {
     return (
@@ -160,10 +145,7 @@ export default function EditBlogPostPage() {
       return 'There was a communication error with the server. Please check your inputs and try again.';
     }
     if (msg.includes('Unauthorized') || msg.includes('unauthorized')) {
-      return 'You are not authorized to update this post. Please make sure you are logged in.';
-    }
-    if (msg.includes('Only users can')) {
-      return 'You need to be a registered user to update posts.';
+      return 'You are not authorized to update posts. Please make sure you are logged in as admin.';
     }
     return `Failed to update post: ${msg}`;
   };
@@ -187,9 +169,10 @@ export default function EditBlogPostPage() {
       const readTimeNum = parseInt(formData.readTime, 10);
       const readTimeBigInt = BigInt(isNaN(readTimeNum) || readTimeNum < 1 ? 1 : readTimeNum);
 
-      // Build featuredImage as ImageMeta | null
       let featuredImage: ImageMeta | null = null;
+
       if (imageFile) {
+        // New image uploaded
         const arrayBuffer = await imageFile.arrayBuffer();
         const uint8Array = new Uint8Array(arrayBuffer);
         const blob = ExternalBlob.fromBytes(uint8Array).withUploadProgress((pct) => {
@@ -209,26 +192,17 @@ export default function EditBlogPostPage() {
         };
       }
 
-      // Inject blob index attributes into content for inline images
       const processedContent = injectBlobIndexAttributes(formData.content, 0);
 
-      // Publication date as bigint | null
       let publicationDate: bigint | null = null;
       if (formData.publicationDate) {
         publicationDate = BigInt(new Date(formData.publicationDate).getTime()) * BigInt(1_000_000);
       } else if (formData.publishImmediately) {
-        if (post.publicationDate) {
-          publicationDate = post.publicationDate;
-        } else {
-          publicationDate = BigInt(Date.now()) * BigInt(1_000_000);
-        }
+        publicationDate = BigInt(Date.now()) * BigInt(1_000_000);
       }
 
-      // Keep existing inline images
-      const inlineImages = post.inlineImages ?? [];
-
       await updatePost.mutateAsync({
-        id: postId,
+        id: post.id,
         title: formData.title.trim(),
         slug: formData.slug.trim(),
         category: formData.category,
@@ -238,13 +212,13 @@ export default function EditBlogPostPage() {
         author: formData.author.trim(),
         tags: tagsArray,
         featuredImage,
-        inlineImages,
+        inlineImages: post.inlineImages ?? [],
         isPublished: formData.publishImmediately,
         publishImmediately: formData.publishImmediately,
         publicationDate,
       });
 
-      navigate({ to: '/admin/posts' });
+      navigate({ to: '/admin' });
     } catch (err) {
       setError(getFriendlyErrorMessage(err));
     }
@@ -265,20 +239,19 @@ export default function EditBlogPostPage() {
         )}
 
         <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Featured Image — at the top */}
+          {/* Featured Image */}
           <div className="bg-card border border-border rounded-xl p-5">
             <h2 className="text-base font-semibold text-foreground mb-4">Featured Image</h2>
-            {existingImageUrl && !imagePreview && (
+            {(existingImageUrl || imagePreview) && (
               <div className="mb-3">
-                <p className="text-xs text-muted-foreground mb-1">Current image:</p>
                 <img
-                  src={existingImageUrl}
-                  alt="Current featured"
-                  className="w-full max-h-48 object-cover rounded-lg border border-border"
-                  onError={(e) => {
-                    (e.target as HTMLImageElement).style.display = 'none';
-                  }}
+                  src={imagePreview || existingImageUrl || ''}
+                  alt="Current featured image"
+                  className="w-full max-h-56 object-cover rounded-lg border border-border"
                 />
+                <p className="text-xs text-muted-foreground mt-1">
+                  {imagePreview ? 'New image selected' : 'Current featured image'}
+                </p>
               </div>
             )}
             <input
@@ -288,15 +261,6 @@ export default function EditBlogPostPage() {
               onChange={handleImageChange}
               className="w-full px-4 py-2 border border-border rounded-lg bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
             />
-            {imagePreview && (
-              <div className="mt-3">
-                <img
-                  src={imagePreview}
-                  alt="New image preview"
-                  className="w-full max-h-48 object-cover rounded-lg border border-border"
-                />
-              </div>
-            )}
             {uploadProgress > 0 && uploadProgress < 100 && (
               <div className="mt-2">
                 <div className="w-full bg-muted rounded-full h-2">
@@ -308,7 +272,7 @@ export default function EditBlogPostPage() {
                 <p className="text-xs text-muted-foreground mt-1">Uploading: {uploadProgress}%</p>
               </div>
             )}
-            <div className="mt-4 grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-2 gap-4 mt-4">
               <div>
                 <label className="block text-sm font-medium text-foreground mb-1">Image Size</label>
                 <select
@@ -338,189 +302,197 @@ export default function EditBlogPostPage() {
             </div>
           </div>
 
-          {/* Title */}
-          <div>
-            <label className="block text-sm font-medium text-foreground mb-1">
-              Title <span className="text-destructive">*</span>
-            </label>
-            <input
-              type="text"
-              name="title"
-              value={formData.title}
-              onChange={handleChange}
-              className="w-full px-4 py-2 border border-border rounded-lg bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
-              placeholder="Enter post title"
-              required
-            />
-          </div>
-
-          {/* Slug */}
-          <div>
-            <label className="block text-sm font-medium text-foreground mb-1">
-              Slug <span className="text-destructive">*</span>
-            </label>
-            <input
-              type="text"
-              name="slug"
-              value={formData.slug}
-              onChange={handleChange}
-              className="w-full px-4 py-2 border border-border rounded-lg bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
-              placeholder="post-url-slug"
-              required
-            />
-          </div>
-
-          {/* Author */}
-          <div>
-            <label className="block text-sm font-medium text-foreground mb-1">
-              Author <span className="text-destructive">*</span>
-            </label>
-            <input
-              type="text"
-              name="author"
-              value={formData.author}
-              onChange={handleChange}
-              className="w-full px-4 py-2 border border-border rounded-lg bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
-              placeholder="Author name"
-              required
-            />
-          </div>
-
-          {/* Category */}
-          <div>
-            <label className="block text-sm font-medium text-foreground mb-1">Category</label>
-            <select
-              name="category"
-              value={formData.category}
-              onChange={handleChange}
-              className="w-full px-4 py-2 border border-border rounded-lg bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
-            >
-              {CATEGORIES.map((cat) => (
-                <option key={cat} value={cat}>
-                  {cat}
-                </option>
-              ))}
-            </select>
+          {/* Post Details */}
+          <div className="bg-card border border-border rounded-xl p-5">
+            <h2 className="text-base font-semibold text-foreground mb-4">Post Details</h2>
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-foreground mb-1">
+                  Title <span className="text-destructive">*</span>
+                </label>
+                <input
+                  type="text"
+                  name="title"
+                  value={formData.title}
+                  onChange={handleChange}
+                  placeholder="Enter post title"
+                  className="w-full px-4 py-2 border border-border rounded-lg bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
+                  required
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-foreground mb-1">
+                  Slug <span className="text-destructive">*</span>
+                </label>
+                <input
+                  type="text"
+                  name="slug"
+                  value={formData.slug}
+                  onChange={handleChange}
+                  placeholder="post-url-slug"
+                  className="w-full px-4 py-2 border border-border rounded-lg bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
+                  required
+                />
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-foreground mb-1">Category</label>
+                  <select
+                    name="category"
+                    value={formData.category}
+                    onChange={handleChange}
+                    className="w-full px-3 py-2 border border-border rounded-lg bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/50"
+                  >
+                    {CATEGORIES.map((cat) => (
+                      <option key={cat} value={cat}>
+                        {cat}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-foreground mb-1">
+                    Author <span className="text-destructive">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    name="author"
+                    value={formData.author}
+                    onChange={handleChange}
+                    placeholder="Author name"
+                    className="w-full px-4 py-2 border border-border rounded-lg bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
+                    required
+                  />
+                </div>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-foreground mb-1">
+                    Read Time (minutes)
+                  </label>
+                  <input
+                    type="number"
+                    name="readTime"
+                    value={formData.readTime}
+                    onChange={handleChange}
+                    min="1"
+                    max="60"
+                    className="w-full px-4 py-2 border border-border rounded-lg bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-foreground mb-1">
+                    Tags (comma-separated)
+                  </label>
+                  <input
+                    type="text"
+                    name="tags"
+                    value={formData.tags}
+                    onChange={handleChange}
+                    placeholder="ayurveda, health, herbs"
+                    className="w-full px-4 py-2 border border-border rounded-lg bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
+                  />
+                </div>
+              </div>
+            </div>
           </div>
 
           {/* Excerpt */}
-          <div>
-            <label className="block text-sm font-medium text-foreground mb-1">
+          <div className="bg-card border border-border rounded-xl p-5">
+            <label className="block text-sm font-semibold text-foreground mb-2">
               Excerpt <span className="text-destructive">*</span>
             </label>
             <textarea
               name="excerpt"
               value={formData.excerpt}
               onChange={handleChange}
+              placeholder="Brief summary of the post"
               rows={3}
               className="w-full px-4 py-2 border border-border rounded-lg bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 resize-none"
-              placeholder="Brief description of the post"
               required
             />
           </div>
 
           {/* Content */}
-          <div>
-            <label className="block text-sm font-medium text-foreground mb-1">
+          <div className="bg-card border border-border rounded-xl p-5">
+            <label className="block text-sm font-semibold text-foreground mb-2">
               Content <span className="text-destructive">*</span>
             </label>
             <textarea
               name="content"
               value={formData.content}
               onChange={handleChange}
-              rows={14}
+              placeholder="Write your full blog post content here."
+              rows={16}
               className="w-full px-4 py-2 border border-border rounded-lg bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 resize-y font-mono text-sm"
-              placeholder="Write your post content here (HTML supported)"
               required
             />
-            <p className="text-xs text-muted-foreground mt-1">
-              HTML is supported. To embed an inline image, add an &lt;img&gt; tag with <code>data-blob-index="0"</code> (increment index for each image).
-            </p>
           </div>
 
-          {/* Read Time */}
-          <div>
-            <label className="block text-sm font-medium text-foreground mb-1">Read Time (minutes)</label>
-            <input
-              type="number"
-              name="readTime"
-              value={formData.readTime}
-              onChange={handleChange}
-              min="1"
-              max="60"
-              className="w-full px-4 py-2 border border-border rounded-lg bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
-            />
-          </div>
-
-          {/* Tags */}
-          <div>
-            <label className="block text-sm font-medium text-foreground mb-1">
-              Tags <span className="text-muted-foreground text-xs">(comma-separated)</span>
-            </label>
-            <input
-              type="text"
-              name="tags"
-              value={formData.tags}
-              onChange={handleChange}
-              className="w-full px-4 py-2 border border-border rounded-lg bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
-              placeholder="ayurveda, health, wellness"
-            />
-          </div>
-
-          {/* Publication Date & Publish Toggle */}
-          <div className="bg-card border border-border rounded-xl p-5 space-y-4">
-            <h2 className="text-base font-semibold text-foreground">Publishing Options</h2>
-
-            <div>
-              <label className="block text-sm font-medium text-foreground mb-1">
-                Publication Date <span className="text-muted-foreground text-xs">(optional)</span>
-              </label>
-              <input
-                type="date"
-                name="publicationDate"
-                value={formData.publicationDate}
-                onChange={handleChange}
-                className="w-full px-4 py-2 border border-border rounded-lg bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
-              />
+          {/* Publication Settings */}
+          <div className="bg-card border border-border rounded-xl p-5">
+            <h2 className="text-base font-semibold text-foreground mb-4">Publication Settings</h2>
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-foreground mb-1">
+                  Publication Date
+                </label>
+                <input
+                  type="date"
+                  name="publicationDate"
+                  value={formData.publicationDate}
+                  onChange={handleChange}
+                  className="w-full px-4 py-2 border border-border rounded-lg bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
+                />
+              </div>
+              <div className="flex items-center gap-3">
+                <input
+                  type="checkbox"
+                  id="publishImmediately"
+                  name="publishImmediately"
+                  checked={formData.publishImmediately}
+                  onChange={handleChange}
+                  className="w-4 h-4 accent-primary"
+                />
+                <label
+                  htmlFor="publishImmediately"
+                  className="text-sm font-medium text-foreground cursor-pointer"
+                >
+                  Publish Immediately
+                </label>
+              </div>
+              {formData.publishImmediately && (
+                <p className="text-xs text-primary bg-primary/10 px-3 py-2 rounded-lg">
+                  ✓ This post will be published and visible to all visitors.
+                </p>
+              )}
             </div>
-
-            <div className="flex items-center gap-3">
-              <input
-                type="checkbox"
-                id="publishImmediately"
-                name="publishImmediately"
-                checked={formData.publishImmediately}
-                onChange={handleChange}
-                className="w-4 h-4 accent-primary"
-              />
-              <label htmlFor="publishImmediately" className="text-sm font-medium text-foreground">
-                Publish Immediately
-              </label>
-            </div>
-            <p className="text-xs text-muted-foreground">
-              When enabled, the post will be published and visible to readers right away. Otherwise it will be saved as a draft.
-            </p>
           </div>
 
           {/* Actions */}
-          <div className="flex gap-4 pt-4">
+          <div className="flex items-center gap-4 pb-8">
             <button
               type="submit"
               disabled={updatePost.isPending}
-              className="px-6 py-2.5 bg-primary text-primary-foreground rounded-lg font-medium hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center gap-2"
+              className="flex items-center gap-2 bg-primary text-primary-foreground px-8 py-3 rounded-full font-semibold hover:bg-primary/90 transition-colors disabled:opacity-50"
             >
-              {updatePost.isPending && (
-                <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24" fill="none">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
-                </svg>
+              {updatePost.isPending ? (
+                <>
+                  <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                  {uploadProgress > 0 && uploadProgress < 100
+                    ? `Uploading ${uploadProgress}%...`
+                    : 'Saving...'}
+                </>
+              ) : formData.publishImmediately ? (
+                'Save & Publish'
+              ) : (
+                'Save as Draft'
               )}
-              {updatePost.isPending ? 'Saving...' : 'Save Changes'}
             </button>
             <button
               type="button"
-              onClick={() => navigate({ to: '/admin/posts' })}
-              className="px-6 py-2.5 border border-border text-foreground rounded-lg font-medium hover:bg-muted transition-colors"
+              onClick={() => navigate({ to: '/admin' })}
+              className="px-8 py-3 rounded-full font-semibold border border-border text-foreground hover:bg-muted transition-colors"
             >
               Cancel
             </button>
