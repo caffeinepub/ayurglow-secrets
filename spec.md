@@ -1,10 +1,10 @@
 # Specification
 
 ## Summary
-**Goal:** Allow any authenticated user to create and edit blog posts without requiring admin privileges.
+**Goal:** Fix the Candid interface mismatch error that prevents blog post creation and editing from completing successfully.
 
 **Planned changes:**
-- Remove the admin-only authorization check from the backend `createBlogPost` and `updateBlogPost` functions so any authenticated user can call them.
-- Replace or remove the admin route guard on the frontend `CreateBlogPostPage` and `EditBlogPostPage` so any logged-in user can access these pages.
+- Align the backend Candid interface for the create/edit blog post functions with what the frontend sends, resolving the "Expected v3 response body" error.
+- Ensure the frontend and backend agree on the blog post data structure without changing the data model.
 
-**User-visible outcome:** Any logged-in (non-admin) user can navigate to the Create and Edit blog post pages and successfully publish or update blog posts without receiving an "Access Denied" error.
+**User-visible outcome:** A logged-in user can create and edit blog posts without encountering a Candid mismatch error, and newly created posts appear in the admin posts list.

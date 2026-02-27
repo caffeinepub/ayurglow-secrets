@@ -142,7 +142,7 @@ export interface backendInterface {
     addComment(postId: string, author: string, content: string): Promise<boolean>;
     assignCallerUserRole(user: Principal, role: UserRole): Promise<void>;
     canCallerAccessAdminSection(): Promise<boolean>;
-    createPost(id: string, title: string, slug: string, category: string, content: string, excerpt: string, readTime: bigint, author: string, tags: Array<string>, image: ExternalBlob | null, imageSize: string | null, contentImages: Array<ExternalBlob>, isPublished: boolean, publishedAt: bigint | null): Promise<string>;
+    createPost(id: string, title: string, slug: string, category: string, content: string, excerpt: string, readTime: bigint, author: string, tags: Array<string>, image: ExternalBlob | null, imageSize: string | null, contentImages: Array<ExternalBlob>, isPublished: boolean, publishedAt: bigint | null): Promise<void>;
     deletePost(id: string): Promise<boolean>;
     getAllVisiblePosts(): Promise<Array<BlogPostView>>;
     getCallerUserProfile(): Promise<UserProfile | null>;
@@ -299,7 +299,7 @@ export class Backend implements backendInterface {
             return result;
         }
     }
-    async createPost(arg0: string, arg1: string, arg2: string, arg3: string, arg4: string, arg5: string, arg6: bigint, arg7: string, arg8: Array<string>, arg9: ExternalBlob | null, arg10: string | null, arg11: Array<ExternalBlob>, arg12: boolean, arg13: bigint | null): Promise<string> {
+    async createPost(arg0: string, arg1: string, arg2: string, arg3: string, arg4: string, arg5: string, arg6: bigint, arg7: string, arg8: Array<string>, arg9: ExternalBlob | null, arg10: string | null, arg11: Array<ExternalBlob>, arg12: boolean, arg13: bigint | null): Promise<void> {
         if (this.processError) {
             try {
                 const result = await this.actor.createPost(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, await to_candid_opt_n10(this._uploadFile, this._downloadFile, arg9), to_candid_opt_n12(this._uploadFile, this._downloadFile, arg10), await to_candid_vec_n13(this._uploadFile, this._downloadFile, arg11), arg12, to_candid_opt_n14(this._uploadFile, this._downloadFile, arg13));

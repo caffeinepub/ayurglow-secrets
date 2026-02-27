@@ -1,81 +1,40 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useActor } from './useActor';
-import { useInternetIdentity } from './useInternetIdentity';
-import type { BlogPostView, UserProfile } from '../backend';
-import { ExternalBlob } from '../backend';
+import { BlogPostView, ExternalBlob } from '../backend';
 
-// ─── User Profile ────────────────────────────────────────────────────────────
-
-export function useGetCallerUserProfile() {
-  const { actor, isFetching: actorFetching } = useActor();
-
-  const query = useQuery<UserProfile | null>({
-    queryKey: ['currentUserProfile'],
-    queryFn: async () => {
-      if (!actor) throw new Error('Actor not available');
-      return actor.getCallerUserProfile();
-    },
-    enabled: !!actor && !actorFetching,
-    retry: false,
-  });
-
-  return {
-    ...query,
-    isLoading: actorFetching || query.isLoading,
-    isFetched: !!actor && query.isFetched,
-  };
+export interface CreatePostParams {
+  id: string;
+  title: string;
+  slug: string;
+  category: string;
+  content: string;
+  excerpt: string;
+  readTime: bigint;
+  author: string;
+  tags: string[];
+  image: ExternalBlob | null;
+  imageSize: string | null;
+  contentImages: ExternalBlob[];
+  isPublished: boolean;
+  publishedAt: bigint | null;
 }
 
-export function useSaveCallerUserProfile() {
-  const { actor } = useActor();
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: async (profile: UserProfile) => {
-      if (!actor) throw new Error('Actor not available');
-      return actor.saveCallerUserProfile(profile);
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['currentUserProfile'] });
-    },
-  });
+export interface UpdatePostParams {
+  id: string;
+  title: string;
+  slug: string;
+  category: string;
+  content: string;
+  excerpt: string;
+  readTime: bigint;
+  author: string;
+  tags: string[];
+  image: ExternalBlob | null;
+  imageSize: string | null;
+  contentImages: ExternalBlob[];
+  isPublished: boolean;
+  publishedAt: bigint | null;
 }
-
-// ─── Admin Access ─────────────────────────────────────────────────────────────
-
-export function useCanAccessAdminSection() {
-  const { actor, isFetching: actorFetching } = useActor();
-  const { identity, isInitializing } = useInternetIdentity();
-
-  const principalStr = identity?.getPrincipal().toString() ?? 'anonymous';
-
-  const query = useQuery<boolean>({
-    queryKey: ['canAccessAdmin', principalStr],
-    queryFn: async () => {
-      if (!actor) return false;
-      try {
-        const result = await actor.canCallerAccessAdminSection();
-        return result;
-      } catch (err) {
-        console.error('Admin access check failed:', err);
-        return false;
-      }
-    },
-    enabled: !!actor && !actorFetching && !isInitializing,
-    retry: 2,
-    retryDelay: 1000,
-    staleTime: 30_000,
-  });
-
-  return {
-    ...query,
-    hasAccess: query.data === true,
-    isLoading: isInitializing || actorFetching || query.isLoading,
-    isFetched: !isInitializing && !actorFetching && !!actor && query.isFetched,
-  };
-}
-
-// ─── Blog Posts ───────────────────────────────────────────────────────────────
 
 export function useGetPublishedPosts() {
   const { actor, isFetching } = useActor();
@@ -92,17 +51,14 @@ export function useGetPublishedPosts() {
 
 export function useGetAllVisiblePosts() {
   const { actor, isFetching } = useActor();
-  const { identity } = useInternetIdentity();
-  const principalStr = identity?.getPrincipal().toString() ?? 'anonymous';
 
   return useQuery<BlogPostView[]>({
-    queryKey: ['allVisiblePosts', principalStr],
+    queryKey: ['allVisiblePosts'],
     queryFn: async () => {
       if (!actor) return [];
       return actor.getAllVisiblePosts();
     },
     enabled: !!actor && !isFetching,
-    retry: false,
   });
 }
 
@@ -133,31 +89,14 @@ export function useGetPostBySlug(slug: string) {
   });
 }
 
-// ─── Blog Post Mutations ──────────────────────────────────────────────────────
-
 export function useCreatePost() {
   const { actor } = useActor();
   const queryClient = useQueryClient();
 
-  return useMutation({
-    mutationFn: async (params: {
-      id: string;
-      title: string;
-      slug: string;
-      category: string;
-      content: string;
-      excerpt: string;
-      readTime: bigint;
-      author: string;
-      tags: string[];
-      image: ExternalBlob | null;
-      imageSize: string | null;
-      contentImages: ExternalBlob[];
-      isPublished: boolean;
-      publishedAt: bigint | null;
-    }) => {
+  return useMutation<void, Error, CreatePostParams>({
+    mutationFn: async (params: CreatePostParams): Promise<void> => {
       if (!actor) throw new Error('Actor not available');
-      const result = await actor.createPost(
+      await actor.createPost(
         params.id,
         params.title,
         params.slug,
@@ -171,17 +110,15 @@ export function useCreatePost() {
         params.imageSize,
         params.contentImages,
         params.isPublished,
-        params.publishedAt,
+        params.publishedAt
       );
-      return result;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['allVisiblePosts'] });
       queryClient.invalidateQueries({ queryKey: ['publishedPosts'] });
+      queryClient.invalidateQueries({ queryKey: ['allVisiblePosts'] });
     },
-    onError: (err: any) => {
-      // Errors are handled at the call site; no additional processing needed here
-      console.error('createPost error:', err?.message || err);
+    onError: (error: Error) => {
+      console.error('Create post error:', error);
     },
   });
 }
@@ -190,23 +127,8 @@ export function useUpdatePost() {
   const { actor } = useActor();
   const queryClient = useQueryClient();
 
-  return useMutation({
-    mutationFn: async (params: {
-      id: string;
-      title: string;
-      slug: string;
-      category: string;
-      content: string;
-      excerpt: string;
-      readTime: bigint;
-      author: string;
-      tags: string[];
-      image: ExternalBlob | null;
-      imageSize: string | null;
-      contentImages: ExternalBlob[];
-      isPublished: boolean;
-      publishedAt: bigint | null;
-    }) => {
+  return useMutation<boolean, Error, UpdatePostParams>({
+    mutationFn: async (params: UpdatePostParams): Promise<boolean> => {
       if (!actor) throw new Error('Actor not available');
       return actor.updatePost(
         params.id,
@@ -222,45 +144,16 @@ export function useUpdatePost() {
         params.imageSize,
         params.contentImages,
         params.isPublished,
-        params.publishedAt,
+        params.publishedAt
       );
     },
-    onSuccess: (_data, variables) => {
-      queryClient.invalidateQueries({ queryKey: ['allVisiblePosts'] });
+    onSuccess: (_data, params) => {
       queryClient.invalidateQueries({ queryKey: ['publishedPosts'] });
-      queryClient.invalidateQueries({ queryKey: ['post', variables.id] });
-    },
-    onError: (err: any) => {
-      // Errors are handled at the call site; no additional processing needed here
-      console.error('updatePost error:', err?.message || err);
-    },
-  });
-}
-
-export function useSetPublishedState() {
-  const { actor } = useActor();
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: async (params: {
-      id: string;
-      isPublished: boolean;
-      publishedDate: bigint | null;
-    }) => {
-      if (!actor) throw new Error('Actor not available');
-      const result = await actor.setPublishedState(
-        params.id,
-        params.isPublished,
-        params.publishedDate,
-      );
-      if (!result) {
-        throw new Error('Post not found or failed to update published state');
-      }
-      return result;
-    },
-    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['allVisiblePosts'] });
-      queryClient.invalidateQueries({ queryKey: ['publishedPosts'] });
+      queryClient.invalidateQueries({ queryKey: ['post', params.id] });
+    },
+    onError: (error: Error) => {
+      console.error('Update post error:', error);
     },
   });
 }
@@ -269,19 +162,58 @@ export function useDeletePost() {
   const { actor } = useActor();
   const queryClient = useQueryClient();
 
-  return useMutation({
+  return useMutation<boolean, Error, string>({
     mutationFn: async (id: string) => {
       if (!actor) throw new Error('Actor not available');
       return actor.deletePost(id);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['allVisiblePosts'] });
       queryClient.invalidateQueries({ queryKey: ['publishedPosts'] });
+      queryClient.invalidateQueries({ queryKey: ['allVisiblePosts'] });
+    },
+    onError: (error: Error) => {
+      console.error('Delete post error:', error);
     },
   });
 }
 
-// ─── Comments ─────────────────────────────────────────────────────────────────
+export function useSetPublishedState() {
+  const { actor } = useActor();
+  const queryClient = useQueryClient();
+
+  return useMutation<boolean, Error, { id: string; isPublished: boolean; publishedDate: bigint | null }>({
+    mutationFn: async ({ id, isPublished, publishedDate }) => {
+      if (!actor) throw new Error('Actor not available');
+      return actor.setPublishedState(id, isPublished, publishedDate);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['publishedPosts'] });
+      queryClient.invalidateQueries({ queryKey: ['allVisiblePosts'] });
+    },
+    onError: (error: Error) => {
+      console.error('Set published state error:', error);
+    },
+  });
+}
+
+export function useAddComment() {
+  const { actor } = useActor();
+  const queryClient = useQueryClient();
+
+  return useMutation<boolean, Error, { postId: string; author: string; content: string }>({
+    mutationFn: async ({ postId, author, content }) => {
+      if (!actor) throw new Error('Actor not available');
+      return actor.addComment(postId, author, content);
+    },
+    onSuccess: (_data, { postId }) => {
+      queryClient.invalidateQueries({ queryKey: ['post', postId] });
+      queryClient.invalidateQueries({ queryKey: ['comments', postId] });
+    },
+    onError: (error: Error) => {
+      console.error('Add comment error:', error);
+    },
+  });
+}
 
 export function useGetComments(postId: string) {
   const { actor, isFetching } = useActor();
@@ -296,17 +228,50 @@ export function useGetComments(postId: string) {
   });
 }
 
-export function useAddComment() {
+export function useCanCallerAccessAdminSection() {
+  const { actor, isFetching } = useActor();
+
+  return useQuery<boolean>({
+    queryKey: ['canAccessAdmin'],
+    queryFn: async () => {
+      if (!actor) return false;
+      return actor.canCallerAccessAdminSection();
+    },
+    enabled: !!actor && !isFetching,
+  });
+}
+
+export function useGetCallerUserProfile() {
+  const { actor, isFetching: actorFetching } = useActor();
+
+  const query = useQuery({
+    queryKey: ['currentUserProfile'],
+    queryFn: async () => {
+      if (!actor) throw new Error('Actor not available');
+      return actor.getCallerUserProfile();
+    },
+    enabled: !!actor && !actorFetching,
+    retry: false,
+  });
+
+  return {
+    ...query,
+    isLoading: actorFetching || query.isLoading,
+    isFetched: !!actor && query.isFetched,
+  };
+}
+
+export function useSaveCallerUserProfile() {
   const { actor } = useActor();
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (params: { postId: string; author: string; content: string }) => {
+    mutationFn: async (profile: { name: string }) => {
       if (!actor) throw new Error('Actor not available');
-      return actor.addComment(params.postId, params.author, params.content);
+      return actor.saveCallerUserProfile(profile);
     },
-    onSuccess: (_data, variables) => {
-      queryClient.invalidateQueries({ queryKey: ['comments', variables.postId] });
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['currentUserProfile'] });
     },
   });
 }

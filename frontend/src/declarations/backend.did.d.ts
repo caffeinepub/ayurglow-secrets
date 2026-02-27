@@ -86,7 +86,7 @@ export interface _SERVICE {
       boolean,
       [] | [bigint],
     ],
-    string
+    undefined
   >,
   'deletePost' : ActorMethod<[string], boolean>,
   'getAllVisiblePosts' : ActorMethod<[], Array<BlogPostView>>,

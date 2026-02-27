@@ -1,55 +1,35 @@
 {
   "kind": "build_request",
-  "title": "Remove admin access requirement for posting blog posts",
-  "projectName": "AyurGlow Secrets",
+  "title": "Retry failed deployment build",
   "priority": "normal",
   "requirements": [
     {
       "id": "REQ-1",
-      "text": "Remove the admin-only authorization check on the backend createBlogPost (and updateBlogPost if applicable) functions so that any authenticated user can create and publish blog posts without needing admin privileges.",
-      "target": "backend",
+      "text": "Fix the 'Expected v3 response body' Candid interface mismatch error that occurs when a user attempts to create a blog post, so that blog post creation completes successfully without errors.",
+      "target": "both",
       "source": {
         "messageIds": [
-          "msg-5"
+          "msg-1"
         ],
         "quotes": [
-          "just remove admin access for posting any blog post"
+          "try again"
         ]
       },
       "acceptanceCriteria": [
-        "Any authenticated (non-admin) user can call createBlogPost without receiving an authorization error.",
-        "The backend no longer checks isAdmin before allowing post creation or editing.",
-        "Admin-only operations unrelated to posting (e.g., deleting posts) remain unchanged."
-      ]
-    },
-    {
-      "id": "REQ-2",
-      "text": "Remove any frontend admin access guards on the Create and Edit blog post pages (CreateBlogPostPage and EditBlogPostPage) so that any authenticated user can navigate to and submit these pages without being blocked or redirected by an admin check.",
-      "target": "frontend",
-      "source": {
-        "messageIds": [
-          "msg-5"
-        ],
-        "quotes": [
-          "just remove admin access for posting any blog post"
-        ]
-      },
-      "acceptanceCriteria": [
-        "CreateBlogPostPage is accessible to any logged-in user, not just admins.",
-        "EditBlogPostPage is accessible to any logged-in user who owns or has permission on the post.",
-        "No 'Access Denied' screen or admin-only error message appears for non-admin authenticated users attempting to create or edit posts.",
-        "The AdminRoute wrapper (if used for these pages) is replaced with a simple authenticated-user guard or removed entirely."
+        "A logged-in user can submit the Create Blog Post form without receiving an 'Expected v3 response body' error.",
+        "The backend Candid interface for creating a blog post matches what the frontend sends.",
+        "The created post appears in the admin posts list after successful submission.",
+        "Editing an existing blog post also completes without a Candid mismatch error."
       ]
     }
   ],
   "constraints": [
-    "Do not remove admin checks from operations that should remain admin-only (e.g., deleting posts, managing users).",
-    "Do not modify immutable frontend paths: frontend/src/hooks/useInternetIdentity.ts, frontend/src/hooks/useActor.ts, frontend/src/main.tsx, frontend/src/components/ui."
+    "Do not modify files under frontend/src/hooks/useInternetIdentity.ts, frontend/src/hooks/useActor.ts, frontend/src/main.tsx, or frontend/src/components/ui.",
+    "Keep all backend logic within the single main actor in backend/main.mo."
   ],
   "nonGoals": [
-    "Changing authentication mechanism or Internet Identity integration.",
-    "Modifying any non-blog-post admin features.",
-    "Altering the visual design or layout of any pages."
+    "Adding new blog post fields or changing the data model beyond what is needed to fix the Candid mismatch.",
+    "Redesigning any UI pages."
   ],
   "imageRequirements": {
     "required": [],

@@ -1,37 +1,32 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Remove admin access requirement for posting blog posts",
+  "title": "Fix Candid interface mismatch for blog post creation",
   "requirements": [
     {
-      "id": "REQ-2",
-      "summary": "Remove frontend admin access guards from Create and Edit blog post pages so any authenticated user can create and edit posts",
+      "id": "REQ-1",
+      "summary": "Fix the 'Expected v3 response body' Candid interface mismatch error during blog post creation and editing",
       "acceptanceCriteria": [
-        "CreateBlogPostPage is accessible to any logged-in user, not just admins.",
-        "EditBlogPostPage is accessible to any logged-in user who owns or has permission on the post.",
-        "No 'Access Denied' screen or admin-only error message appears for non-admin authenticated users attempting to create or edit posts.",
-        "The AdminRoute wrapper (if used for these pages) is replaced with a simple authenticated-user guard or removed entirely."
+        "A logged-in user can submit the Create Blog Post form without receiving an 'Expected v3 response body' error.",
+        "The backend Candid interface for creating a blog post matches what the frontend sends.",
+        "The created post appears in the admin posts list after successful submission.",
+        "Editing an existing blog post also completes without a Candid mismatch error."
       ],
       "file_operations": [
         {
           "path": "frontend/src/pages/CreateBlogPostPage.tsx",
           "operation": "modify",
-          "description": "Remove any admin-only access checks or guards. Ensure the page is accessible to any authenticated user (not just admins). Verify that the page correctly uses the authorization component's authentication state to confirm the user is logged in, but does not check for admin role."
+          "description": "Fix the Candid serialization of ExternalBlob instances when calling actor.createPost(). Ensure that the image parameter is properly constructed as ExternalBlob | null (not undefined or an invalid type). Ensure contentImages array contains only valid ExternalBlob instances. Verify that all parameters match the backend interface signature exactly, including proper handling of null vs undefined for optional fields like image, imageSize, and publishedAt."
         },
         {
           "path": "frontend/src/pages/EditBlogPostPage.tsx",
           "operation": "modify",
-          "description": "Remove any admin-only access checks or guards. Ensure the page is accessible to any authenticated user who has permission to edit the post. Verify that the page correctly uses the authorization component's authentication state to confirm the user is logged in, but does not check for admin role."
+          "description": "Fix the Candid serialization of ExternalBlob instances when calling actor.updatePost(). Ensure that when replacing or keeping the existing image, the image parameter is properly constructed as ExternalBlob | null. Ensure contentImages array contains only valid ExternalBlob instances. Verify that all parameters match the backend interface signature exactly, including proper handling of null vs undefined for optional fields."
         },
         {
-          "path": "frontend/src/App.tsx",
+          "path": "frontend/src/hooks/useQueries.ts",
           "operation": "modify",
-          "description": "Review the route configuration for CreateBlogPostPage and EditBlogPostPage. If these routes are wrapped with AdminRoute or any admin-specific guard, replace with a simple authenticated-user guard or remove the guard entirely so any logged-in user can navigate to these pages. Ensure the routes remain protected by authentication but not by admin role checks."
-        },
-        {
-          "path": "frontend/src/components/AdminRoute.tsx",
-          "operation": "modify",
-          "description": "If AdminRoute is currently used to guard CreateBlogPostPage and EditBlogPostPage routes, review its usage and ensure it is replaced with a simpler authenticated-user guard for those specific routes. AdminRoute should continue to protect other admin-only pages (e.g., AdminPostsPage for delete operations) but not the create/edit post pages."
+          "description": "Review and fix the createPost and updatePost mutation functions to ensure they correctly handle ExternalBlob serialization before passing data to the backend actor. Ensure all parameters are properly typed and match the backend interface signature. Add proper null/undefined handling for optional parameters to prevent Candid deserialization errors."
         }
       ]
     }

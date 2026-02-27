@@ -2,12 +2,10 @@
   "kind": "feature_evidence_report",
   "features": [
     {
-      "featureId": "feature-remove-any-frontend-admin-access-guards-on-the-create-and-edit-blog-post-pages-createblogpostpage-and-editblogpostpage-so-that-any-authenticated-user-can-navigate-to-and-submit-these-pages-without-being-blocked-or-redirected-by-an-admin-check",
-      "featureTitle": "Remove any frontend admin access guards on the Create and Edit blog post pages (CreateBlogPostPage and EditBlogPostPage) so that any authenticated user can navigate to and submit these pages without being blocked or redirected by an admin check.",
+      "featureId": "feature-fix-the-expected-v3-response-body-candid-interface-mismatch-error-that-occurs-when-a-user-attempts-to-create-a-blog-post-so-that-blog-post-creation-completes-successfully-without-errors",
+      "featureTitle": "Fix the 'Expected v3 response body' Candid interface mismatch error that occurs when a user attempts to create a blog post, so that blog post creation completes successfully without errors.",
       "files": [
-        "frontend/src/App.tsx",
-        "frontend/src/pages/CreateBlogPostPage.tsx",
-        "frontend/src/pages/EditBlogPostPage.tsx"
+        "frontend/src/hooks/useQueries.ts"
       ],
       "components": [
         "core-infrastructure@1.0.2",
@@ -19,7 +17,7 @@
         "authorization@4.0.0"
       ],
       "testIds": [
-        "REQ-2"
+        "REQ-1"
       ],
       "confidence": "high"
     }

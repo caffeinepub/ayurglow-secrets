@@ -58,7 +58,6 @@ actor {
     name : Text;
   };
 
-  // Persistent state variables must be at top-level actor scope
   let accessControlState = AccessControl.initState();
   include MixinAuthorization(accessControlState);
 
@@ -67,12 +66,10 @@ actor {
 
   include MixinStorage();
 
-  // Core Auth Queries (for frontend)
   public query ({ caller }) func canCallerAccessAdminSection() : async Bool {
     AccessControl.isAdmin(accessControlState, caller);
   };
 
-  // User profile management
   public query ({ caller }) func getCallerUserProfile() : async ?UserProfile {
     if (not (AccessControl.hasPermission(accessControlState, caller, #user))) {
       Runtime.trap("Unauthorized: Only users can get profiles");
@@ -94,7 +91,6 @@ actor {
     userProfiles.add(caller, profile);
   };
 
-  // Create/Update Post (any user allowed)
   public shared ({ caller }) func createPost(
     id : Text,
     title : Text,
@@ -110,7 +106,7 @@ actor {
     contentImages : [Storage.ExternalBlob],
     isPublished : Bool,
     publishedAt : ?Int,
-  ) : async Text {
+  ) : async () {
     if (not (AccessControl.hasPermission(accessControlState, caller, #user))) {
       Runtime.trap("Unauthorized: Only users can create posts");
     };
@@ -137,7 +133,6 @@ actor {
       comments = List.empty<Comment>();
     };
     blogPosts.add(id, newPost);
-    id;
   };
 
   public shared ({ caller }) func updatePost(
@@ -190,7 +185,6 @@ actor {
     };
   };
 
-  // Publish/Unpublish (admin only)
   public shared ({ caller }) func setPublishedState(
     id : Text,
     isPublished : Bool,
@@ -239,8 +233,6 @@ actor {
     };
   };
 
-  // Read Only Queries
-  // Admins can view any post; non-admins can only view published posts
   public query ({ caller }) func getPost(id : Text) : async ?BlogPostView {
     switch (blogPosts.get(id)) {
       case (null) { null };
@@ -268,7 +260,6 @@ actor {
     blogPosts.values().map(func(p) { toBlogPostView(p) }).toArray();
   };
 
-  // Comments
   public shared ({ caller }) func addComment(postId : Text, author : Text, content : Text) : async Bool {
     if (not (AccessControl.hasPermission(accessControlState, caller, #user))) {
       Runtime.trap("Unauthorized: Only users can add comments");

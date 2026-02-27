@@ -1,18 +1,41 @@
 import { Link, useRouterState, useNavigate } from '@tanstack/react-router';
-import { Menu, X, ChevronDown } from 'lucide-react';
+import { Menu, X, ChevronDown, LogIn, LogOut } from 'lucide-react';
 import { useState } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { useInternetIdentity } from '../hooks/useInternetIdentity';
 
 export default function Navigation() {
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
   const router = useRouterState();
   const currentPath = router.location.pathname;
+  const queryClient = useQueryClient();
+  const { login, clear, loginStatus, identity } = useInternetIdentity();
+
+  const isAuthenticated = !!identity;
+  const isLoggingIn = loginStatus === 'logging-in';
+
+  const handleAuth = async () => {
+    if (isAuthenticated) {
+      await clear();
+      queryClient.clear();
+    } else {
+      try {
+        await login();
+      } catch (error: any) {
+        if (error?.message === 'User is already authenticated') {
+          await clear();
+          setTimeout(() => login(), 300);
+        }
+      }
+    }
+  };
 
   const navLinks = [
     { path: '/', label: 'Home' },
@@ -85,6 +108,29 @@ export default function Navigation() {
             >
               Admin
             </Link>
+
+            {/* Login / Logout Button */}
+            <button
+              onClick={handleAuth}
+              disabled={isLoggingIn}
+              className={`flex items-center gap-1.5 px-4 py-1.5 rounded-full text-sm font-medium transition-colors disabled:opacity-50 ${
+                isAuthenticated
+                  ? 'bg-gold-100 hover:bg-gold-200 text-earth-green-900 border border-gold-300'
+                  : 'bg-earth-green text-white hover:bg-earth-green-700'
+              }`}
+            >
+              {isAuthenticated ? (
+                <>
+                  <LogOut className="w-3.5 h-3.5" />
+                  {isLoggingIn ? 'Logging out...' : 'Logout'}
+                </>
+              ) : (
+                <>
+                  <LogIn className="w-3.5 h-3.5" />
+                  {isLoggingIn ? 'Logging in...' : 'Login'}
+                </>
+              )}
+            </button>
           </div>
 
           {/* Mobile Menu Button */}
@@ -155,6 +201,34 @@ export default function Navigation() {
               >
                 Admin
               </Link>
+
+              {/* Mobile Login / Logout Button */}
+              <div className="px-4 pt-2 pb-1">
+                <button
+                  onClick={() => {
+                    setIsOpen(false);
+                    handleAuth();
+                  }}
+                  disabled={isLoggingIn}
+                  className={`w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium transition-colors disabled:opacity-50 ${
+                    isAuthenticated
+                      ? 'bg-gold-100 hover:bg-gold-200 text-earth-green-900 border border-gold-300'
+                      : 'bg-earth-green text-white hover:bg-earth-green-700'
+                  }`}
+                >
+                  {isAuthenticated ? (
+                    <>
+                      <LogOut className="w-4 h-4" />
+                      {isLoggingIn ? 'Logging out...' : 'Logout'}
+                    </>
+                  ) : (
+                    <>
+                      <LogIn className="w-4 h-4" />
+                      {isLoggingIn ? 'Logging in...' : 'Login'}
+                    </>
+                  )}
+                </button>
+              </div>
             </div>
           </div>
         )}
