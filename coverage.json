@@ -1,41 +1,187 @@
 {
   "kind": "coverage_report",
   "version": "1.0",
-  "generatedAt": "2026-02-27T11:59:22.833Z",
+  "generatedAt": "2026-02-27T17:49:38.932Z",
   "sources": {
     "buildRequest": true,
     "implementationPlan": true
   },
   "requirements": {
-    "total": 1,
-    "implemented": 1,
+    "total": 14,
+    "implemented": 3,
     "items": [
       {
         "id": "REQ-1",
-        "summary": "Fix the 'Expected v3 response body' Candid interface mismatch error that occurs when a user attempts to create a blog post, so that blog post creation completes successfully without errors.",
+        "summary": "Redesign the entire frontend with a cohesive blue and green color palette (emerald/forest green + teal/ocean blue tones). Apply consistently across all pages, navigation, buttons, cards, hero sections, and footer. Replace any purple, orange, or other off-brand accent colors throughout the app.",
+        "status": "missing",
+        "plannedFiles": [
+          "frontend/src/index.css",
+          "frontend/tailwind.config.js"
+        ],
+        "matchedFiles": []
+      },
+      {
+        "id": "REQ-10",
+        "summary": "Ensure the comment section is present and fully functional on every blog post detail page. It should display a 'Share Your Comment' heading, a form with name, email (optional), and comment fields, a submit button, and a list of approved comments below the form with author name and date.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/pages/BlogPostDetailPage.tsx",
+          "frontend/src/components/CommentSection.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/pages/BlogPostDetailPage.tsx"
+        ]
+      },
+      {
+        "id": "REQ-11",
+        "summary": "Rebuild the Footer with a 'Connect With Us' social media section. Display clickable social media icons and links for Instagram, Facebook, YouTube, and Twitter/X. Use placeholder '#' hrefs since actual URLs are not provided. The footer should also include: site logo, quick navigation links, category links, legal links (Privacy Policy, Terms of Service), and copyright notice. Remove any 'Built with Caffeine.ai' branding or attribution text.",
+        "status": "missing",
+        "plannedFiles": [
+          "frontend/src/components/Footer.tsx"
+        ],
+        "matchedFiles": []
+      },
+      {
+        "id": "REQ-12",
+        "summary": "Update the backend BlogPost data model to include a publicationDate field (storing an ISO date string or timestamp) and ensure the existing isPublished boolean field is used for the publish-immediately toggle. When a post is saved with publish-immediately=true, set isPublished=true and publicationDate to the current timestamp. When saved with publish-immediately=false, set isPublished=false.",
+        "status": "unknown",
+        "plannedFiles": [],
+        "matchedFiles": []
+      },
+      {
+        "id": "REQ-13",
+        "summary": "Pre-populate the blog section with the 10 SEO blog post topics as draft placeholder posts (with stub content and appropriate categories) so the admin dashboard and blog listing show initial content. Topics: 1. Ayurvedic Remedies to Stop Hair Fall Naturally (Hair Care), 2. Best Ayurvedic Herbs for Glowing Skin (Skin Care), 3. How to Reduce Hair Fall Due to Stress – Ayurvedic Guide (Hair Care), 4. Triphala Benefits for Skin, Hair & Digestion (Health Remedies), 5. Home Remedies for Pimples Using Ayurveda (Skin Care), 6. Ayurvedic Diet for Healthy Hair Growth (Hair Care), 7. Aloe Vera Benefits for Skin and Hair in Ayurveda (Skin Care), 8. Causes of Hair Fall in Women and Ayurvedic Solutions (Hair Care), 9. Daily Ayurvedic Routine for Healthy Body & Mind (Lifestyle), 10. Best Ayurvedic Oils for Hair Growth and Thickness (Hair Care).",
+        "status": "missing",
+        "plannedFiles": [
+          "frontend/src/pages/AdminPostsPage.tsx"
+        ],
+        "matchedFiles": []
+      },
+      {
+        "id": "REQ-14",
+        "summary": "Update the main navigation to include all six categories in the dropdown: Health Remedies, Skin Care, Hair Care, Weight Management, Lifestyle. Ensure the dropdown is accessible on both desktop and mobile. Navigation links should use the blue/green theme with hover states.",
+        "status": "missing",
+        "plannedFiles": [
+          "frontend/src/components/Navigation.tsx"
+        ],
+        "matchedFiles": []
+      },
+      {
+        "id": "REQ-2",
+        "summary": "Create and display an AyurGlow Secrets logo in the site header/navigation. The logo should combine leaf/herb and glow/radiance motifs with the site name 'AyurGlow Secrets' in an elegant serif or organic font. Display it in the navigation bar and footer.",
+        "status": "missing",
+        "plannedFiles": [
+          "frontend/src/components/Navigation.tsx",
+          "frontend/src/components/Footer.tsx"
+        ],
+        "matchedFiles": []
+      },
+      {
+        "id": "REQ-3",
+        "summary": "Rebuild the Homepage with the following exact sections: (1) Hero Section with title 'Welcome to AyurGlow Secrets', the tagline 'Ancient Ayurvedic Wisdom for Healthy Body, Glowing Skin & Strong Hair', the intro paragraph, and a prominent CTA button. (2) 'What We Offer' section with four feature tiles: 🌿 Natural Ayurvedic Health Remedies, 💆 Skin Care Tips for Natural Glow, 💇 Hair Fall & Hair Growth Treatments, 🧘 Holistic Lifestyle & Wellness Advice. (3) 'Why AyurGlow Secrets?' section listing: 100% natural & Ayurvedic approach, Simple home remedies, Safe, affordable, and effective, Suitable for all age groups. (4) Featured blog posts section. (5) Recent posts section.",
+        "status": "missing",
+        "plannedFiles": [
+          "frontend/src/pages/HomePage.tsx"
+        ],
+        "matchedFiles": []
+      },
+      {
+        "id": "REQ-4",
+        "summary": "Rebuild the About Us page with the Ayurvedic-tone content provided: platform mission about sharing Ayurvedic healing power, the belief statement about beauty and health beginning from within, and the note about content being carefully researched and simplified. Present in styled sections with Ayurvedic visual motifs.",
+        "status": "missing",
+        "plannedFiles": [
+          "frontend/src/pages/AboutPage.tsx"
+        ],
+        "matchedFiles": []
+      },
+      {
+        "id": "REQ-5",
+        "summary": "Ensure all six main category landing pages exist and are fully accessible from navigation and homepage: (1) Health Remedies — with subcategories: Immunity Boosting, Digestion & Gut Health, Weight Management, Diabetes & BP Support, Stress & Sleep Solutions. (2) Skin Care — with subcategories: Natural Glow Remedies, Acne & Pimples, Pigmentation & Dark Spots, Anti-Aging Ayurveda, DIY Herbal Face Packs. (3) Hair Care — with subcategories: Hair Fall Treatment, Hair Growth Remedies, Dandruff & Scalp Care, Grey Hair Solutions, Ayurvedic Oils & Masks. (4) Weight Management — with dedicated subcategory pages for Ayurvedic weight loss remedies. (5) Lifestyle — with subcategory pages covering Ayurvedic daily routines, mindful living, and wellness tips. Each subcategory card must be clickable and open a functional remedy detail page.",
+        "status": "missing",
+        "plannedFiles": [
+          "frontend/src/pages/HealthRemediesPage.tsx",
+          "frontend/src/pages/SkinCarePage.tsx",
+          "frontend/src/pages/HairCarePage.tsx"
+        ],
+        "matchedFiles": []
+      },
+      {
+        "id": "REQ-6",
+        "summary": "Add dedicated Weight Management category pages with Ayurvedic remedy content. Create a Weight Management landing page and at least three subcategory pages covering: (a) Ayurvedic herbs and teas for weight loss (e.g., Triphala, Guggul, Ginger), (b) Ayurvedic diet and metabolism remedies, (c) Yoga and lifestyle tips for weight management. Each page should follow the same card-based remedy layout used by other category pages.",
+        "status": "missing",
+        "plannedFiles": [
+          "frontend/src/pages/WeightManagementPage.tsx",
+          "frontend/src/pages/weight-management/HerbsTeasPage.tsx",
+          "frontend/src/pages/weight-management/DietMetabolismPage.tsx",
+          "frontend/src/pages/weight-management/YogaLifestylePage.tsx",
+          "frontend/src/App.tsx"
+        ],
+        "matchedFiles": []
+      },
+      {
+        "id": "REQ-7",
+        "summary": "Add dedicated Lifestyle category pages with Ayurvedic wellness content. Create a Lifestyle landing page and at least three subcategory pages covering: (a) Daily Ayurvedic routine (Dinacharya), (b) Stress management and mental wellness, (c) Ayurvedic nutrition and seasonal eating. Each page should follow the same card-based layout used by other category pages.",
+        "status": "missing",
+        "plannedFiles": [
+          "frontend/src/pages/LifestylePage.tsx",
+          "frontend/src/pages/lifestyle/DinacharyadPage.tsx",
+          "frontend/src/pages/lifestyle/StressManagementPage.tsx",
+          "frontend/src/pages/lifestyle/NutritionPage.tsx",
+          "frontend/src/App.tsx"
+        ],
+        "matchedFiles": []
+      },
+      {
+        "id": "REQ-8",
+        "summary": "Upgrade the blog post creation and editing forms to include: (1) A featured image upload field at the top of the form (before title/content), with image size/fit options (original, cover, contain, small/medium/large display size selector). (2) An 'Insert Image' button within the content editor to embed images inline between paragraphs, with the same size/fit options for each inline image. (3) A publication date picker field so authors can schedule or set the publication date. (4) A 'Publish Immediately' toggle — when enabled, the post is published instantly upon saving; when disabled, it saves as a draft.",
         "status": "implemented",
         "plannedFiles": [
           "frontend/src/pages/CreateBlogPostPage.tsx",
-          "frontend/src/pages/EditBlogPostPage.tsx",
-          "frontend/src/hooks/useQueries.ts"
+          "frontend/src/pages/EditBlogPostPage.tsx"
         ],
         "matchedFiles": [
-          "frontend/src/hooks/useQueries.ts"
+          "frontend/src/pages/CreateBlogPostPage.tsx",
+          "frontend/src/pages/EditBlogPostPage.tsx"
+        ]
+      },
+      {
+        "id": "REQ-9",
+        "summary": "Ensure the blog post detail page renders all images (featured and inline) properly with correct sizing based on the size options set during creation. Images must not be broken, stretched, or missing. Apply appropriate CSS object-fit and max-width based on the stored size option for each image.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/pages/BlogPostDetailPage.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/pages/BlogPostDetailPage.tsx"
         ]
       }
     ]
   },
   "changedFiles": [
     "backend/main.mo",
+    "backend/migration.mo",
     "build-request.json",
     "feature_evidence.json",
     "frontend-file-summaries.txt",
     "frontend-implementation-plan.json",
+    "frontend/public/assets/generated/ayurglow-logo.dim_300x80.png",
+    "frontend/public/assets/generated/category-hair.dim_400x250.png",
+    "frontend/public/assets/generated/category-health.dim_400x250.png",
+    "frontend/public/assets/generated/category-lifestyle.dim_400x250.png",
+    "frontend/public/assets/generated/category-skin.dim_400x250.png",
+    "frontend/public/assets/generated/category-weight.dim_400x250.png",
+    "frontend/public/assets/generated/hero-bg.dim_1440x600.png",
     "frontend/src/backend.d.ts",
     "frontend/src/backend.ts",
+    "frontend/src/components/BlogSidebar.tsx",
+    "frontend/src/components/FeaturedPost.tsx",
+    "frontend/src/components/PostCard.tsx",
     "frontend/src/declarations/backend.did.d.ts",
     "frontend/src/declarations/backend.did.js",
     "frontend/src/hooks/useQueries.ts",
+    "frontend/src/pages/BlogPostDetailPage.tsx",
+    "frontend/src/pages/CreateBlogPostPage.tsx",
+    "frontend/src/pages/EditBlogPostPage.tsx",
     "project_state.json",
     "scratch/component-selection.json",
     "spec.md",

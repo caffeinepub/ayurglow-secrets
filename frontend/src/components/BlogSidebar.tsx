@@ -6,7 +6,6 @@ import SearchResults from './SearchResults';
 import { useRemedySearch } from '@/hooks/useRemedySearch';
 import { useState, useRef, useEffect } from 'react';
 import type { BlogPostView } from '../backend';
-import { getBlobImageUrl } from '../utils/imageUtils';
 
 interface BlogSidebarProps {
   posts: BlogPostView[];
@@ -19,7 +18,7 @@ export default function BlogSidebar({ posts }: BlogSidebarProps) {
   const searchInputRef = useRef<HTMLInputElement>(null);
 
   const popularPosts = posts.slice(0, 5);
-  
+
   const categories = posts.reduce((acc, post) => {
     const category = post.category;
     acc[category] = (acc[category] || 0) + 1;
@@ -89,17 +88,19 @@ export default function BlogSidebar({ posts }: BlogSidebarProps) {
         </CardHeader>
         <CardContent className="space-y-4">
           {popularPosts.map((post) => {
-            const imageUrl = getBlobImageUrl(post.image, '/assets/generated/blog-ayurveda-herbs.dim_1200x600.png');
+            const imageUrl = post.featuredImage?.blob
+              ? post.featuredImage.blob.getDirectURL()
+              : '/assets/generated/blog-ayurveda-herbs.dim_1200x600.png';
             return (
-              <Link 
-                key={post.id} 
+              <Link
+                key={post.id}
                 to="/blog/$slug"
                 params={{ slug: post.slug }}
                 className="flex gap-3 group"
               >
                 <div className="w-20 h-20 flex-shrink-0 rounded-lg overflow-hidden">
-                  <img 
-                    src={imageUrl} 
+                  <img
+                    src={imageUrl}
                     alt={post.title}
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
                     onError={(e) => {

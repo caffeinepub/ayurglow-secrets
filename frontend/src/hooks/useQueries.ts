@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useActor } from './useActor';
-import { BlogPostView, ExternalBlob } from '../backend';
+import { BlogPostView, ImageMeta, InlineImage } from '../backend';
 
 export interface CreatePostParams {
   id: string;
@@ -12,11 +12,11 @@ export interface CreatePostParams {
   readTime: bigint;
   author: string;
   tags: string[];
-  image: ExternalBlob | null;
-  imageSize: string | null;
-  contentImages: ExternalBlob[];
+  featuredImage: ImageMeta | null;
+  inlineImages: InlineImage[];
   isPublished: boolean;
-  publishedAt: bigint | null;
+  publishImmediately: boolean;
+  publicationDate: bigint | null;
 }
 
 export interface UpdatePostParams {
@@ -29,11 +29,11 @@ export interface UpdatePostParams {
   readTime: bigint;
   author: string;
   tags: string[];
-  image: ExternalBlob | null;
-  imageSize: string | null;
-  contentImages: ExternalBlob[];
+  featuredImage: ImageMeta | null;
+  inlineImages: InlineImage[];
   isPublished: boolean;
-  publishedAt: bigint | null;
+  publishImmediately: boolean;
+  publicationDate: bigint | null;
 }
 
 export function useGetPublishedPosts() {
@@ -106,11 +106,11 @@ export function useCreatePost() {
         params.readTime,
         params.author,
         params.tags,
-        params.image,
-        params.imageSize,
-        params.contentImages,
+        params.featuredImage,
+        params.inlineImages,
         params.isPublished,
-        params.publishedAt
+        params.publishImmediately,
+        params.publicationDate
       );
     },
     onSuccess: () => {
@@ -140,11 +140,11 @@ export function useUpdatePost() {
         params.readTime,
         params.author,
         params.tags,
-        params.image,
-        params.imageSize,
-        params.contentImages,
+        params.featuredImage,
+        params.inlineImages,
         params.isPublished,
-        params.publishedAt
+        params.publishImmediately,
+        params.publicationDate
       );
     },
     onSuccess: (_data, params) => {
@@ -181,10 +181,10 @@ export function useSetPublishedState() {
   const { actor } = useActor();
   const queryClient = useQueryClient();
 
-  return useMutation<boolean, Error, { id: string; isPublished: boolean; publishedDate: bigint | null }>({
-    mutationFn: async ({ id, isPublished, publishedDate }) => {
+  return useMutation<boolean, Error, { id: string; isPublished: boolean; publishedDate: bigint | null; publicationDate?: bigint | null }>({
+    mutationFn: async ({ id, isPublished, publishedDate, publicationDate = null }) => {
       if (!actor) throw new Error('Actor not available');
-      return actor.setPublishedState(id, isPublished, publishedDate);
+      return actor.setPublishedState(id, isPublished, publishedDate, publicationDate);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['publishedPosts'] });

@@ -14,23 +14,29 @@ export class ExternalBlob {
     static fromBytes(blob: Uint8Array<ArrayBuffer>): ExternalBlob;
     withUploadProgress(onProgress: (percentage: number) => void): ExternalBlob;
 }
+export interface ImageMeta {
+    fit: ImageFit;
+    blob: ExternalBlob;
+    size: ImageSize;
+}
 export interface BlogPostView {
     id: string;
     title: string;
+    updatedDate?: bigint;
     content: string;
     isPublished: boolean;
-    imageSize?: string;
+    inlineImages: Array<InlineImage>;
     publishedDate?: bigint;
+    featuredImage?: ImageMeta;
     slug: string;
     tags: Array<string>;
     createdDate: bigint;
     author: string;
     readTime: bigint;
+    publicationDate?: bigint;
     excerpt: string;
     category: string;
-    image?: ExternalBlob;
     comments: Array<Comment>;
-    contentImages: Array<ExternalBlob>;
 }
 export interface Comment {
     content: string;
@@ -39,6 +45,20 @@ export interface Comment {
 }
 export interface UserProfile {
     name: string;
+}
+export interface InlineImage {
+    image: ImageMeta;
+    position: bigint;
+}
+export enum ImageFit {
+    contain = "contain",
+    cover = "cover",
+    original = "original"
+}
+export enum ImageSize {
+    large = "large",
+    small = "small",
+    medium = "medium"
 }
 export enum UserRole {
     admin = "admin",
@@ -49,7 +69,7 @@ export interface backendInterface {
     addComment(postId: string, author: string, content: string): Promise<boolean>;
     assignCallerUserRole(user: Principal, role: UserRole): Promise<void>;
     canCallerAccessAdminSection(): Promise<boolean>;
-    createPost(id: string, title: string, slug: string, category: string, content: string, excerpt: string, readTime: bigint, author: string, tags: Array<string>, image: ExternalBlob | null, imageSize: string | null, contentImages: Array<ExternalBlob>, isPublished: boolean, publishedAt: bigint | null): Promise<void>;
+    createPost(id: string, title: string, slug: string, category: string, content: string, excerpt: string, readTime: bigint, author: string, tags: Array<string>, featuredImage: ImageMeta | null, inlineImages: Array<InlineImage>, isPublished: boolean, publishImmediately: boolean, publicationDate: bigint | null): Promise<void>;
     deletePost(id: string): Promise<boolean>;
     getAllVisiblePosts(): Promise<Array<BlogPostView>>;
     getCallerUserProfile(): Promise<UserProfile | null>;
@@ -60,6 +80,6 @@ export interface backendInterface {
     getUserProfile(user: Principal): Promise<UserProfile | null>;
     isCallerAdmin(): Promise<boolean>;
     saveCallerUserProfile(profile: UserProfile): Promise<void>;
-    setPublishedState(id: string, isPublished: boolean, publishedDate: bigint | null): Promise<boolean>;
-    updatePost(id: string, title: string, slug: string, category: string, content: string, excerpt: string, readTime: bigint, author: string, tags: Array<string>, image: ExternalBlob | null, imageSize: string | null, contentImages: Array<ExternalBlob>, isPublished: boolean, publishedAt: bigint | null): Promise<boolean>;
+    setPublishedState(id: string, isPublished: boolean, publishedDate: bigint | null, publicationDate: bigint | null): Promise<boolean>;
+    updatePost(id: string, title: string, slug: string, category: string, content: string, excerpt: string, readTime: bigint, author: string, tags: Array<string>, featuredImage: ImageMeta | null, inlineImages: Array<InlineImage>, isPublished: boolean, publishImmediately: boolean, publicationDate: bigint | null): Promise<boolean>;
 }

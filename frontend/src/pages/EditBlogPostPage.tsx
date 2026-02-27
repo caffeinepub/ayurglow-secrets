@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useParams } from '@tanstack/react-router';
 import { useGetPost, useUpdatePost } from '../hooks/useQueries';
-import { ExternalBlob } from '../backend';
-import { injectBlobIndexAttributes, getBlobImageUrl } from '../utils/imageUtils';
+import { ExternalBlob, ImageMeta, ImageFit, ImageSize } from '../backend';
+import { injectBlobIndexAttributes } from '../utils/imageUtils';
 import { useInternetIdentity } from '../hooks/useInternetIdentity';
 
 interface FormData {
@@ -14,23 +14,26 @@ interface FormData {
   readTime: string;
   author: string;
   tags: string;
-  imageSize: string;
-  isPublished: boolean;
+  imageFit: ImageFit;
+  imageSize: ImageSize;
+  publishImmediately: boolean;
+  publicationDate: string;
 }
 
 const CATEGORIES = [
   'Health Remedies',
   'Skin Care',
   'Hair Care',
+  'Weight Management',
+  'Lifestyle',
   'Wellness',
   'Ayurveda',
   'Nutrition',
-  'Lifestyle',
 ];
 
 export default function EditBlogPostPage() {
   const navigate = useNavigate();
-  const { postId } = useParams({ strict: false }) as { postId: string };
+  const { id: postId } = useParams({ from: '/admin/edit-post/$id' });
   const updatePost = useUpdatePost();
   const { identity } = useInternetIdentity();
 
@@ -45,8 +48,10 @@ export default function EditBlogPostPage() {
     readTime: '5',
     author: '',
     tags: '',
-    imageSize: '',
-    isPublished: false,
+    imageFit: ImageFit.original,
+    imageSize: ImageSize.medium,
+    publishImmediately: false,
+    publicationDate: '',
   });
 
   const [imageFile, setImageFile] = useState<File | null>(null);
@@ -58,6 +63,13 @@ export default function EditBlogPostPage() {
 
   useEffect(() => {
     if (post) {
+      // Derive publication date string for the date input
+      let pubDateStr = '';
+      if (post.publicationDate) {
+        const ms = Number(post.publicationDate) / 1_000_000;
+        pubDateStr = new Date(ms).toISOString().split('T')[0];
+      }
+
       setFormData({
         title: post.title,
         slug: post.slug,
@@ -67,11 +79,18 @@ export default function EditBlogPostPage() {
         readTime: post.readTime ? post.readTime.toString() : '5',
         author: post.author,
         tags: post.tags.join(', '),
-        imageSize: post.imageSize ?? '',
-        isPublished: post.isPublished,
+        imageFit: post.featuredImage?.fit ?? ImageFit.original,
+        imageSize: post.featuredImage?.size ?? ImageSize.medium,
+        publishImmediately: post.isPublished,
+        publicationDate: pubDateStr,
       });
-      if (post.image) {
-        setExistingImageUrl(getBlobImageUrl(post.image));
+
+      if (post.featuredImage?.blob) {
+        try {
+          setExistingImageUrl(post.featuredImage.blob.getDirectURL());
+        } catch {
+          setExistingImageUrl(null);
+        }
       }
     }
   }, [post]);
@@ -165,44 +184,48 @@ export default function EditBlogPostPage() {
         .map((t) => t.trim())
         .filter((t) => t.length > 0);
 
-      // Parse readTime as a number then convert to bigint
       const readTimeNum = parseInt(formData.readTime, 10);
       const readTimeBigInt = BigInt(isNaN(readTimeNum) || readTimeNum < 1 ? 1 : readTimeNum);
 
-      // Handle image
-      let imageBlob: ExternalBlob | null = null;
-      let imageSizeValue: string | null = formData.imageSize.trim() || null;
-
+      // Build featuredImage as ImageMeta | null
+      let featuredImage: ImageMeta | null = null;
       if (imageFile) {
         const arrayBuffer = await imageFile.arrayBuffer();
         const uint8Array = new Uint8Array(arrayBuffer);
-        imageBlob = ExternalBlob.fromBytes(uint8Array).withUploadProgress((pct) => {
+        const blob = ExternalBlob.fromBytes(uint8Array).withUploadProgress((pct) => {
           setUploadProgress(pct);
         });
-        if (!imageSizeValue) {
-          imageSizeValue = `${imageFile.size}`;
-        }
-      } else if (post.image) {
-        // Keep existing image
-        imageBlob = post.image;
-        imageSizeValue = post.imageSize ?? null;
+        featuredImage = {
+          blob,
+          fit: formData.imageFit,
+          size: formData.imageSize,
+        };
+      } else if (post.featuredImage) {
+        // Keep existing image with potentially updated size/fit
+        featuredImage = {
+          blob: post.featuredImage.blob,
+          fit: formData.imageFit,
+          size: formData.imageSize,
+        };
       }
 
       // Inject blob index attributes into content for inline images
       const processedContent = injectBlobIndexAttributes(formData.content, 0);
 
-      // publishedAt must be bigint | null, never undefined
-      let publishedAt: bigint | null = null;
-      if (formData.isPublished) {
-        if (post.publishedDate) {
-          publishedAt = BigInt(post.publishedDate);
+      // Publication date as bigint | null
+      let publicationDate: bigint | null = null;
+      if (formData.publicationDate) {
+        publicationDate = BigInt(new Date(formData.publicationDate).getTime()) * BigInt(1_000_000);
+      } else if (formData.publishImmediately) {
+        if (post.publicationDate) {
+          publicationDate = post.publicationDate;
         } else {
-          publishedAt = BigInt(Date.now()) * BigInt(1_000_000);
+          publicationDate = BigInt(Date.now()) * BigInt(1_000_000);
         }
       }
 
-      // Keep existing contentImages
-      const contentImages = post.contentImages ?? [];
+      // Keep existing inline images
+      const inlineImages = post.inlineImages ?? [];
 
       await updatePost.mutateAsync({
         id: postId,
@@ -214,11 +237,11 @@ export default function EditBlogPostPage() {
         readTime: readTimeBigInt,
         author: formData.author.trim(),
         tags: tagsArray,
-        image: imageBlob,
-        imageSize: imageSizeValue,
-        contentImages,
-        isPublished: formData.isPublished,
-        publishedAt,
+        featuredImage,
+        inlineImages,
+        isPublished: formData.publishImmediately,
+        publishImmediately: formData.publishImmediately,
+        publicationDate,
       });
 
       navigate({ to: '/admin/posts' });
@@ -242,6 +265,79 @@ export default function EditBlogPostPage() {
         )}
 
         <form onSubmit={handleSubmit} className="space-y-6">
+          {/* Featured Image — at the top */}
+          <div className="bg-card border border-border rounded-xl p-5">
+            <h2 className="text-base font-semibold text-foreground mb-4">Featured Image</h2>
+            {existingImageUrl && !imagePreview && (
+              <div className="mb-3">
+                <p className="text-xs text-muted-foreground mb-1">Current image:</p>
+                <img
+                  src={existingImageUrl}
+                  alt="Current featured"
+                  className="w-full max-h-48 object-cover rounded-lg border border-border"
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).style.display = 'none';
+                  }}
+                />
+              </div>
+            )}
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              onChange={handleImageChange}
+              className="w-full px-4 py-2 border border-border rounded-lg bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
+            />
+            {imagePreview && (
+              <div className="mt-3">
+                <img
+                  src={imagePreview}
+                  alt="New image preview"
+                  className="w-full max-h-48 object-cover rounded-lg border border-border"
+                />
+              </div>
+            )}
+            {uploadProgress > 0 && uploadProgress < 100 && (
+              <div className="mt-2">
+                <div className="w-full bg-muted rounded-full h-2">
+                  <div
+                    className="bg-primary h-2 rounded-full transition-all"
+                    style={{ width: `${uploadProgress}%` }}
+                  />
+                </div>
+                <p className="text-xs text-muted-foreground mt-1">Uploading: {uploadProgress}%</p>
+              </div>
+            )}
+            <div className="mt-4 grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-foreground mb-1">Image Size</label>
+                <select
+                  name="imageSize"
+                  value={formData.imageSize}
+                  onChange={handleChange}
+                  className="w-full px-3 py-2 border border-border rounded-lg bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/50"
+                >
+                  <option value={ImageSize.small}>Small</option>
+                  <option value={ImageSize.medium}>Medium</option>
+                  <option value={ImageSize.large}>Large</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-foreground mb-1">Image Fit</label>
+                <select
+                  name="imageFit"
+                  value={formData.imageFit}
+                  onChange={handleChange}
+                  className="w-full px-3 py-2 border border-border rounded-lg bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/50"
+                >
+                  <option value={ImageFit.original}>Original</option>
+                  <option value={ImageFit.cover}>Cover</option>
+                  <option value={ImageFit.contain}>Contain</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
           {/* Title */}
           <div>
             <label className="block text-sm font-medium text-foreground mb-1">
@@ -332,11 +428,14 @@ export default function EditBlogPostPage() {
               name="content"
               value={formData.content}
               onChange={handleChange}
-              rows={12}
+              rows={14}
               className="w-full px-4 py-2 border border-border rounded-lg bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 resize-y font-mono text-sm"
               placeholder="Write your post content here (HTML supported)"
               required
             />
+            <p className="text-xs text-muted-foreground mt-1">
+              HTML is supported. To embed an inline image, add an &lt;img&gt; tag with <code>data-blob-index="0"</code> (increment index for each image).
+            </p>
           </div>
 
           {/* Read Time */}
@@ -368,64 +467,39 @@ export default function EditBlogPostPage() {
             />
           </div>
 
-          {/* Featured Image */}
-          <div>
-            <label className="block text-sm font-medium text-foreground mb-1">Featured Image</label>
-            {existingImageUrl && !imagePreview && (
-              <div className="mb-3">
-                <p className="text-xs text-muted-foreground mb-1">Current image:</p>
-                <img
-                  src={existingImageUrl}
-                  alt="Current featured"
-                  className="w-full max-h-48 object-cover rounded-lg border border-border"
-                  onError={(e) => {
-                    (e.target as HTMLImageElement).style.display = 'none';
-                  }}
-                />
-              </div>
-            )}
-            <input
-              ref={fileInputRef}
-              type="file"
-              accept="image/*"
-              onChange={handleImageChange}
-              className="w-full px-4 py-2 border border-border rounded-lg bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
-            />
-            {imagePreview && (
-              <div className="mt-3">
-                <img
-                  src={imagePreview}
-                  alt="New image preview"
-                  className="w-full max-h-48 object-cover rounded-lg border border-border"
-                />
-              </div>
-            )}
-            {uploadProgress > 0 && uploadProgress < 100 && (
-              <div className="mt-2">
-                <div className="w-full bg-muted rounded-full h-2">
-                  <div
-                    className="bg-primary h-2 rounded-full transition-all"
-                    style={{ width: `${uploadProgress}%` }}
-                  />
-                </div>
-                <p className="text-xs text-muted-foreground mt-1">Uploading: {uploadProgress}%</p>
-              </div>
-            )}
-          </div>
+          {/* Publication Date & Publish Toggle */}
+          <div className="bg-card border border-border rounded-xl p-5 space-y-4">
+            <h2 className="text-base font-semibold text-foreground">Publishing Options</h2>
 
-          {/* Publish */}
-          <div className="flex items-center gap-3">
-            <input
-              type="checkbox"
-              id="isPublished"
-              name="isPublished"
-              checked={formData.isPublished}
-              onChange={handleChange}
-              className="w-4 h-4 accent-primary"
-            />
-            <label htmlFor="isPublished" className="text-sm font-medium text-foreground">
-              Published
-            </label>
+            <div>
+              <label className="block text-sm font-medium text-foreground mb-1">
+                Publication Date <span className="text-muted-foreground text-xs">(optional)</span>
+              </label>
+              <input
+                type="date"
+                name="publicationDate"
+                value={formData.publicationDate}
+                onChange={handleChange}
+                className="w-full px-4 py-2 border border-border rounded-lg bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
+              />
+            </div>
+
+            <div className="flex items-center gap-3">
+              <input
+                type="checkbox"
+                id="publishImmediately"
+                name="publishImmediately"
+                checked={formData.publishImmediately}
+                onChange={handleChange}
+                className="w-4 h-4 accent-primary"
+              />
+              <label htmlFor="publishImmediately" className="text-sm font-medium text-foreground">
+                Publish Immediately
+              </label>
+            </div>
+            <p className="text-xs text-muted-foreground">
+              When enabled, the post will be published and visible to readers right away. Otherwise it will be saved as a draft.
+            </p>
           </div>
 
           {/* Actions */}

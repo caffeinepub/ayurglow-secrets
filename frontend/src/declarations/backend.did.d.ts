@@ -13,20 +13,21 @@ import type { Principal } from '@icp-sdk/core/principal';
 export interface BlogPostView {
   'id' : string,
   'title' : string,
+  'updatedDate' : [] | [bigint],
   'content' : string,
   'isPublished' : boolean,
-  'imageSize' : [] | [string],
+  'inlineImages' : Array<InlineImage>,
   'publishedDate' : [] | [bigint],
+  'featuredImage' : [] | [ImageMeta],
   'slug' : string,
   'tags' : Array<string>,
   'createdDate' : bigint,
   'author' : string,
   'readTime' : bigint,
+  'publicationDate' : [] | [bigint],
   'excerpt' : string,
   'category' : string,
-  'image' : [] | [ExternalBlob],
   'comments' : Array<Comment>,
-  'contentImages' : Array<ExternalBlob>,
 }
 export interface Comment {
   'content' : string,
@@ -34,6 +35,18 @@ export interface Comment {
   'timestamp' : bigint,
 }
 export type ExternalBlob = Uint8Array;
+export type ImageFit = { 'contain' : null } |
+  { 'cover' : null } |
+  { 'original' : null };
+export interface ImageMeta {
+  'fit' : ImageFit,
+  'blob' : ExternalBlob,
+  'size' : ImageSize,
+}
+export type ImageSize = { 'large' : null } |
+  { 'small' : null } |
+  { 'medium' : null };
+export interface InlineImage { 'image' : ImageMeta, 'position' : bigint }
 export interface UserProfile { 'name' : string }
 export type UserRole = { 'admin' : null } |
   { 'user' : null } |
@@ -80,9 +93,9 @@ export interface _SERVICE {
       bigint,
       string,
       Array<string>,
-      [] | [ExternalBlob],
-      [] | [string],
-      Array<ExternalBlob>,
+      [] | [ImageMeta],
+      Array<InlineImage>,
+      boolean,
       boolean,
       [] | [bigint],
     ],
@@ -98,7 +111,10 @@ export interface _SERVICE {
   'getUserProfile' : ActorMethod<[Principal], [] | [UserProfile]>,
   'isCallerAdmin' : ActorMethod<[], boolean>,
   'saveCallerUserProfile' : ActorMethod<[UserProfile], undefined>,
-  'setPublishedState' : ActorMethod<[string, boolean, [] | [bigint]], boolean>,
+  'setPublishedState' : ActorMethod<
+    [string, boolean, [] | [bigint], [] | [bigint]],
+    boolean
+  >,
   'updatePost' : ActorMethod<
     [
       string,
@@ -110,9 +126,9 @@ export interface _SERVICE {
       bigint,
       string,
       Array<string>,
-      [] | [ExternalBlob],
-      [] | [string],
-      Array<ExternalBlob>,
+      [] | [ImageMeta],
+      Array<InlineImage>,
+      boolean,
       boolean,
       [] | [bigint],
     ],

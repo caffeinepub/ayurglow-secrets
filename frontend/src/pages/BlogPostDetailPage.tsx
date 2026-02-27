@@ -4,8 +4,17 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { useGetPostBySlug } from '../hooks/useQueries';
 import CommentSection from '../components/CommentSection';
-import { replaceContentImageUrls, getBlobImageUrl } from '../utils/imageUtils';
 import { useMemo } from 'react';
+import { ImageSize } from '../backend';
+
+function getInlineImageSizeClass(size: ImageSize): string {
+  switch (size) {
+    case ImageSize.small: return 'max-w-xs';
+    case ImageSize.medium: return 'max-w-md';
+    case ImageSize.large: return 'max-w-lg';
+    default: return 'max-w-full';
+  }
+}
 
 export default function BlogPostDetailPage() {
   const { slug } = useParams({ from: '/blog/$slug' });
@@ -13,28 +22,48 @@ export default function BlogPostDetailPage() {
 
   const { data: post, isLoading, error } = useGetPostBySlug(slug);
 
+  // Resolve inline image URLs in content by replacing placeholder src with blob direct URLs
   const resolvedContent = useMemo(() => {
     if (!post) return '';
+    if (!post.inlineImages || post.inlineImages.length === 0) return post.content;
     try {
-      const hasBeginningImage = !!(post.image);
-      return replaceContentImageUrls(
-        post.content,
-        post.contentImages || [],
-        hasBeginningImage
-      );
-    } catch (err) {
-      console.error('Error resolving content images:', err);
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(post.content, 'text/html');
+      const imgs = doc.querySelectorAll('img[data-blob-index]');
+      imgs.forEach((img) => {
+        const indexAttr = img.getAttribute('data-blob-index');
+        if (indexAttr === null) return;
+        const idx = parseInt(indexAttr, 10);
+        const inlineImg = post.inlineImages.find((ii) => Number(ii.position) === idx);
+        if (inlineImg) {
+          try {
+            const url = inlineImg.image.blob.getDirectURL();
+            if (url) img.setAttribute('src', url);
+            const sizeClass = getInlineImageSizeClass(inlineImg.image.size);
+            img.classList.add(sizeClass, 'mx-auto', 'rounded-lg');
+          } catch {
+            // keep original src
+          }
+        }
+      });
+      return doc.body.innerHTML;
+    } catch {
       return post.content;
     }
   }, [post]);
 
   const featuredImageUrl = useMemo(() => {
-    if (!post?.image) return null;
+    if (!post?.featuredImage?.blob) return null;
     try {
-      return getBlobImageUrl(post.image);
+      return post.featuredImage.blob.getDirectURL();
     } catch {
       return null;
     }
+  }, [post]);
+
+  const featuredImageSizeClass = useMemo(() => {
+    if (!post?.featuredImage) return 'w-full';
+    return getInlineImageSizeClass(post.featuredImage.size);
   }, [post]);
 
   const formatDate = (timestamp: bigint | undefined) => {
@@ -96,7 +125,9 @@ export default function BlogPostDetailPage() {
     );
   }
 
-  const displayDate = post.publishedDate
+  const displayDate = post.publicationDate
+    ? formatDate(post.publicationDate)
+    : post.publishedDate
     ? formatDate(post.publishedDate)
     : formatDate(post.createdDate);
 
@@ -172,11 +203,11 @@ export default function BlogPostDetailPage() {
 
           {/* Featured Image */}
           {featuredImageUrl && (
-            <div className="mb-8 rounded-xl overflow-hidden">
+            <div className="mb-8 rounded-xl overflow-hidden flex justify-center">
               <img
                 src={featuredImageUrl}
                 alt={post.title}
-                className="w-full h-64 md:h-96 object-cover"
+                className={`${featuredImageSizeClass} h-64 md:h-96 object-cover rounded-xl`}
                 onError={(e) => {
                   (e.target as HTMLImageElement).style.display = 'none';
                 }}

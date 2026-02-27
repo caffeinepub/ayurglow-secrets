@@ -1,7 +1,6 @@
 import { Link } from '@tanstack/react-router';
 import { BlogPostView } from '../backend';
 import { Calendar, Clock, User, ArrowRight } from 'lucide-react';
-import { getBlobImageUrl } from '../utils/imageUtils';
 
 interface FeaturedPostProps {
   post: BlogPostView;
@@ -17,7 +16,9 @@ function formatPostDate(post: BlogPostView): string {
 }
 
 export default function FeaturedPost({ post }: FeaturedPostProps) {
-  const imageUrl = getBlobImageUrl(post.image, '/assets/generated/blog-featured-placeholder.dim_800x450.png');
+  const imageUrl = post.featuredImage?.blob
+    ? post.featuredImage.blob.getDirectURL()
+    : '/assets/generated/blog-featured-placeholder.dim_800x450.png';
   const formattedDate = formatPostDate(post);
 
   return (

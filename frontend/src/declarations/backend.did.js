@@ -24,7 +24,26 @@ export const UserRole = IDL.Variant({
   'user' : IDL.Null,
   'guest' : IDL.Null,
 });
+export const ImageFit = IDL.Variant({
+  'contain' : IDL.Null,
+  'cover' : IDL.Null,
+  'original' : IDL.Null,
+});
 export const ExternalBlob = IDL.Vec(IDL.Nat8);
+export const ImageSize = IDL.Variant({
+  'large' : IDL.Null,
+  'small' : IDL.Null,
+  'medium' : IDL.Null,
+});
+export const ImageMeta = IDL.Record({
+  'fit' : ImageFit,
+  'blob' : ExternalBlob,
+  'size' : ImageSize,
+});
+export const InlineImage = IDL.Record({
+  'image' : ImageMeta,
+  'position' : IDL.Nat,
+});
 export const Comment = IDL.Record({
   'content' : IDL.Text,
   'author' : IDL.Text,
@@ -33,20 +52,21 @@ export const Comment = IDL.Record({
 export const BlogPostView = IDL.Record({
   'id' : IDL.Text,
   'title' : IDL.Text,
+  'updatedDate' : IDL.Opt(IDL.Int),
   'content' : IDL.Text,
   'isPublished' : IDL.Bool,
-  'imageSize' : IDL.Opt(IDL.Text),
+  'inlineImages' : IDL.Vec(InlineImage),
   'publishedDate' : IDL.Opt(IDL.Int),
+  'featuredImage' : IDL.Opt(ImageMeta),
   'slug' : IDL.Text,
   'tags' : IDL.Vec(IDL.Text),
   'createdDate' : IDL.Int,
   'author' : IDL.Text,
   'readTime' : IDL.Nat,
+  'publicationDate' : IDL.Opt(IDL.Int),
   'excerpt' : IDL.Text,
   'category' : IDL.Text,
-  'image' : IDL.Opt(ExternalBlob),
   'comments' : IDL.Vec(Comment),
-  'contentImages' : IDL.Vec(ExternalBlob),
 });
 export const UserProfile = IDL.Record({ 'name' : IDL.Text });
 
@@ -92,9 +112,9 @@ export const idlService = IDL.Service({
         IDL.Nat,
         IDL.Text,
         IDL.Vec(IDL.Text),
-        IDL.Opt(ExternalBlob),
-        IDL.Opt(IDL.Text),
-        IDL.Vec(ExternalBlob),
+        IDL.Opt(ImageMeta),
+        IDL.Vec(InlineImage),
+        IDL.Bool,
         IDL.Bool,
         IDL.Opt(IDL.Int),
       ],
@@ -116,7 +136,7 @@ export const idlService = IDL.Service({
   'isCallerAdmin' : IDL.Func([], [IDL.Bool], ['query']),
   'saveCallerUserProfile' : IDL.Func([UserProfile], [], []),
   'setPublishedState' : IDL.Func(
-      [IDL.Text, IDL.Bool, IDL.Opt(IDL.Int)],
+      [IDL.Text, IDL.Bool, IDL.Opt(IDL.Int), IDL.Opt(IDL.Int)],
       [IDL.Bool],
       [],
     ),
@@ -131,9 +151,9 @@ export const idlService = IDL.Service({
         IDL.Nat,
         IDL.Text,
         IDL.Vec(IDL.Text),
-        IDL.Opt(ExternalBlob),
-        IDL.Opt(IDL.Text),
-        IDL.Vec(ExternalBlob),
+        IDL.Opt(ImageMeta),
+        IDL.Vec(InlineImage),
+        IDL.Bool,
         IDL.Bool,
         IDL.Opt(IDL.Int),
       ],
@@ -161,7 +181,23 @@ export const idlFactory = ({ IDL }) => {
     'user' : IDL.Null,
     'guest' : IDL.Null,
   });
+  const ImageFit = IDL.Variant({
+    'contain' : IDL.Null,
+    'cover' : IDL.Null,
+    'original' : IDL.Null,
+  });
   const ExternalBlob = IDL.Vec(IDL.Nat8);
+  const ImageSize = IDL.Variant({
+    'large' : IDL.Null,
+    'small' : IDL.Null,
+    'medium' : IDL.Null,
+  });
+  const ImageMeta = IDL.Record({
+    'fit' : ImageFit,
+    'blob' : ExternalBlob,
+    'size' : ImageSize,
+  });
+  const InlineImage = IDL.Record({ 'image' : ImageMeta, 'position' : IDL.Nat });
   const Comment = IDL.Record({
     'content' : IDL.Text,
     'author' : IDL.Text,
@@ -170,20 +206,21 @@ export const idlFactory = ({ IDL }) => {
   const BlogPostView = IDL.Record({
     'id' : IDL.Text,
     'title' : IDL.Text,
+    'updatedDate' : IDL.Opt(IDL.Int),
     'content' : IDL.Text,
     'isPublished' : IDL.Bool,
-    'imageSize' : IDL.Opt(IDL.Text),
+    'inlineImages' : IDL.Vec(InlineImage),
     'publishedDate' : IDL.Opt(IDL.Int),
+    'featuredImage' : IDL.Opt(ImageMeta),
     'slug' : IDL.Text,
     'tags' : IDL.Vec(IDL.Text),
     'createdDate' : IDL.Int,
     'author' : IDL.Text,
     'readTime' : IDL.Nat,
+    'publicationDate' : IDL.Opt(IDL.Int),
     'excerpt' : IDL.Text,
     'category' : IDL.Text,
-    'image' : IDL.Opt(ExternalBlob),
     'comments' : IDL.Vec(Comment),
-    'contentImages' : IDL.Vec(ExternalBlob),
   });
   const UserProfile = IDL.Record({ 'name' : IDL.Text });
   
@@ -229,9 +266,9 @@ export const idlFactory = ({ IDL }) => {
           IDL.Nat,
           IDL.Text,
           IDL.Vec(IDL.Text),
-          IDL.Opt(ExternalBlob),
-          IDL.Opt(IDL.Text),
-          IDL.Vec(ExternalBlob),
+          IDL.Opt(ImageMeta),
+          IDL.Vec(InlineImage),
+          IDL.Bool,
           IDL.Bool,
           IDL.Opt(IDL.Int),
         ],
@@ -253,7 +290,7 @@ export const idlFactory = ({ IDL }) => {
     'isCallerAdmin' : IDL.Func([], [IDL.Bool], ['query']),
     'saveCallerUserProfile' : IDL.Func([UserProfile], [], []),
     'setPublishedState' : IDL.Func(
-        [IDL.Text, IDL.Bool, IDL.Opt(IDL.Int)],
+        [IDL.Text, IDL.Bool, IDL.Opt(IDL.Int), IDL.Opt(IDL.Int)],
         [IDL.Bool],
         [],
       ),
@@ -268,9 +305,9 @@ export const idlFactory = ({ IDL }) => {
           IDL.Nat,
           IDL.Text,
           IDL.Vec(IDL.Text),
-          IDL.Opt(ExternalBlob),
-          IDL.Opt(IDL.Text),
-          IDL.Vec(ExternalBlob),
+          IDL.Opt(ImageMeta),
+          IDL.Vec(InlineImage),
+          IDL.Bool,
           IDL.Bool,
           IDL.Opt(IDL.Int),
         ],
