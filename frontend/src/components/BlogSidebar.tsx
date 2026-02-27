@@ -6,6 +6,7 @@ import SearchResults from './SearchResults';
 import { useRemedySearch } from '@/hooks/useRemedySearch';
 import { useState, useRef, useEffect } from 'react';
 import type { BlogPostView } from '../backend';
+import { getBlobImageUrl } from '../utils/imageUtils';
 
 interface BlogSidebarProps {
   posts: BlogPostView[];
@@ -88,7 +89,7 @@ export default function BlogSidebar({ posts }: BlogSidebarProps) {
         </CardHeader>
         <CardContent className="space-y-4">
           {popularPosts.map((post) => {
-            const imageUrl = post.image?.getDirectURL() || '/assets/generated/blog-ayurveda-herbs.dim_1200x600.png';
+            const imageUrl = getBlobImageUrl(post.image, '/assets/generated/blog-ayurveda-herbs.dim_1200x600.png');
             return (
               <Link 
                 key={post.id} 
@@ -101,6 +102,9 @@ export default function BlogSidebar({ posts }: BlogSidebarProps) {
                     src={imageUrl} 
                     alt={post.title}
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).src = '/assets/generated/blog-ayurveda-herbs.dim_1200x600.png';
+                    }}
                   />
                 </div>
                 <div className="flex-1 min-w-0">
@@ -108,7 +112,7 @@ export default function BlogSidebar({ posts }: BlogSidebarProps) {
                     {post.title}
                   </h4>
                   <p className="text-xs text-muted-foreground">
-                    {new Date(Number(post.publishedDate)).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                    {new Date(Number(post.publishedDate ?? post.createdDate) / 1_000_000).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
                   </p>
                 </div>
               </Link>

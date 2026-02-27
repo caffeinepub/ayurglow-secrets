@@ -19,6 +19,11 @@ export const _CaffeineStorageRefillResult = IDL.Record({
   'success' : IDL.Opt(IDL.Bool),
   'topped_up_amount' : IDL.Opt(IDL.Nat),
 });
+export const UserRole = IDL.Variant({
+  'admin' : IDL.Null,
+  'user' : IDL.Null,
+  'guest' : IDL.Null,
+});
 export const ExternalBlob = IDL.Vec(IDL.Nat8);
 export const Comment = IDL.Record({
   'content' : IDL.Text,
@@ -31,9 +36,10 @@ export const BlogPostView = IDL.Record({
   'content' : IDL.Text,
   'isPublished' : IDL.Bool,
   'imageSize' : IDL.Opt(IDL.Text),
-  'publishedDate' : IDL.Int,
+  'publishedDate' : IDL.Opt(IDL.Int),
   'slug' : IDL.Text,
   'tags' : IDL.Vec(IDL.Text),
+  'createdDate' : IDL.Int,
   'author' : IDL.Text,
   'readTime' : IDL.Nat,
   'excerpt' : IDL.Text,
@@ -42,6 +48,7 @@ export const BlogPostView = IDL.Record({
   'comments' : IDL.Vec(Comment),
   'contentImages' : IDL.Vec(ExternalBlob),
 });
+export const UserProfile = IDL.Record({ 'name' : IDL.Text });
 
 export const idlService = IDL.Service({
   '_caffeineStorageBlobIsLive' : IDL.Func(
@@ -70,7 +77,10 @@ export const idlService = IDL.Service({
       [],
     ),
   '_caffeineStorageUpdateGatewayPrincipals' : IDL.Func([], [], []),
+  '_initializeAccessControlWithSecret' : IDL.Func([IDL.Text], [], []),
   'addComment' : IDL.Func([IDL.Text, IDL.Text, IDL.Text], [IDL.Bool], []),
+  'assignCallerUserRole' : IDL.Func([IDL.Principal, UserRole], [], []),
+  'canCallerAccessAdminSection' : IDL.Func([], [IDL.Bool], ['query']),
   'createPost' : IDL.Func(
       [
         IDL.Text,
@@ -81,9 +91,7 @@ export const idlService = IDL.Service({
         IDL.Text,
         IDL.Nat,
         IDL.Text,
-        IDL.Int,
         IDL.Vec(IDL.Text),
-        IDL.Bool,
         IDL.Opt(ExternalBlob),
         IDL.Opt(IDL.Text),
         IDL.Vec(ExternalBlob),
@@ -93,9 +101,20 @@ export const idlService = IDL.Service({
     ),
   'deletePost' : IDL.Func([IDL.Text], [], []),
   'getAllVisiblePosts' : IDL.Func([], [IDL.Vec(BlogPostView)], ['query']),
+  'getCallerUserProfile' : IDL.Func([], [IDL.Opt(UserProfile)], ['query']),
+  'getCallerUserRole' : IDL.Func([], [UserRole], ['query']),
   'getComments' : IDL.Func([IDL.Text], [IDL.Vec(Comment)], ['query']),
   'getPost' : IDL.Func([IDL.Text], [IDL.Opt(BlogPostView)], ['query']),
   'getPublishedPosts' : IDL.Func([], [IDL.Vec(BlogPostView)], ['query']),
+  'getUserProfile' : IDL.Func(
+      [IDL.Principal],
+      [IDL.Opt(UserProfile)],
+      ['query'],
+    ),
+  'isCallerAdmin' : IDL.Func([], [IDL.Bool], ['query']),
+  'publishPost' : IDL.Func([IDL.Text, IDL.Opt(IDL.Int)], [IDL.Bool], []),
+  'saveCallerUserProfile' : IDL.Func([UserProfile], [], []),
+  'unpublishPost' : IDL.Func([IDL.Text], [IDL.Bool], []),
   'updatePost' : IDL.Func(
       [
         IDL.Text,
@@ -106,9 +125,7 @@ export const idlService = IDL.Service({
         IDL.Text,
         IDL.Nat,
         IDL.Text,
-        IDL.Int,
         IDL.Vec(IDL.Text),
-        IDL.Bool,
         IDL.Opt(ExternalBlob),
         IDL.Opt(IDL.Text),
         IDL.Vec(ExternalBlob),
@@ -132,6 +149,11 @@ export const idlFactory = ({ IDL }) => {
     'success' : IDL.Opt(IDL.Bool),
     'topped_up_amount' : IDL.Opt(IDL.Nat),
   });
+  const UserRole = IDL.Variant({
+    'admin' : IDL.Null,
+    'user' : IDL.Null,
+    'guest' : IDL.Null,
+  });
   const ExternalBlob = IDL.Vec(IDL.Nat8);
   const Comment = IDL.Record({
     'content' : IDL.Text,
@@ -144,9 +166,10 @@ export const idlFactory = ({ IDL }) => {
     'content' : IDL.Text,
     'isPublished' : IDL.Bool,
     'imageSize' : IDL.Opt(IDL.Text),
-    'publishedDate' : IDL.Int,
+    'publishedDate' : IDL.Opt(IDL.Int),
     'slug' : IDL.Text,
     'tags' : IDL.Vec(IDL.Text),
+    'createdDate' : IDL.Int,
     'author' : IDL.Text,
     'readTime' : IDL.Nat,
     'excerpt' : IDL.Text,
@@ -155,6 +178,7 @@ export const idlFactory = ({ IDL }) => {
     'comments' : IDL.Vec(Comment),
     'contentImages' : IDL.Vec(ExternalBlob),
   });
+  const UserProfile = IDL.Record({ 'name' : IDL.Text });
   
   return IDL.Service({
     '_caffeineStorageBlobIsLive' : IDL.Func(
@@ -183,7 +207,10 @@ export const idlFactory = ({ IDL }) => {
         [],
       ),
     '_caffeineStorageUpdateGatewayPrincipals' : IDL.Func([], [], []),
+    '_initializeAccessControlWithSecret' : IDL.Func([IDL.Text], [], []),
     'addComment' : IDL.Func([IDL.Text, IDL.Text, IDL.Text], [IDL.Bool], []),
+    'assignCallerUserRole' : IDL.Func([IDL.Principal, UserRole], [], []),
+    'canCallerAccessAdminSection' : IDL.Func([], [IDL.Bool], ['query']),
     'createPost' : IDL.Func(
         [
           IDL.Text,
@@ -194,9 +221,7 @@ export const idlFactory = ({ IDL }) => {
           IDL.Text,
           IDL.Nat,
           IDL.Text,
-          IDL.Int,
           IDL.Vec(IDL.Text),
-          IDL.Bool,
           IDL.Opt(ExternalBlob),
           IDL.Opt(IDL.Text),
           IDL.Vec(ExternalBlob),
@@ -206,9 +231,20 @@ export const idlFactory = ({ IDL }) => {
       ),
     'deletePost' : IDL.Func([IDL.Text], [], []),
     'getAllVisiblePosts' : IDL.Func([], [IDL.Vec(BlogPostView)], ['query']),
+    'getCallerUserProfile' : IDL.Func([], [IDL.Opt(UserProfile)], ['query']),
+    'getCallerUserRole' : IDL.Func([], [UserRole], ['query']),
     'getComments' : IDL.Func([IDL.Text], [IDL.Vec(Comment)], ['query']),
     'getPost' : IDL.Func([IDL.Text], [IDL.Opt(BlogPostView)], ['query']),
     'getPublishedPosts' : IDL.Func([], [IDL.Vec(BlogPostView)], ['query']),
+    'getUserProfile' : IDL.Func(
+        [IDL.Principal],
+        [IDL.Opt(UserProfile)],
+        ['query'],
+      ),
+    'isCallerAdmin' : IDL.Func([], [IDL.Bool], ['query']),
+    'publishPost' : IDL.Func([IDL.Text, IDL.Opt(IDL.Int)], [IDL.Bool], []),
+    'saveCallerUserProfile' : IDL.Func([UserProfile], [], []),
+    'unpublishPost' : IDL.Func([IDL.Text], [IDL.Bool], []),
     'updatePost' : IDL.Func(
         [
           IDL.Text,
@@ -219,9 +255,7 @@ export const idlFactory = ({ IDL }) => {
           IDL.Text,
           IDL.Nat,
           IDL.Text,
-          IDL.Int,
           IDL.Vec(IDL.Text),
-          IDL.Bool,
           IDL.Opt(ExternalBlob),
           IDL.Opt(IDL.Text),
           IDL.Vec(ExternalBlob),

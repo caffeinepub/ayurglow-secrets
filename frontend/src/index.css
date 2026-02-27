@@ -1,260 +1,189 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,600&family=Inter:wght@300;400;500;600;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
   :root {
-    /* Warm earth tones - Light mode */
-    --background: oklch(98% 0.01 85);  /* Soft cream-white */
-    --foreground: oklch(0% 0 0);  /* Pure black */
+    /* OKLCH color tokens - light mode */
+    /* Semantic tokens (L C H) */
+    --background: 0.98 0.005 85;
+    --foreground: 0.15 0.02 60;
 
-    --card: oklch(99% 0.005 85);
-    --card-foreground: oklch(0% 0 0);  /* Pure black */
+    --card: 0.99 0.003 80;
+    --card-foreground: 0.15 0.02 60;
 
-    --popover: oklch(99% 0.005 85);
-    --popover-foreground: oklch(0% 0 0);  /* Pure black */
+    --popover: 0.99 0.003 80;
+    --popover-foreground: 0.15 0.02 60;
 
-    --primary: oklch(48% 0.18 142);  /* Deep earth green */
-    --primary-foreground: oklch(98% 0.01 85);
+    --primary: 0.42 0.12 145;
+    --primary-foreground: 0.98 0.005 85;
 
-    --secondary: oklch(70% 0.14 148);  /* Sage green */
-    --secondary-foreground: oklch(98% 0.01 85);
+    --secondary: 0.92 0.02 90;
+    --secondary-foreground: 0.25 0.04 60;
 
-    --muted: oklch(92% 0.03 85);  /* Light warm grey */
-    --muted-foreground: oklch(0% 0 0);  /* Pure black */
+    --muted: 0.94 0.01 90;
+    --muted-foreground: 0.50 0.03 60;
 
-    --accent: oklch(75% 0.16 160);  /* Mint green accent */
-    --accent-foreground: oklch(0% 0 0);  /* Pure black */
+    --accent: 0.88 0.04 100;
+    --accent-foreground: 0.20 0.04 60;
 
-    --destructive: oklch(55% 0.22 25);
-    --destructive-foreground: oklch(98% 0.01 85);
+    --destructive: 0.55 0.22 25;
+    --destructive-foreground: 0.98 0.005 85;
 
-    --border: oklch(85% 0.05 85);
-    --input: oklch(85% 0.05 85);
-    --ring: oklch(48% 0.18 142);
+    --border: 0.88 0.02 90;
+    --input: 0.88 0.02 90;
+    --ring: 0.42 0.12 145;
 
-    --radius: 0.75rem;
+    --radius: 0.5rem;
 
-    /* Custom Ayurvedic colors */
-    --earth-green: oklch(48% 0.18 142);    /* Deep earth green */
-    --sage-green: oklch(70% 0.14 148);     /* Sage green */
-    --forest-green: oklch(55% 0.18 145);   /* Forest green */
-    --mint-green: oklch(75% 0.16 160);     /* Mint green */
-    --cream: oklch(96% 0.02 85);           /* Warm cream */
-    --warm-brown: oklch(40% 0.08 60);      /* Warm brown */
-    --gold: oklch(75% 0.15 80);            /* Golden accent */
-    --ocean-blue: oklch(50% 0.15 220);     /* Ocean blue */
-    --sky-blue: oklch(65% 0.12 230);       /* Sky blue */
-    --teal: oklch(60% 0.14 200);           /* Teal */
+    /* Sidebar tokens */
+    --sidebar: 0.96 0.01 90;
+    --sidebar-foreground: 0.15 0.02 60;
+    --sidebar-primary: 0.42 0.12 145;
+    --sidebar-primary-foreground: 0.98 0.005 85;
+    --sidebar-accent: 0.90 0.03 100;
+    --sidebar-accent-foreground: 0.20 0.04 60;
+    --sidebar-border: 0.88 0.02 90;
+    --sidebar-ring: 0.42 0.12 145;
+
+    /* AyurGlow custom palette */
+    --earth-green: 0.42 0.12 145;
+    --earth-green-light: 0.55 0.10 145;
+    --earth-green-dark: 0.30 0.14 145;
+
+    --sage-green: 0.65 0.08 140;
+    --forest-green: 0.28 0.13 148;
+    --mint-green: 0.82 0.07 155;
+
+    --cream: 0.97 0.015 85;
+    --cream-dark: 0.92 0.025 80;
+
+    --warm-brown: 0.45 0.08 55;
+    --warm-brown-light: 0.65 0.06 60;
+
+    --gold: 0.72 0.14 75;
+    --gold-light: 0.85 0.10 80;
+
+    --ocean-blue: 0.45 0.12 230;
+    --sky-blue: 0.65 0.10 220;
+    --teal: 0.55 0.12 195;
   }
 
   .dark {
-    /* Dark mode with warm earth tones */
-    --background: oklch(18% 0.03 85);
-    --foreground: oklch(0% 0 0);  /* Pure black */
+    --background: 0.12 0.02 60;
+    --foreground: 0.95 0.01 85;
 
-    --card: oklch(20% 0.03 85);
-    --card-foreground: oklch(0% 0 0);  /* Pure black */
+    --card: 0.16 0.02 60;
+    --card-foreground: 0.95 0.01 85;
 
-    --popover: oklch(20% 0.03 85);
-    --popover-foreground: oklch(0% 0 0);  /* Pure black */
+    --popover: 0.16 0.02 60;
+    --popover-foreground: 0.95 0.01 85;
 
-    --primary: oklch(58% 0.18 142);
-    --primary-foreground: oklch(18% 0.03 85);
+    --primary: 0.60 0.12 145;
+    --primary-foreground: 0.10 0.02 60;
 
-    --secondary: oklch(75% 0.14 148);
-    --secondary-foreground: oklch(18% 0.03 85);
+    --secondary: 0.22 0.03 60;
+    --secondary-foreground: 0.90 0.01 85;
 
-    --muted: oklch(25% 0.03 85);
-    --muted-foreground: oklch(0% 0 0);  /* Pure black */
+    --muted: 0.20 0.02 60;
+    --muted-foreground: 0.65 0.03 80;
 
-    --accent: oklch(78% 0.16 160);
-    --accent-foreground: oklch(0% 0 0);  /* Pure black */
+    --accent: 0.25 0.04 80;
+    --accent-foreground: 0.90 0.01 85;
 
-    --destructive: oklch(60% 0.22 25);
-    --destructive-foreground: oklch(95% 0.02 85);
+    --destructive: 0.60 0.22 25;
+    --destructive-foreground: 0.98 0.005 85;
 
-    --border: oklch(30% 0.05 85);
-    --input: oklch(30% 0.05 85);
-    --ring: oklch(58% 0.18 142);
+    --border: 0.25 0.03 60;
+    --input: 0.25 0.03 60;
+    --ring: 0.60 0.12 145;
 
-    /* Custom Ayurvedic colors - dark mode */
-    --earth-green: oklch(58% 0.18 142);
-    --sage-green: oklch(75% 0.14 148);
-    --forest-green: oklch(60% 0.18 145);
-    --mint-green: oklch(78% 0.16 160);
-    --cream: oklch(96% 0.02 85);
-    --warm-brown: oklch(50% 0.08 60);
-    --gold: oklch(80% 0.15 80);
-    --ocean-blue: oklch(55% 0.15 220);
-    --sky-blue: oklch(70% 0.12 230);
-    --teal: oklch(65% 0.14 200);
+    /* Sidebar dark tokens */
+    --sidebar: 0.14 0.02 60;
+    --sidebar-foreground: 0.90 0.01 85;
+    --sidebar-primary: 0.60 0.12 145;
+    --sidebar-primary-foreground: 0.10 0.02 60;
+    --sidebar-accent: 0.22 0.03 80;
+    --sidebar-accent-foreground: 0.90 0.01 85;
+    --sidebar-border: 0.25 0.03 60;
+    --sidebar-ring: 0.60 0.12 145;
+
+    /* AyurGlow custom palette - dark */
+    --earth-green: 0.60 0.12 145;
+    --earth-green-light: 0.70 0.10 145;
+    --earth-green-dark: 0.45 0.14 145;
+
+    --sage-green: 0.72 0.08 140;
+    --forest-green: 0.45 0.12 148;
+    --mint-green: 0.85 0.07 155;
+
+    --cream: 0.90 0.015 85;
+    --cream-dark: 0.82 0.025 80;
+
+    --warm-brown: 0.60 0.08 55;
+    --warm-brown-light: 0.72 0.06 60;
+
+    --gold: 0.78 0.14 75;
+    --gold-light: 0.88 0.10 80;
+
+    --ocean-blue: 0.55 0.12 230;
+    --sky-blue: 0.72 0.10 220;
+    --teal: 0.65 0.12 195;
   }
-}
 
-@layer base {
   * {
     @apply border-border;
   }
+
   body {
-    @apply bg-background;
-    color: #000000;
-    font-feature-settings: "rlig" 1, "calt" 1;
-    font-family: 'Inter', system-ui, -apple-system, sans-serif;
-    font-size: 16px;
+    @apply bg-background text-foreground;
+    font-family: 'Inter', system-ui, sans-serif;
     line-height: 1.6;
   }
-  
-  /* Typography hierarchy with proper spacing - all text black */
+
   h1, h2, h3, h4, h5, h6 {
     font-family: 'Playfair Display', Georgia, serif;
     line-height: 1.3;
-    margin-bottom: 0.75rem;
-    color: #000000;
+    color: oklch(0.10 0.02 60);
   }
-  
-  h1 {
-    font-size: 2.25rem;
-    line-height: 1.2;
-  }
-  
-  h2 {
-    font-size: 1.875rem;
-    line-height: 1.25;
-  }
-  
-  h3 {
-    font-size: 1.5rem;
-    line-height: 1.3;
-  }
-  
-  h4 {
-    font-size: 1.25rem;
-    line-height: 1.35;
-  }
-  
-  h5 {
-    font-size: 1.125rem;
-    line-height: 1.4;
-  }
-  
-  h6 {
-    font-size: 1rem;
-    line-height: 1.4;
-  }
-  
-  p {
-    line-height: 1.7;
-    margin-bottom: 1rem;
-    color: #000000;
-  }
-  
-  /* Responsive typography */
-  @media (min-width: 768px) {
-    h1 {
-      font-size: 2.75rem;
-    }
-    h2 {
-      font-size: 2.25rem;
-    }
-    h3 {
-      font-size: 1.75rem;
-    }
-  }
-  
-  @media (min-width: 1024px) {
-    h1 {
-      font-size: 3rem;
-    }
-    h2 {
-      font-size: 2.5rem;
-    }
-    h3 {
-      font-size: 2rem;
-    }
+
+  .dark h1, .dark h2, .dark h3, .dark h4, .dark h5, .dark h6 {
+    color: oklch(0.95 0.01 85);
   }
 }
 
-@layer utilities {
-  .text-earth-green {
-    color: var(--earth-green);
+@layer components {
+  .prose-ayur {
+    @apply prose prose-lg max-w-none;
   }
-  .bg-earth-green {
-    background-color: var(--earth-green);
+
+  .prose-ayur h1,
+  .prose-ayur h2,
+  .prose-ayur h3,
+  .prose-ayur h4 {
+    font-family: 'Playfair Display', Georgia, serif;
   }
-  .border-earth-green {
-    border-color: var(--earth-green);
+
+  .btn-primary {
+    @apply bg-primary text-primary-foreground hover:opacity-90 transition-opacity px-6 py-3 rounded-lg font-medium;
   }
-  
-  .text-sage-green {
-    color: var(--sage-green);
+
+  .btn-secondary {
+    @apply bg-secondary text-secondary-foreground hover:opacity-90 transition-opacity px-6 py-3 rounded-lg font-medium;
   }
-  .bg-sage-green {
-    background-color: var(--sage-green);
+
+  .card-ayur {
+    @apply bg-card text-card-foreground rounded-xl shadow-soft border border-border;
   }
-  .border-sage-green {
-    border-color: var(--sage-green);
+
+  .section-heading {
+    font-family: 'Playfair Display', Georgia, serif;
+    @apply text-3xl md:text-4xl font-bold text-foreground;
   }
-  
-  .text-forest-green {
-    color: var(--forest-green);
-  }
-  .bg-forest-green {
-    background-color: var(--forest-green);
-  }
-  .border-forest-green {
-    border-color: var(--forest-green);
-  }
-  
-  .text-mint-green {
-    color: var(--mint-green);
-  }
-  .bg-mint-green {
-    background-color: var(--mint-green);
-  }
-  .border-mint-green {
-    border-color: var(--mint-green);
-  }
-  
-  .text-cream {
-    color: var(--cream);
-  }
-  .bg-cream {
-    background-color: var(--cream);
-  }
-  
-  .text-warm-brown {
-    color: var(--warm-brown);
-  }
-  .bg-warm-brown {
-    background-color: var(--warm-brown);
-  }
-  
-  .text-gold {
-    color: var(--gold);
-  }
-  .bg-gold {
-    background-color: var(--gold);
-  }
-  
-  .text-ocean-blue {
-    color: var(--ocean-blue);
-  }
-  .bg-ocean-blue {
-    background-color: var(--ocean-blue);
-  }
-  
-  .text-sky-blue {
-    color: var(--sky-blue);
-  }
-  .bg-sky-blue {
-    background-color: var(--sky-blue);
-  }
-  
-  .text-teal {
-    color: var(--teal);
-  }
-  .bg-teal {
-    background-color: var(--teal);
+
+  .section-subheading {
+    @apply text-lg text-muted-foreground mt-2;
   }
 }

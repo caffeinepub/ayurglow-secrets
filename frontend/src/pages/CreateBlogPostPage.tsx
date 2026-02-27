@@ -1,282 +1,266 @@
-import { useState, useRef, useMemo, useCallback } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from '@tanstack/react-router';
+import ReactQuill from 'react-quill-new';
+import 'react-quill-new/dist/quill.snow.css';
+import { toast } from 'sonner';
+import { Loader2, ArrowLeft, Upload, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Switch } from '@/components/ui/switch';
-import { useCreatePost } from '@/hooks/useQueries';
-import { Loader2, Upload, X, Image as ImageIcon } from 'lucide-react';
-import ReactQuill from 'react-quill-new';
-import 'react-quill-new/dist/quill.snow.css';
+import { Textarea } from '@/components/ui/textarea';
+import { Checkbox } from '@/components/ui/checkbox';
+import { useCreatePost, usePublishPost } from '../hooks/useQueries';
 import { ExternalBlob } from '../backend';
+import { injectBlobIndexAttributes } from '../utils/imageUtils';
 
-type ImageSizeOption = 'small' | 'medium' | 'large' | 'full' | 'custom';
+const CATEGORIES = [
+  'Health Remedies',
+  'Skin Care',
+  'Hair Care',
+  'Ayurveda',
+  'Wellness',
+  'Nutrition',
+  'Lifestyle',
+];
 
-function getImageSizeStyle(imageSize: string | null): React.CSSProperties {
-  if (!imageSize || imageSize === 'full') return { width: '100%' };
-  if (imageSize === 'small') return { width: '25%', maxWidth: '100%' };
-  if (imageSize === 'medium') return { width: '50%', maxWidth: '100%' };
-  if (imageSize === 'large') return { width: '75%', maxWidth: '100%' };
-  if (imageSize.startsWith('custom:')) {
-    const dims = imageSize.replace('custom:', '');
-    const [w, h] = dims.split('x');
-    const style: React.CSSProperties = { maxWidth: '100%' };
-    if (w) style.width = w;
-    if (h) style.height = h;
-    return style;
-  }
-  return { width: '100%' };
+function generateId(): string {
+  return `post_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+}
+
+function generateSlug(title: string): string {
+  return title
+    .toLowerCase()
+    .replace(/[^a-z0-9\s-]/g, '')
+    .replace(/\s+/g, '-')
+    .replace(/-+/g, '-')
+    .trim();
 }
 
 export default function CreateBlogPostPage() {
   const navigate = useNavigate();
+  const createPostMutation = useCreatePost();
+  const publishPostMutation = usePublishPost();
+
   const [title, setTitle] = useState('');
   const [slug, setSlug] = useState('');
-  const [category, setCategory] = useState('');
-  const [content, setContent] = useState('');
+  const [category, setCategory] = useState(CATEGORIES[0]);
   const [excerpt, setExcerpt] = useState('');
+  const [content, setContent] = useState('');
+  const [author, setAuthor] = useState('AyurGlow Team');
   const [readTime, setReadTime] = useState('5');
-  const [author, setAuthor] = useState('');
   const [tags, setTags] = useState('');
-  const [isPublished, setIsPublished] = useState(false);
-  const [featuredImage, setFeaturedImage] = useState<ExternalBlob | null>(null);
-  const [featuredImagePreview, setFeaturedImagePreview] = useState<string>('');
-  const [beginningImage, setBeginningImage] = useState<ExternalBlob | null>(null);
-  const [beginningImagePreview, setBeginningImagePreview] = useState<string>('');
-  const [contentImages, setContentImages] = useState<ExternalBlob[]>([]);
-  const [uploadProgress, setUploadProgress] = useState<number>(0);
-  const [isUploading, setIsUploading] = useState(false);
+  const [publishImmediately, setPublishImmediately] = useState(false);
 
-  // Image size state
-  const [imageSizeOption, setImageSizeOption] = useState<ImageSizeOption>('full');
-  const [customWidth, setCustomWidth] = useState('');
-  const [customHeight, setCustomHeight] = useState('');
+  // Featured image state
+  const [featuredImageFile, setFeaturedImageFile] = useState<File | null>(null);
+  const [featuredImagePreview, setFeaturedImagePreview] = useState<string | null>(null);
+  const [featuredImageSize, setFeaturedImageSize] = useState<string>('');
+  const featuredImageRef = useRef<HTMLInputElement>(null);
 
-  const quillRef = useRef<ReactQuill>(null);
-  const createPostMutation = useCreatePost();
+  // Inline images collected from editor
+  const inlineImageBlobsRef = useRef<ExternalBlob[]>([]);
 
-  const handleTitleChange = (value: string) => {
-    setTitle(value);
-    const generatedSlug = value
-      .toLowerCase()
-      .replace(/[^a-z0-9]+/g, '-')
-      .replace(/(^-|-$)/g, '');
-    setSlug(generatedSlug);
-  };
+  // Auto-generate slug from title
+  useEffect(() => {
+    if (title && !slug) {
+      setSlug(generateSlug(title));
+    }
+  }, [title]);
 
-  const handleFeaturedImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFeaturedImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-
-    setIsUploading(true);
-    setUploadProgress(0);
-
-    try {
-      const arrayBuffer = await file.arrayBuffer();
-      const uint8Array = new Uint8Array(arrayBuffer);
-      
-      const blob = ExternalBlob.fromBytes(uint8Array).withUploadProgress((percentage) => {
-        setUploadProgress(percentage);
-      });
-
-      setFeaturedImage(blob);
-      const previewUrl = URL.createObjectURL(file);
-      setFeaturedImagePreview(previewUrl);
-    } catch (error) {
-      console.error('Error uploading featured image:', error);
-    } finally {
-      setIsUploading(false);
-      setUploadProgress(0);
-    }
+    setFeaturedImageFile(file);
+    setFeaturedImageSize(`${Math.round(file.size / 1024)}KB`);
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      setFeaturedImagePreview(ev.target?.result as string);
+    };
+    reader.readAsDataURL(file);
   };
 
-  const handleBeginningImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    setIsUploading(true);
-    setUploadProgress(0);
-
-    try {
-      const arrayBuffer = await file.arrayBuffer();
-      const uint8Array = new Uint8Array(arrayBuffer);
-      
-      const blob = ExternalBlob.fromBytes(uint8Array).withUploadProgress((percentage) => {
-        setUploadProgress(percentage);
-      });
-
-      setBeginningImage(blob);
-      const previewUrl = URL.createObjectURL(file);
-      setBeginningImagePreview(previewUrl);
-    } catch (error) {
-      console.error('Error uploading beginning image:', error);
-    } finally {
-      setIsUploading(false);
-      setUploadProgress(0);
-    }
+  const handleRemoveFeaturedImage = () => {
+    setFeaturedImageFile(null);
+    setFeaturedImagePreview(null);
+    setFeaturedImageSize('');
+    if (featuredImageRef.current) featuredImageRef.current.value = '';
   };
 
-  const handleContentImageUpload = useCallback(async () => {
+  // Quill image handler: inserts image as base64 data URL into editor
+  const imageHandler = () => {
     const input = document.createElement('input');
     input.setAttribute('type', 'file');
     input.setAttribute('accept', 'image/*');
     input.click();
-
-    input.addEventListener('change', async () => {
+    input.onchange = async () => {
       const file = input.files?.[0];
       if (!file) return;
-
-      setIsUploading(true);
-      setUploadProgress(0);
-
-      try {
-        const arrayBuffer = await file.arrayBuffer();
-        const uint8Array = new Uint8Array(arrayBuffer);
-        
-        const blob = ExternalBlob.fromBytes(uint8Array).withUploadProgress((percentage) => {
-          setUploadProgress(percentage);
-        });
-
-        const imageUrl = blob.getDirectURL();
-        
-        setContentImages(prev => [...prev, blob]);
-
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const dataUrl = e.target?.result as string;
         const quill = quillRef.current?.getEditor();
         if (quill) {
-          const range = quill.getSelection();
-          const index = range ? range.index : quill.getLength();
-          quill.insertEmbed(index, 'image', imageUrl);
-          quill.setSelection(index + 1, 0);
+          const range = quill.getSelection(true);
+          quill.insertEmbed(range.index, 'image', dataUrl);
+          quill.setSelection(range.index + 1, 0);
         }
-      } catch (error) {
-        console.error('Error uploading content image:', error);
-      } finally {
-        setIsUploading(false);
-        setUploadProgress(0);
-      }
-    });
-  }, []);
+      };
+      reader.readAsDataURL(file);
+    };
+  };
 
-  const modules = useMemo(() => ({
+  const quillRef = useRef<ReactQuill>(null);
+
+  const modules = {
     toolbar: {
       container: [
         [{ header: [1, 2, 3, false] }],
         ['bold', 'italic', 'underline', 'strike'],
         [{ list: 'ordered' }, { list: 'bullet' }],
-        [{ color: [] }, { background: [] }],
+        ['blockquote', 'code-block'],
         ['link', 'image'],
         ['clean'],
       ],
-      handlers: {
-        image: handleContentImageUpload,
-      },
+      handlers: { image: imageHandler },
     },
-  }), [handleContentImageUpload]);
+  };
 
-  const formats = [
-    'header',
-    'bold', 'italic', 'underline', 'strike',
-    'list', 'bullet',
-    'color', 'background',
-    'link', 'image',
-  ];
+  const prepareContentForSave = async (htmlContent: string): Promise<{ processedContent: string; contentImages: ExternalBlob[] }> => {
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(htmlContent, 'text/html');
+    const images = doc.querySelectorAll('img');
+    const contentImages: ExternalBlob[] = [];
 
-  const buildImageSize = (): string | null => {
-    if (imageSizeOption === 'full') return null;
-    if (imageSizeOption === 'custom') {
-      const w = customWidth.trim();
-      const h = customHeight.trim();
-      if (!w && !h) return null;
-      return `custom:${w || 'auto'}x${h || 'auto'}`;
+    for (let i = 0; i < images.length; i++) {
+      const img = images[i];
+      const src = img.getAttribute('src') || '';
+      if (src.startsWith('data:')) {
+        // Convert base64 to bytes and create ExternalBlob
+        const response = await fetch(src);
+        const arrayBuffer = await response.arrayBuffer();
+        const bytes = new Uint8Array(arrayBuffer);
+        const blob = ExternalBlob.fromBytes(bytes);
+        contentImages.push(blob);
+        img.setAttribute('src', `blob-placeholder-${i}`);
+        img.setAttribute('data-blob-index', String(i));
+      } else if (src.startsWith('http') || src.startsWith('blob:')) {
+        // Already an external URL - keep as is but track it
+        const blob = ExternalBlob.fromURL(src);
+        contentImages.push(blob);
+        img.setAttribute('data-blob-index', String(i));
+      }
     }
-    return imageSizeOption;
+
+    const processedContent = doc.body.innerHTML;
+    return { processedContent, contentImages };
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (imageSizeOption === 'custom' && !customWidth.trim() && !customHeight.trim()) {
-      alert('Please enter at least a width or height for the custom image size.');
-      return;
-    }
+    if (!title.trim()) { toast.error('Title is required'); return; }
+    if (!slug.trim()) { toast.error('Slug is required'); return; }
+    if (!excerpt.trim()) { toast.error('Excerpt is required'); return; }
+    if (!content.trim()) { toast.error('Content is required'); return; }
 
-    const allContentImages = beginningImage 
-      ? [beginningImage, ...contentImages] 
-      : contentImages;
+    const parsedReadTime = parseInt(readTime, 10);
+    if (isNaN(parsedReadTime) || parsedReadTime < 1) { toast.error('Read time must be a positive number'); return; }
 
     try {
+      // Prepare featured image
+      let featuredImageBlob: ExternalBlob | null = null;
+      let featuredImageSizeStr: string | null = null;
+      if (featuredImageFile) {
+        const arrayBuffer = await featuredImageFile.arrayBuffer();
+        const bytes = new Uint8Array(arrayBuffer);
+        featuredImageBlob = ExternalBlob.fromBytes(bytes);
+        featuredImageSizeStr = featuredImageSize || null;
+      }
+
+      // Prepare content images
+      const { processedContent, contentImages } = await prepareContentForSave(content);
+      const finalContent = injectBlobIndexAttributes(processedContent, 0);
+
+      const tagList = tags
+        .split(',')
+        .map((t) => t.trim())
+        .filter(Boolean);
+
+      const postId = generateId();
+
       await createPostMutation.mutateAsync({
-        id: Date.now().toString(),
-        title,
-        slug,
+        id: postId,
+        title: title.trim(),
+        slug: slug.trim(),
         category,
-        content,
-        excerpt,
-        readTime: BigInt(readTime),
-        author,
-        publishedDate: BigInt(Date.now()),
-        tags: tags.split(',').map(tag => tag.trim()).filter(Boolean),
-        isPublished,
-        image: featuredImage,
-        imageSize: buildImageSize(),
-        contentImages: allContentImages,
+        content: finalContent,
+        excerpt: excerpt.trim(),
+        readTime: BigInt(parsedReadTime),
+        author: author.trim() || 'AyurGlow Team',
+        tags: tagList,
+        image: featuredImageBlob,
+        imageSize: featuredImageSizeStr,
+        contentImages,
       });
 
-      navigate({ to: '/admin/posts' });
-    } catch (error) {
-      console.error('Error creating post:', error);
+      if (publishImmediately) {
+        await publishPostMutation.mutateAsync({ id: postId, publishedDate: null });
+        toast.success('Post created and published successfully!');
+      } else {
+        toast.success('Post saved as draft!');
+      }
+
+      navigate({ to: '/admin' });
+    } catch (err: any) {
+      console.error('Error creating post:', err);
+      toast.error(err?.message || 'Failed to create post. Please try again.');
     }
   };
 
-  const previewStyle = getImageSizeStyle(buildImageSize());
+  const isSubmitting = createPostMutation.isPending || publishPostMutation.isPending;
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-4xl">
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-2xl md:text-3xl font-serif text-earth-green">Create New Blog Post</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="space-y-2">
-              <Label htmlFor="title">Title</Label>
-              <Input
-                id="title"
-                value={title}
-                onChange={(e) => handleTitleChange(e.target.value)}
-                placeholder="Enter post title"
-                required
-              />
-            </div>
+    <div className="min-h-screen bg-background">
+      <div className="max-w-4xl mx-auto px-4 py-8">
+        {/* Header */}
+        <div className="flex items-center gap-4 mb-8">
+          <Button variant="ghost" size="icon" onClick={() => navigate({ to: '/admin' })}>
+            <ArrowLeft className="w-5 h-5" />
+          </Button>
+          <div>
+            <h1 className="text-2xl font-bold text-foreground font-serif">Create New Post</h1>
+            <p className="text-muted-foreground text-sm">Fill in the details to create a new blog post</p>
+          </div>
+        </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="slug">Slug</Label>
-              <Input
-                id="slug"
-                value={slug}
-                onChange={(e) => setSlug(e.target.value)}
-                placeholder="post-slug"
-                required
-              />
-            </div>
+        <form onSubmit={handleSubmit} className="space-y-6">
+          {/* Title */}
+          <div className="space-y-2">
+            <Label htmlFor="title">Title *</Label>
+            <Input
+              id="title"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              placeholder="Enter post title"
+              required
+            />
+          </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="category">Category</Label>
-              <Select value={category} onValueChange={setCategory} required>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select category" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="Health Remedies">Health Remedies</SelectItem>
-                  <SelectItem value="Skin Care">Skin Care</SelectItem>
-                  <SelectItem value="Hair Care">Hair Care</SelectItem>
-                  <SelectItem value="Wellness">Wellness</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
+          {/* Slug */}
+          <div className="space-y-2">
+            <Label htmlFor="slug">Slug *</Label>
+            <Input
+              id="slug"
+              value={slug}
+              onChange={(e) => setSlug(e.target.value)}
+              placeholder="post-url-slug"
+              required
+            />
+            <p className="text-xs text-muted-foreground">URL: /blog/{slug || 'post-slug'}</p>
+          </div>
 
+          {/* Author & Read Time */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="author">Author</Label>
               <Input
@@ -284,231 +268,156 @@ export default function CreateBlogPostPage() {
                 value={author}
                 onChange={(e) => setAuthor(e.target.value)}
                 placeholder="Author name"
-                required
               />
             </div>
-
             <div className="space-y-2">
-              <Label htmlFor="excerpt">Excerpt</Label>
-              <Input
-                id="excerpt"
-                value={excerpt}
-                onChange={(e) => setExcerpt(e.target.value)}
-                placeholder="Brief description"
-                required
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="readTime">Read Time (minutes)</Label>
+              <Label htmlFor="readTime">Read Time (minutes) *</Label>
               <Input
                 id="readTime"
                 type="number"
+                min="1"
                 value={readTime}
                 onChange={(e) => setReadTime(e.target.value)}
-                min="1"
+                placeholder="5"
                 required
               />
             </div>
+          </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="tags">Tags (comma-separated)</Label>
-              <Input
-                id="tags"
-                value={tags}
-                onChange={(e) => setTags(e.target.value)}
-                placeholder="ayurveda, health, natural"
+          {/* Category */}
+          <div className="space-y-2">
+            <Label htmlFor="category">Category *</Label>
+            <select
+              id="category"
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
+              className="w-full border border-input bg-background text-foreground rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
+            >
+              {CATEGORIES.map((cat) => (
+                <option key={cat} value={cat}>{cat}</option>
+              ))}
+            </select>
+          </div>
+
+          {/* Tags */}
+          <div className="space-y-2">
+            <Label htmlFor="tags">Tags</Label>
+            <Input
+              id="tags"
+              value={tags}
+              onChange={(e) => setTags(e.target.value)}
+              placeholder="ayurveda, health, wellness (comma-separated)"
+            />
+          </div>
+
+          {/* Excerpt */}
+          <div className="space-y-2">
+            <Label htmlFor="excerpt">Excerpt *</Label>
+            <Textarea
+              id="excerpt"
+              value={excerpt}
+              onChange={(e) => setExcerpt(e.target.value)}
+              placeholder="Brief description of the post..."
+              rows={3}
+              required
+            />
+          </div>
+
+          {/* Featured Image */}
+          <div className="space-y-2">
+            <Label>Featured Image</Label>
+            {featuredImagePreview ? (
+              <div className="relative inline-block">
+                <img
+                  src={featuredImagePreview}
+                  alt="Featured"
+                  className="w-full max-w-sm h-48 object-cover rounded-lg border border-border"
+                />
+                <Button
+                  type="button"
+                  variant="destructive"
+                  size="icon"
+                  className="absolute top-2 right-2 w-6 h-6"
+                  onClick={handleRemoveFeaturedImage}
+                >
+                  <X className="w-3 h-3" />
+                </Button>
+              </div>
+            ) : (
+              <div
+                className="border-2 border-dashed border-border rounded-lg p-8 text-center cursor-pointer hover:border-primary transition-colors"
+                onClick={() => featuredImageRef.current?.click()}
+              >
+                <Upload className="w-8 h-8 text-muted-foreground mx-auto mb-2" />
+                <p className="text-sm text-muted-foreground">Click to upload featured image</p>
+                <p className="text-xs text-muted-foreground mt-1">PNG, JPG, WebP supported</p>
+              </div>
+            )}
+            <input
+              ref={featuredImageRef}
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={handleFeaturedImageChange}
+            />
+          </div>
+
+          {/* Content Editor */}
+          <div className="space-y-2">
+            <Label>Content *</Label>
+            <div className="border border-input rounded-md overflow-hidden">
+              <ReactQuill
+                ref={quillRef}
+                theme="snow"
+                value={content}
+                onChange={setContent}
+                modules={modules}
+                placeholder="Write your post content here..."
+                style={{ minHeight: '300px' }}
               />
             </div>
+          </div>
 
-            {/* Featured Image */}
-            <div className="space-y-2">
-              <Label htmlFor="featuredImage">Featured Image</Label>
-              <div className="flex items-center gap-4">
-                <Input
-                  id="featuredImage"
-                  type="file"
-                  accept="image/*"
-                  onChange={handleFeaturedImageUpload}
-                  className="flex-1"
-                />
-                {isUploading && uploadProgress > 0 && (
-                  <span className="text-sm text-muted-foreground">{uploadProgress}%</span>
-                )}
-              </div>
-              {featuredImagePreview && (
-                <div className="relative mt-2">
-                  <img src={featuredImagePreview} alt="Featured preview" className="w-full h-48 object-cover rounded-lg" />
-                  <Button
-                    type="button"
-                    variant="destructive"
-                    size="icon"
-                    className="absolute top-2 right-2"
-                    onClick={() => {
-                      setFeaturedImage(null);
-                      setFeaturedImagePreview('');
-                    }}
-                  >
-                    <X className="w-4 h-4" />
-                  </Button>
-                </div>
-              )}
-            </div>
-
-            {/* Beginning Image */}
-            <div className="space-y-2">
-              <Label htmlFor="beginningImage">Beginning Image (appears before content)</Label>
-              <div className="flex items-center gap-4">
-                <Input
-                  id="beginningImage"
-                  type="file"
-                  accept="image/*"
-                  onChange={handleBeginningImageUpload}
-                  className="flex-1"
-                />
-                {isUploading && uploadProgress > 0 && (
-                  <span className="text-sm text-muted-foreground">{uploadProgress}%</span>
-                )}
-              </div>
-              {beginningImagePreview && (
-                <div className="relative mt-2">
-                  <img src={beginningImagePreview} alt="Beginning preview" className="w-full h-48 object-cover rounded-lg" />
-                  <Button
-                    type="button"
-                    variant="destructive"
-                    size="icon"
-                    className="absolute top-2 right-2"
-                    onClick={() => {
-                      setBeginningImage(null);
-                      setBeginningImagePreview('');
-                    }}
-                  >
-                    <X className="w-4 h-4" />
-                  </Button>
-                </div>
-              )}
-              <p className="text-sm text-muted-foreground">
-                This image will appear at the very beginning of your blog post content.
+          {/* Publish Immediately */}
+          <div className="flex items-center gap-3 p-4 bg-muted/30 rounded-lg border border-border">
+            <Checkbox
+              id="publishImmediately"
+              checked={publishImmediately}
+              onCheckedChange={(checked) => setPublishImmediately(checked === true)}
+            />
+            <div>
+              <Label htmlFor="publishImmediately" className="cursor-pointer font-medium">
+                Publish Immediately
+              </Label>
+              <p className="text-xs text-muted-foreground mt-0.5">
+                If checked, the post will be published right after creation. Otherwise it will be saved as a draft.
               </p>
             </div>
+          </div>
 
-            {/* Image Size Selector */}
-            <div className="space-y-3 p-4 bg-sage-green/10 rounded-xl border border-sage-green/30">
-              <div className="flex items-center gap-2">
-                <ImageIcon className="w-4 h-4 text-earth-green" />
-                <Label className="text-earth-green font-semibold">Image Size in Blog Post</Label>
-              </div>
-              <p className="text-sm text-muted-foreground">
-                Controls how the beginning image and featured image appear in the published blog post.
-              </p>
-              <Select value={imageSizeOption} onValueChange={(v) => setImageSizeOption(v as ImageSizeOption)}>
-                <SelectTrigger className="w-full md:w-64">
-                  <SelectValue placeholder="Select image size" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="full">Full Width (100%)</SelectItem>
-                  <SelectItem value="large">Large (75%)</SelectItem>
-                  <SelectItem value="medium">Medium (50%)</SelectItem>
-                  <SelectItem value="small">Small (25%)</SelectItem>
-                  <SelectItem value="custom">Custom dimensions</SelectItem>
-                </SelectContent>
-              </Select>
-
-              {imageSizeOption === 'custom' && (
-                <div className="flex flex-wrap gap-4 mt-2">
-                  <div className="space-y-1">
-                    <Label htmlFor="customWidth" className="text-sm">Width (e.g. 400px, 60%)</Label>
-                    <Input
-                      id="customWidth"
-                      value={customWidth}
-                      onChange={(e) => setCustomWidth(e.target.value)}
-                      placeholder="e.g. 400px or 60%"
-                      className="w-44"
-                    />
-                  </div>
-                  <div className="space-y-1">
-                    <Label htmlFor="customHeight" className="text-sm">Height (e.g. 300px, auto)</Label>
-                    <Input
-                      id="customHeight"
-                      value={customHeight}
-                      onChange={(e) => setCustomHeight(e.target.value)}
-                      placeholder="e.g. 300px or auto"
-                      className="w-44"
-                    />
-                  </div>
-                </div>
+          {/* Submit */}
+          <div className="flex items-center gap-4 pt-4">
+            <Button type="submit" disabled={isSubmitting} className="min-w-[160px]">
+              {isSubmitting ? (
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin mr-2" />
+                  {publishImmediately ? 'Publishing...' : 'Saving...'}
+                </>
+              ) : (
+                publishImmediately ? 'Create & Publish' : 'Save as Draft'
               )}
-
-              {/* Live preview indicator */}
-              {(featuredImagePreview || beginningImagePreview) && (
-                <div className="mt-3">
-                  <p className="text-xs text-muted-foreground mb-2 font-medium uppercase tracking-wide">Preview at selected size:</p>
-                  <div className="bg-white rounded-lg p-3 border border-sage-green/20 overflow-hidden">
-                    <img
-                      src={featuredImagePreview || beginningImagePreview}
-                      alt="Size preview"
-                      style={{ ...previewStyle, objectFit: 'cover', display: 'block' }}
-                    />
-                  </div>
-                </div>
-              )}
-            </div>
-
-            <div className="space-y-2">
-              <Label>Content</Label>
-              <div className="border rounded-lg overflow-hidden">
-                <ReactQuill
-                  ref={quillRef}
-                  theme="snow"
-                  value={content}
-                  onChange={setContent}
-                  modules={modules}
-                  formats={formats}
-                  className="min-h-[400px]"
-                  placeholder="Write your blog post content here... Click the image icon in the toolbar to insert images within your content."
-                />
-              </div>
-              <p className="text-sm text-muted-foreground flex items-center gap-2">
-                <ImageIcon className="w-4 h-4" />
-                Use the image button in the toolbar above to insert images anywhere in your content.
-              </p>
-            </div>
-
-            <div className="flex items-center gap-2">
-              <Switch
-                id="isPublished"
-                checked={isPublished}
-                onCheckedChange={setIsPublished}
-              />
-              <Label htmlFor="isPublished">Publish immediately</Label>
-            </div>
-
-            <div className="flex gap-4">
-              <Button
-                type="submit"
-                disabled={createPostMutation.isPending || isUploading}
-                className="bg-earth-green hover:bg-earth-green/90"
-              >
-                {createPostMutation.isPending ? (
-                  <>
-                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                    Creating...
-                  </>
-                ) : (
-                  'Create Post'
-                )}
-              </Button>
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => navigate({ to: '/admin/posts' })}
-              >
-                Cancel
-              </Button>
-            </div>
-          </form>
-        </CardContent>
-      </Card>
+            </Button>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => navigate({ to: '/admin' })}
+              disabled={isSubmitting}
+            >
+              Cancel
+            </Button>
+          </div>
+        </form>
+      </div>
     </div>
   );
 }

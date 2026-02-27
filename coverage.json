@@ -1,54 +1,49 @@
 {
   "kind": "coverage_report",
   "version": "1.0",
-  "generatedAt": "2026-02-25T20:54:48.424Z",
+  "generatedAt": "2026-02-27T07:59:00.099Z",
   "sources": {
     "buildRequest": true,
     "implementationPlan": true
   },
   "requirements": {
-    "total": 2,
+    "total": 1,
     "implemented": 1,
     "items": [
       {
         "id": "REQ-1",
-        "summary": "In the Create Blog Post and Edit Blog Post admin forms, add an image size selector control for each image upload field (featured image and content image). The selector should offer predefined size options (e.g., Small, Medium, Large, Full Width) and a custom width/height input option. The selected size should control the rendered dimensions of the image within the blog post detail view.",
+        "summary": "Retry the full build and deployment of the AyurGlow Secrets application, including the backend Motoko actor and the React frontend, resolving any errors that caused the previous deployment to fail.",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/pages/CreateBlogPostPage.tsx",
-          "frontend/src/pages/EditBlogPostPage.tsx",
-          "frontend/src/pages/BlogPostDetailPage.tsx"
+          "frontend/package.json",
+          "frontend/vite.config.ts",
+          "frontend/tsconfig.json",
+          "frontend/src/main.tsx",
+          "frontend/src/App.tsx",
+          "frontend/src/hooks/useActor.ts",
+          "frontend/src/hooks/useInternetIdentity.ts",
+          "frontend/index.html",
+          "frontend/index.css",
+          "frontend/tailwind.config.js",
+          "frontend/src/components/Navigation.tsx",
+          "frontend/src/pages/HomePage.tsx",
+          "frontend/public/assets/generated/.gitkeep"
         ],
         "matchedFiles": [
-          "frontend/src/pages/CreateBlogPostPage.tsx",
-          "frontend/src/pages/EditBlogPostPage.tsx",
-          "frontend/src/pages/BlogPostDetailPage.tsx"
+          "frontend/src/App.tsx",
+          "frontend/tailwind.config.js"
         ]
-      },
-      {
-        "id": "REQ-2",
-        "summary": "Extend the backend blog post data model to store an image size setting (e.g., as an optional text field alongside the existing image fields) so that the selected image dimensions are persisted per post.",
-        "status": "unknown",
-        "plannedFiles": [],
-        "matchedFiles": []
       }
     ]
   },
   "changedFiles": [
-    "backend/main.mo",
-    "backend/migration.mo",
     "build-request.json",
     "feature_evidence.json",
     "frontend-file-summaries.txt",
     "frontend-implementation-plan.json",
-    "frontend/src/backend.d.ts",
-    "frontend/src/backend.ts",
-    "frontend/src/declarations/backend.did.d.ts",
-    "frontend/src/declarations/backend.did.js",
-    "frontend/src/hooks/useQueries.ts",
-    "frontend/src/pages/BlogPostDetailPage.tsx",
-    "frontend/src/pages/CreateBlogPostPage.tsx",
-    "frontend/src/pages/EditBlogPostPage.tsx",
+    "frontend/src/App.tsx",
+    "frontend/src/index.css",
+    "frontend/tailwind.config.js",
     "project_state.json",
     "scratch/component-selection.json",
     "spec.md",

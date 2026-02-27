@@ -16,9 +16,10 @@ export interface BlogPostView {
   'content' : string,
   'isPublished' : boolean,
   'imageSize' : [] | [string],
-  'publishedDate' : bigint,
+  'publishedDate' : [] | [bigint],
   'slug' : string,
   'tags' : Array<string>,
+  'createdDate' : bigint,
   'author' : string,
   'readTime' : bigint,
   'excerpt' : string,
@@ -33,6 +34,10 @@ export interface Comment {
   'timestamp' : bigint,
 }
 export type ExternalBlob = Uint8Array;
+export interface UserProfile { 'name' : string }
+export type UserRole = { 'admin' : null } |
+  { 'user' : null } |
+  { 'guest' : null };
 export interface _CaffeineStorageCreateCertificateResult {
   'method' : string,
   'blob_hash' : string,
@@ -60,7 +65,10 @@ export interface _SERVICE {
     _CaffeineStorageRefillResult
   >,
   '_caffeineStorageUpdateGatewayPrincipals' : ActorMethod<[], undefined>,
+  '_initializeAccessControlWithSecret' : ActorMethod<[string], undefined>,
   'addComment' : ActorMethod<[string, string, string], boolean>,
+  'assignCallerUserRole' : ActorMethod<[Principal, UserRole], undefined>,
+  'canCallerAccessAdminSection' : ActorMethod<[], boolean>,
   'createPost' : ActorMethod<
     [
       string,
@@ -71,9 +79,7 @@ export interface _SERVICE {
       string,
       bigint,
       string,
-      bigint,
       Array<string>,
-      boolean,
       [] | [ExternalBlob],
       [] | [string],
       Array<ExternalBlob>,
@@ -82,9 +88,16 @@ export interface _SERVICE {
   >,
   'deletePost' : ActorMethod<[string], undefined>,
   'getAllVisiblePosts' : ActorMethod<[], Array<BlogPostView>>,
+  'getCallerUserProfile' : ActorMethod<[], [] | [UserProfile]>,
+  'getCallerUserRole' : ActorMethod<[], UserRole>,
   'getComments' : ActorMethod<[string], Array<Comment>>,
   'getPost' : ActorMethod<[string], [] | [BlogPostView]>,
   'getPublishedPosts' : ActorMethod<[], Array<BlogPostView>>,
+  'getUserProfile' : ActorMethod<[Principal], [] | [UserProfile]>,
+  'isCallerAdmin' : ActorMethod<[], boolean>,
+  'publishPost' : ActorMethod<[string, [] | [bigint]], boolean>,
+  'saveCallerUserProfile' : ActorMethod<[UserProfile], undefined>,
+  'unpublishPost' : ActorMethod<[string], boolean>,
   'updatePost' : ActorMethod<
     [
       string,
@@ -95,9 +108,7 @@ export interface _SERVICE {
       string,
       bigint,
       string,
-      bigint,
       Array<string>,
-      boolean,
       [] | [ExternalBlob],
       [] | [string],
       Array<ExternalBlob>,

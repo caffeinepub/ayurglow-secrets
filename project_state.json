@@ -1,37 +1,21 @@
 {
   "schemaVersion": "1.0.0",
   "projectStateVersion": 3,
-  "summary": "AyurGlow Secrets blog project with image size option for blog post fitting.",
+  "summary": "New project",
   "architectural_notes": [],
   "known_issues": [],
   "isFixRequest": false,
   "existing_features": [
     {
-      "id": "feature-in-the-create-blog-post-and-edit-blog-post-admin-forms-add-an-image-size-selector-control-for-each-image-upload-field-featured-image-and-content-image-the-selector-should-offer-predefined-size-options-e-g-small-medium-large-full-width-and-a-custom-width-height-input-option-the-selected-size-should-control-the-rendered-dimensions-of-the-image-within-the-blog-post-detail-view",
-      "title": "In the Create Blog Post and Edit Blog Post admin forms, add an image size selector control for each image upload field (featured image and content image). The selector should offer predefined size options (e.g., Small, Medium, Large, Full Width) and a custom width/height input option. The selected size should control the rendered dimensions of the image within the blog post detail view.",
+      "id": "feature-retry-the-full-build-and-deployment-of-the-ayurglow-secrets-application-including-the-backend-motoko-actor-and-the-react-frontend-resolving-any-errors-that-caused-the-previous-deployment-to-fail",
+      "title": "Retry the full build and deployment of the AyurGlow Secrets application, including the backend Motoko actor and the React frontend, resolving any errors that caused the previous deployment to fail.",
       "reqIds": [
         "REQ-1"
       ],
       "version": 1
     }
   ],
-  "new_feature_requests": [
-    {
-      "id": "AR-1",
-      "summary": "Add image size option to allow users to resize images to fit blog posts",
-      "reqIds": [],
-      "status": "pending"
-    },
-    {
-      "id": "AR-3",
-      "summary": "Extend the backend blog post data model to store an image size setting (e.g., as an optional text field alongside the existing image fields) so that the selected image dimensions are persisted per post.",
-      "reqIds": [
-        "REQ-2"
-      ],
-      "status": "pending"
-    }
-  ],
-  "gameProjectType": "none",
+  "new_feature_requests": [],
   "projectName": "AyurGlow Secrets",
   "clarification_mode": "instant",
   "clarification_rounds": 0

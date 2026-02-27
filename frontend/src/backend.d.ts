@@ -20,9 +20,10 @@ export interface BlogPostView {
     content: string;
     isPublished: boolean;
     imageSize?: string;
-    publishedDate: bigint;
+    publishedDate?: bigint;
     slug: string;
     tags: Array<string>;
+    createdDate: bigint;
     author: string;
     readTime: bigint;
     excerpt: string;
@@ -36,13 +37,30 @@ export interface Comment {
     author: string;
     timestamp: bigint;
 }
+export interface UserProfile {
+    name: string;
+}
+export enum UserRole {
+    admin = "admin",
+    user = "user",
+    guest = "guest"
+}
 export interface backendInterface {
     addComment(postId: string, author: string, content: string): Promise<boolean>;
-    createPost(id: string, title: string, slug: string, category: string, content: string, excerpt: string, readTime: bigint, author: string, publishedDate: bigint, tags: Array<string>, isPublished: boolean, image: ExternalBlob | null, imageSize: string | null, contentImages: Array<ExternalBlob>): Promise<void>;
+    assignCallerUserRole(user: Principal, role: UserRole): Promise<void>;
+    canCallerAccessAdminSection(): Promise<boolean>;
+    createPost(id: string, title: string, slug: string, category: string, content: string, excerpt: string, readTime: bigint, author: string, tags: Array<string>, image: ExternalBlob | null, imageSize: string | null, contentImages: Array<ExternalBlob>): Promise<void>;
     deletePost(id: string): Promise<void>;
     getAllVisiblePosts(): Promise<Array<BlogPostView>>;
+    getCallerUserProfile(): Promise<UserProfile | null>;
+    getCallerUserRole(): Promise<UserRole>;
     getComments(postId: string): Promise<Array<Comment>>;
     getPost(id: string): Promise<BlogPostView | null>;
     getPublishedPosts(): Promise<Array<BlogPostView>>;
-    updatePost(id: string, title: string, slug: string, category: string, content: string, excerpt: string, readTime: bigint, author: string, publishedDate: bigint, tags: Array<string>, isPublished: boolean, image: ExternalBlob | null, imageSize: string | null, contentImages: Array<ExternalBlob>): Promise<void>;
+    getUserProfile(user: Principal): Promise<UserProfile | null>;
+    isCallerAdmin(): Promise<boolean>;
+    publishPost(id: string, publishedDate: bigint | null): Promise<boolean>;
+    saveCallerUserProfile(profile: UserProfile): Promise<void>;
+    unpublishPost(id: string): Promise<boolean>;
+    updatePost(id: string, title: string, slug: string, category: string, content: string, excerpt: string, readTime: bigint, author: string, tags: Array<string>, image: ExternalBlob | null, imageSize: string | null, contentImages: Array<ExternalBlob>): Promise<void>;
 }

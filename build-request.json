@@ -1,59 +1,34 @@
 {
   "kind": "build_request",
-  "title": "Add image size option for blog post images",
+  "title": "Retry deployment of AyurGlow Secrets app",
   "projectName": "AyurGlow Secrets",
   "priority": "normal",
   "requirements": [
     {
       "id": "REQ-1",
-      "text": "In the Create Blog Post and Edit Blog Post admin forms, add an image size selector control for each image upload field (featured image and content image). The selector should offer predefined size options (e.g., Small, Medium, Large, Full Width) and a custom width/height input option. The selected size should control the rendered dimensions of the image within the blog post detail view.",
-      "target": "frontend",
+      "text": "Retry the full build and deployment of the AyurGlow Secrets application, including the backend Motoko actor and the React frontend, resolving any errors that caused the previous deployment to fail.",
+      "target": "both",
       "source": {
         "messageIds": [
-          "msg-7"
+          "msg-3"
         ],
         "quotes": [
-          "can you make option for image size in order to make it fit in my blog post"
+          "try again"
         ]
       },
       "acceptanceCriteria": [
-        "An image size selector (dropdown or radio group) appears alongside each image upload field in CreateBlogPostPage and EditBlogPostPage.",
-        "Predefined size options are available: Small (25%), Medium (50%), Large (75%), Full Width (100%).",
-        "A custom option allows the user to enter explicit pixel or percentage width/height values.",
-        "The chosen image size is persisted with the post data (stored as image metadata or CSS class reference).",
-        "In BlogPostDetailPage, images are rendered with the width/height corresponding to the selected size option.",
-        "Existing posts without a size setting default to Full Width to preserve backward compatibility."
-      ]
-    },
-    {
-      "id": "REQ-2",
-      "text": "Extend the backend blog post data model to store an image size setting (e.g., as an optional text field alongside the existing image fields) so that the selected image dimensions are persisted per post.",
-      "target": "backend",
-      "source": {
-        "messageIds": [
-          "msg-7"
-        ],
-        "quotes": [
-          "can you make option for image size in order to make it fit in my blog post"
-        ]
-      },
-      "acceptanceCriteria": [
-        "The blog post type in main.mo includes optional image size fields (e.g., featuredImageSize and contentImageSize) as optional Text values.",
-        "Create and update endpoints accept and store the image size values.",
-        "Query endpoints return the image size values alongside existing image data.",
-        "Existing posts without size values return a null/empty optional, defaulting gracefully on the frontend."
+        "The backend canister deploys successfully without errors.",
+        "The frontend builds and deploys without errors.",
+        "The application is accessible and functional after deployment."
       ]
     }
   ],
   "constraints": [
-    "Do not modify any files under frontend/src/hooks/useInternetIdentity.ts, frontend/src/hooks/useActor.ts, frontend/src/main.tsx, or frontend/src/components/ui.",
-    "Maintain backward compatibility: existing posts without an image size value must still render correctly."
+    "Do not change any existing application logic, data models, or UI unless required to fix a build/deployment error."
   ],
   "nonGoals": [
-    "Cropping or visual editing of images beyond resizing.",
-    "Image compression or format conversion.",
-    "Resizing images for the blog listing/card thumbnails — only the blog post detail view.",
-    "Any changes to non-blog pages (skin care, hair care, health remedies static pages)."
+    "Adding new features or pages.",
+    "Changing the visual design or theme."
   ],
   "imageRequirements": {
     "required": [],

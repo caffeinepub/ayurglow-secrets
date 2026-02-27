@@ -1,18 +1,24 @@
 import { Link } from '@tanstack/react-router';
 import { BlogPostView } from '../backend';
 import { Calendar, Clock, User, ArrowRight } from 'lucide-react';
+import { getBlobImageUrl } from '../utils/imageUtils';
 
 interface FeaturedPostProps {
   post: BlogPostView;
 }
 
-export default function FeaturedPost({ post }: FeaturedPostProps) {
-  const imageUrl = post.image ? post.image.getDirectURL() : '/assets/generated/blog-featured-placeholder.dim_800x450.png';
-  const formattedDate = new Date(Number(post.publishedDate) / 1_000_000).toLocaleDateString('en-US', {
+function formatPostDate(post: BlogPostView): string {
+  const timestamp = post.publishedDate ?? post.createdDate;
+  return new Date(Number(timestamp) / 1_000_000).toLocaleDateString('en-US', {
     year: 'numeric',
     month: 'long',
     day: 'numeric',
   });
+}
+
+export default function FeaturedPost({ post }: FeaturedPostProps) {
+  const imageUrl = getBlobImageUrl(post.image, '/assets/generated/blog-featured-placeholder.dim_800x450.png');
+  const formattedDate = formatPostDate(post);
 
   return (
     <article className="relative rounded-2xl overflow-hidden shadow-md group">
@@ -22,6 +28,9 @@ export default function FeaturedPost({ post }: FeaturedPostProps) {
             src={imageUrl}
             alt={post.title}
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+            onError={(e) => {
+              (e.target as HTMLImageElement).src = '/assets/generated/blog-featured-placeholder.dim_800x450.png';
+            }}
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
         </div>

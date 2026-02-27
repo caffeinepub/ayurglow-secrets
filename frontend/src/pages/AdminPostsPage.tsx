@@ -1,10 +1,8 @@
-import { useGetAllPosts, useDeletePost } from '@/hooks/useQueries';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { useState } from 'react';
+import { useNavigate } from '@tanstack/react-router';
+import { Plus, Edit, Trash2, Eye, EyeOff, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Pencil, Trash2, Plus, Loader2, AlertCircle } from 'lucide-react';
-import { useNavigate } from '@tanstack/react-router';
-import { useState } from 'react';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -15,196 +13,243 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
+import { toast } from 'sonner';
+import {
+  useGetAllPosts,
+  useDeletePost,
+  usePublishPost,
+  useUnpublishPost,
+} from '../hooks/useQueries';
+import { BlogPostView } from '../backend';
 
 export default function AdminPostsPage() {
   const navigate = useNavigate();
-  const { data: posts, isLoading, error, refetch } = useGetAllPosts();
-  const deletePost = useDeletePost();
+  const { data: posts, isLoading } = useGetAllPosts();
+  const deletePostMutation = useDeletePost();
+  const publishPostMutation = usePublishPost();
+  const unpublishPostMutation = useUnpublishPost();
+
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-  const [postToDelete, setPostToDelete] = useState<string | null>(null);
+  const [postToDelete, setPostToDelete] = useState<BlogPostView | null>(null);
 
-  const handleDelete = async () => {
+  const handleCreatePost = () => {
+    navigate({ to: '/admin/create-post' });
+  };
+
+  const handleEditPost = (post: BlogPostView) => {
+    navigate({ to: '/admin/edit-post/$id', params: { id: post.id } });
+  };
+
+  const handleDeleteClick = (post: BlogPostView) => {
+    setPostToDelete(post);
+    setDeleteDialogOpen(true);
+  };
+
+  const handleDeleteConfirm = async () => {
     if (!postToDelete) return;
-
     try {
-      await deletePost.mutateAsync(postToDelete);
+      await deletePostMutation.mutateAsync(postToDelete.id);
+      toast.success('Post deleted successfully');
+    } catch (err) {
+      toast.error('Failed to delete post');
+    } finally {
       setDeleteDialogOpen(false);
       setPostToDelete(null);
-    } catch (error) {
-      console.error('Failed to delete post:', error);
     }
   };
 
-  const openDeleteDialog = (postId: string) => {
-    setPostToDelete(postId);
-    setDeleteDialogOpen(true);
+  const handleTogglePublish = async (post: BlogPostView) => {
+    try {
+      if (post.isPublished) {
+        await unpublishPostMutation.mutateAsync(post.id);
+        toast.success('Post unpublished');
+      } else {
+        await publishPostMutation.mutateAsync({ id: post.id, publishedDate: null });
+        toast.success('Post published');
+      }
+    } catch (err) {
+      toast.error('Failed to update post status');
+    }
+  };
+
+  const formatDate = (timestamp: bigint | undefined) => {
+    if (!timestamp) return 'N/A';
+    try {
+      const ms = Number(timestamp) / 1_000_000;
+      return new Date(ms).toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+      });
+    } catch {
+      return 'N/A';
+    }
   };
 
   if (isLoading) {
     return (
-      <div className="container mx-auto px-4 py-12">
-        <div className="flex items-center justify-center min-h-[400px]">
-          <Loader2 className="w-8 h-8 animate-spin text-earth-green" />
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="flex items-center gap-3 text-muted-foreground">
+          <Loader2 className="w-6 h-6 animate-spin" />
+          <span>Loading posts...</span>
         </div>
       </div>
     );
   }
 
-  if (error) {
-    return (
-      <div className="container mx-auto px-4 py-12">
-        <div className="max-w-2xl mx-auto">
-          <Card className="border-destructive">
-            <CardContent className="pt-6">
-              <div className="flex items-center gap-3 text-destructive mb-4">
-                <AlertCircle className="w-6 h-6" />
-                <h3 className="text-lg font-semibold">Error Loading Posts</h3>
-              </div>
-              <p className="text-muted-foreground mb-4">
-                Failed to load blog posts. Please try again.
-              </p>
-              <Button onClick={() => refetch()} variant="outline">
-                Retry
-              </Button>
-            </CardContent>
-          </Card>
-        </div>
-      </div>
-    );
-  }
+  const sortedPosts = [...(posts || [])].sort((a, b) => {
+    const aTime = Number(a.createdDate);
+    const bTime = Number(b.createdDate);
+    return bTime - aTime;
+  });
 
   return (
-    <div className="container mx-auto px-4 py-12">
-      <div className="max-w-6xl mx-auto">
+    <div className="min-h-screen bg-background">
+      <div className="max-w-6xl mx-auto px-4 py-8">
+        {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h1 className="text-4xl font-bold text-earth-green mb-2 font-serif">
-              Manage Blog Posts
-            </h1>
-            <p className="text-warm-brown/70">
-              Create, edit, and manage all your blog posts
-            </p>
+            <h1 className="text-3xl font-bold text-foreground font-serif">Admin Dashboard</h1>
+            <p className="text-muted-foreground mt-1">Manage your blog posts</p>
           </div>
-          <Button
-            onClick={() => navigate({ to: '/admin/create-post' })}
-            className="bg-earth-green hover:bg-earth-green/90 text-cream"
-          >
-            <Plus className="w-4 h-4 mr-2" />
+          <Button onClick={handleCreatePost} className="flex items-center gap-2">
+            <Plus className="w-4 h-4" />
             Create New Post
           </Button>
         </div>
 
-        {!posts || posts.length === 0 ? (
-          <Card className="border-2 border-dashed border-sage-green/30">
-            <CardContent className="pt-12 pb-12 text-center">
-              <div className="w-16 h-16 rounded-full bg-sage-green/10 flex items-center justify-center mx-auto mb-4">
-                <Plus className="w-8 h-8 text-earth-green" />
-              </div>
-              <h3 className="text-xl font-semibold text-earth-green mb-2">
-                No blog posts yet
-              </h3>
-              <p className="text-warm-brown/70 mb-6">
-                Get started by creating your first blog post
-              </p>
-              <Button
-                onClick={() => navigate({ to: '/admin/create-post' })}
-                className="bg-earth-green hover:bg-earth-green/90 text-cream"
-              >
-                <Plus className="w-4 h-4 mr-2" />
-                Create Your First Post
-              </Button>
-            </CardContent>
-          </Card>
+        {/* Stats */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+          <div className="bg-card border border-border rounded-lg p-4">
+            <p className="text-sm text-muted-foreground">Total Posts</p>
+            <p className="text-2xl font-bold text-foreground">{sortedPosts.length}</p>
+          </div>
+          <div className="bg-card border border-border rounded-lg p-4">
+            <p className="text-sm text-muted-foreground">Published</p>
+            <p className="text-2xl font-bold text-primary">
+              {sortedPosts.filter((p) => p.isPublished).length}
+            </p>
+          </div>
+          <div className="bg-card border border-border rounded-lg p-4">
+            <p className="text-sm text-muted-foreground">Drafts</p>
+            <p className="text-2xl font-bold text-muted-foreground">
+              {sortedPosts.filter((p) => !p.isPublished).length}
+            </p>
+          </div>
+        </div>
+
+        {/* Posts Table */}
+        {sortedPosts.length === 0 ? (
+          <div className="text-center py-16 bg-card border border-border rounded-lg">
+            <p className="text-muted-foreground text-lg mb-4">No posts yet</p>
+            <Button onClick={handleCreatePost}>
+              <Plus className="w-4 h-4 mr-2" />
+              Create Your First Post
+            </Button>
+          </div>
         ) : (
-          <div className="grid gap-6">
-            {posts.map((post) => (
-              <Card key={post.id} className="border-2 border-sage-green/30 hover:shadow-lg transition-shadow">
-                <CardHeader>
-                  <div className="flex items-start justify-between">
-                    <div className="flex-1">
-                      <div className="flex items-center gap-3 mb-2">
-                        <CardTitle className="text-2xl text-earth-green font-serif">
-                          {post.title}
-                        </CardTitle>
-                        <Badge
-                          variant={post.isPublished ? 'default' : 'secondary'}
-                          className={
-                            post.isPublished
-                              ? 'bg-earth-green text-cream'
-                              : 'bg-warm-brown/20 text-warm-brown'
-                          }
-                        >
+          <div className="bg-card border border-border rounded-lg overflow-hidden">
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead>
+                  <tr className="border-b border-border bg-muted/50">
+                    <th className="text-left px-4 py-3 text-sm font-medium text-muted-foreground">Title</th>
+                    <th className="text-left px-4 py-3 text-sm font-medium text-muted-foreground hidden md:table-cell">Category</th>
+                    <th className="text-left px-4 py-3 text-sm font-medium text-muted-foreground hidden sm:table-cell">Status</th>
+                    <th className="text-left px-4 py-3 text-sm font-medium text-muted-foreground hidden lg:table-cell">Created</th>
+                    <th className="text-right px-4 py-3 text-sm font-medium text-muted-foreground">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {sortedPosts.map((post, index) => (
+                    <tr
+                      key={post.id}
+                      className={`border-b border-border last:border-0 hover:bg-muted/30 transition-colors ${
+                        index % 2 === 0 ? '' : 'bg-muted/10'
+                      }`}
+                    >
+                      <td className="px-4 py-3">
+                        <div>
+                          <p className="font-medium text-foreground text-sm line-clamp-1">{post.title}</p>
+                          <p className="text-xs text-muted-foreground mt-0.5 line-clamp-1">{post.excerpt}</p>
+                        </div>
+                      </td>
+                      <td className="px-4 py-3 hidden md:table-cell">
+                        <span className="text-sm text-muted-foreground">{post.category}</span>
+                      </td>
+                      <td className="px-4 py-3 hidden sm:table-cell">
+                        <Badge variant={post.isPublished ? 'default' : 'secondary'}>
                           {post.isPublished ? 'Published' : 'Draft'}
                         </Badge>
-                      </div>
-                      <p className="text-sm text-warm-brown/70">
-                        {post.category} • {post.readTime.toString()} min read • By {post.author}
-                      </p>
-                    </div>
-                    <div className="flex gap-2">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => navigate({ to: `/admin/edit-post/${post.id}` })}
-                        className="border-earth-green text-earth-green hover:bg-earth-green hover:text-cream"
-                      >
-                        <Pencil className="w-4 h-4" />
-                      </Button>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => openDeleteDialog(post.id)}
-                        className="border-destructive text-destructive hover:bg-destructive hover:text-destructive-foreground"
-                        disabled={deletePost.isPending}
-                      >
-                        {deletePost.isPending && postToDelete === post.id ? (
-                          <Loader2 className="w-4 h-4 animate-spin" />
-                        ) : (
-                          <Trash2 className="w-4 h-4" />
-                        )}
-                      </Button>
-                    </div>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-warm-brown/80 mb-4">{post.excerpt}</p>
-                  <div className="flex flex-wrap gap-2">
-                    {post.tags.map((tag, index) => (
-                      <Badge
-                        key={index}
-                        variant="outline"
-                        className="border-sage-green text-earth-green"
-                      >
-                        {tag}
-                      </Badge>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
+                      </td>
+                      <td className="px-4 py-3 hidden lg:table-cell">
+                        <span className="text-sm text-muted-foreground">{formatDate(post.createdDate)}</span>
+                      </td>
+                      <td className="px-4 py-3">
+                        <div className="flex items-center justify-end gap-1">
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => handleTogglePublish(post)}
+                            title={post.isPublished ? 'Unpublish' : 'Publish'}
+                            disabled={publishPostMutation.isPending || unpublishPostMutation.isPending}
+                          >
+                            {post.isPublished ? (
+                              <EyeOff className="w-4 h-4 text-muted-foreground" />
+                            ) : (
+                              <Eye className="w-4 h-4 text-muted-foreground" />
+                            )}
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => handleEditPost(post)}
+                            title="Edit post"
+                          >
+                            <Edit className="w-4 h-4 text-muted-foreground" />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => handleDeleteClick(post)}
+                            title="Delete post"
+                          >
+                            <Trash2 className="w-4 h-4 text-destructive" />
+                          </Button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
         )}
-
-        <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
-          <AlertDialogContent>
-            <AlertDialogHeader>
-              <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-              <AlertDialogDescription>
-                This action cannot be undone. This will permanently delete the blog post.
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-              <AlertDialogCancel>Cancel</AlertDialogCancel>
-              <AlertDialogAction
-                onClick={handleDelete}
-                className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-              >
-                Delete
-              </AlertDialogAction>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
       </div>
+
+      {/* Delete Confirmation Dialog */}
+      <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete Post</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to delete "{postToDelete?.title}"? This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={() => setPostToDelete(null)}>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleDeleteConfirm}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              {deletePostMutation.isPending ? (
+                <Loader2 className="w-4 h-4 animate-spin mr-2" />
+              ) : null}
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }
