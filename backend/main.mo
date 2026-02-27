@@ -58,6 +58,7 @@ actor {
     name : Text;
   };
 
+  // Persistent state variables must be at top-level actor scope
   let accessControlState = AccessControl.initState();
   include MixinAuthorization(accessControlState);
 
@@ -93,7 +94,7 @@ actor {
     userProfiles.add(caller, profile);
   };
 
-  // Create/Update Post (admin only)
+  // Create/Update Post (any user allowed)
   public shared ({ caller }) func createPost(
     id : Text,
     title : Text,
@@ -110,8 +111,8 @@ actor {
     isPublished : Bool,
     publishedAt : ?Int,
   ) : async Text {
-    if (not (AccessControl.hasPermission(accessControlState, caller, #admin))) {
-      Runtime.trap("Unauthorized: Only admins can create posts");
+    if (not (AccessControl.hasPermission(accessControlState, caller, #user))) {
+      Runtime.trap("Unauthorized: Only users can create posts");
     };
     let newPost : BlogPost = {
       id;
@@ -155,8 +156,8 @@ actor {
     isPublished : Bool,
     publishedAt : ?Int,
   ) : async Bool {
-    if (not (AccessControl.hasPermission(accessControlState, caller, #admin))) {
-      Runtime.trap("Unauthorized: Only admins can update posts");
+    if (not (AccessControl.hasPermission(accessControlState, caller, #user))) {
+      Runtime.trap("Unauthorized: Only users can update posts");
     };
     switch (blogPosts.get(id)) {
       case (null) { false };
@@ -239,14 +240,21 @@ actor {
   };
 
   // Read Only Queries
+  // Admins can view any post; non-admins can only view published posts
   public query ({ caller }) func getPost(id : Text) : async ?BlogPostView {
     switch (blogPosts.get(id)) {
       case (null) { null };
-      case (?post) { ?toBlogPostView(post) };
+      case (?post) {
+        if (post.isPublished or AccessControl.isAdmin(accessControlState, caller)) {
+          ?toBlogPostView(post);
+        } else {
+          null;
+        };
+      };
     };
   };
 
-  public query ({ caller }) func getPublishedPosts() : async [BlogPostView] {
+  public query func getPublishedPosts() : async [BlogPostView] {
     let iter = blogPosts.values().filter(
       func(post) { post.isPublished }
     );
@@ -281,7 +289,7 @@ actor {
     };
   };
 
-  public query ({ caller }) func getComments(postId : Text) : async [Comment] {
+  public query func getComments(postId : Text) : async [Comment] {
     switch (blogPosts.get(postId)) {
       case (null) { [] };
       case (?post) { post.comments.toArray() };

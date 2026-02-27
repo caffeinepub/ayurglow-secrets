@@ -37,6 +37,15 @@ function generateSlug(title: string): string {
     .trim();
 }
 
+function getFriendlyErrorMessage(err: any): string {
+  const raw: string = err?.message || String(err) || '';
+  if (raw.toLowerCase().includes('unauthorized') || raw.toLowerCase().includes('only users can')) {
+    return 'Unable to save post. Please make sure you are logged in and try again.';
+  }
+  if (raw) return raw;
+  return 'Failed to create post. Please try again.';
+}
+
 export default function CreateBlogPostPage() {
   const navigate = useNavigate();
   const createPostMutation = useCreatePost();
@@ -133,7 +142,6 @@ export default function CreateBlogPostPage() {
       const img = images[i];
       const src = img.getAttribute('src') || '';
       if (src.startsWith('data:')) {
-        // Convert base64 to bytes and create ExternalBlob
         const response = await fetch(src);
         const arrayBuffer = await response.arrayBuffer();
         const bytes = new Uint8Array(arrayBuffer);
@@ -142,7 +150,6 @@ export default function CreateBlogPostPage() {
         img.setAttribute('src', `blob-placeholder-${i}`);
         img.setAttribute('data-blob-index', String(i));
       } else if (src.startsWith('http') || src.startsWith('blob:')) {
-        // Already an external URL - keep as is but track it
         const blob = ExternalBlob.fromURL(src);
         contentImages.push(blob);
         img.setAttribute('data-blob-index', String(i));
@@ -217,7 +224,7 @@ export default function CreateBlogPostPage() {
 
       navigate({ to: '/admin' });
     } catch (err: any) {
-      const msg = err?.message || 'Failed to create post. Please try again.';
+      const msg = getFriendlyErrorMessage(err);
       setErrorMessage(msg);
       toast.error(msg);
     }

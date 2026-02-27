@@ -1,26 +1,16 @@
 {
   "schemaVersion": "1.0.0",
   "projectStateVersion": 3,
-  "summary": "Blog platform project where admin blog post save and publish functionality is broken and needs fixing.",
+  "summary": "Blog application where users can post blog posts. Admin access restriction for posting has been removed.",
   "architectural_notes": [],
-  "known_issues": [
-    "Admin blog post save and publish functionality is not working properly"
-  ],
-  "isFixRequest": true,
+  "known_issues": [],
+  "isFixRequest": false,
   "existing_features": [
     {
-      "id": "feature-fix-the-createblogpostpage-form-submission-so-that-it-correctly-calls-the-backend-createpost-mutation-handles-the-response-including-error-states-and-navigates-back-to-the-admin-posts-list-on-success",
-      "title": "Fix the CreateBlogPostPage form submission so that it correctly calls the backend createPost mutation, handles the response (including error states), and navigates back to the admin posts list on success.",
+      "id": "feature-remove-any-frontend-admin-access-guards-on-the-create-and-edit-blog-post-pages-createblogpostpage-and-editblogpostpage-so-that-any-authenticated-user-can-navigate-to-and-submit-these-pages-without-being-blocked-or-redirected-by-an-admin-check",
+      "title": "Remove any frontend admin access guards on the Create and Edit blog post pages (CreateBlogPostPage and EditBlogPostPage) so that any authenticated user can navigate to and submit these pages without being blocked or redirected by an admin check.",
       "reqIds": [
-        "REQ-3"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-fix-the-adminpostspage-publish-button-and-the-createblogpostpage-publish-checkbox-so-that-they-correctly-invoke-the-backend-publish-unpublish-mutations-and-reflect-the-updated-state-in-the-ui-without-requiring-a-full-page-reload",
-      "title": "Fix the AdminPostsPage publish button and the CreateBlogPostPage publish checkbox so that they correctly invoke the backend publish/unpublish mutations and reflect the updated state in the UI without requiring a full page reload.",
-      "reqIds": [
-        "REQ-4"
+        "REQ-2"
       ],
       "version": 1
     }
@@ -28,17 +18,15 @@
   "new_feature_requests": [
     {
       "id": "AR-1",
-      "summary": "Fix the backend blog post creation so that when an admin submits the Create Blog Post form, the post is correctly persisted in the canister stable storage and a valid post ID is returned.",
-      "reqIds": [
-        "REQ-1"
-      ],
+      "summary": "Remove admin access requirement for posting blog posts",
+      "reqIds": [],
       "status": "pending"
     },
     {
       "id": "AR-2",
-      "summary": "Fix the backend publish/unpublish logic so that toggling the published state of a blog post (via the publish button or checkbox) correctly updates the post's published flag in stable storage.",
+      "summary": "Remove the admin-only authorization check on the backend createBlogPost (and updateBlogPost if applicable) functions so that any authenticated user can create and publish blog posts without needing admin privileges.",
       "reqIds": [
-        "REQ-2"
+        "REQ-1"
       ],
       "status": "pending"
     }

@@ -23,6 +23,15 @@ const CATEGORIES = [
   'Lifestyle',
 ];
 
+function getFriendlyErrorMessage(err: any): string {
+  const raw: string = err?.message || String(err) || '';
+  if (raw.toLowerCase().includes('unauthorized') || raw.toLowerCase().includes('only users can')) {
+    return 'Unable to save post. Please make sure you are logged in and try again.';
+  }
+  if (raw) return raw;
+  return 'Failed to update post. Please try again.';
+}
+
 export default function EditBlogPostPage() {
   const navigate = useNavigate();
   const { id } = useParams({ from: '/admin/edit-post/$id' });
@@ -38,61 +47,52 @@ export default function EditBlogPostPage() {
   const [author, setAuthor] = useState('');
   const [readTime, setReadTime] = useState('5');
   const [tags, setTags] = useState('');
-  const [publishImmediately, setPublishImmediately] = useState(false);
-  const [initialized, setInitialized] = useState(false);
+  const [isPublished, setIsPublished] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   // Featured image state
   const [featuredImageFile, setFeaturedImageFile] = useState<File | null>(null);
   const [featuredImagePreview, setFeaturedImagePreview] = useState<string | null>(null);
   const [featuredImageSize, setFeaturedImageSize] = useState<string>('');
-  const [existingFeaturedImage, setExistingFeaturedImage] = useState<ExternalBlob | null>(null);
+  const [existingImageBlob, setExistingImageBlob] = useState<ExternalBlob | null>(null);
   const featuredImageRef = useRef<HTMLInputElement>(null);
 
   const quillRef = useRef<ReactQuill>(null);
 
   // Populate form when post data loads
   useEffect(() => {
-    if (post && !initialized) {
-      setTitle(post.title);
-      setSlug(post.slug);
-      setCategory(post.category);
-      setExcerpt(post.excerpt);
-      setAuthor(post.author);
-      setReadTime(String(Number(post.readTime)));
-      setTags(post.tags.join(', '));
-      setPublishImmediately(false);
+    if (!post) return;
+    setTitle(post.title);
+    setSlug(post.slug);
+    setCategory(post.category);
+    setExcerpt(post.excerpt);
+    setAuthor(post.author);
+    setReadTime(String(post.readTime));
+    setTags(post.tags.join(', '));
+    setIsPublished(post.isPublished);
 
-      // Restore content with resolved blob image URLs
-      try {
-        const hasBeginningImage = !!(post.image);
-        const resolvedContent = replaceContentImageUrls(
-          post.content,
-          post.contentImages || [],
-          hasBeginningImage
-        );
-        setContent(resolvedContent);
-      } catch (err) {
-        console.error('Error resolving content images:', err);
-        setContent(post.content);
-      }
-
-      // Set existing featured image
-      if (post.image) {
-        setExistingFeaturedImage(post.image);
-        setFeaturedImagePreview(post.image.getDirectURL());
-        setFeaturedImageSize(post.imageSize || '');
-      }
-
-      setInitialized(true);
+    // Restore inline content images
+    if (post.contentImages && post.contentImages.length > 0) {
+      const restoredContent = replaceContentImageUrls(post.content, post.contentImages, false);
+      setContent(restoredContent);
+    } else {
+      setContent(post.content);
     }
-  }, [post, initialized]);
+
+    // Restore featured image
+    if (post.image) {
+      setExistingImageBlob(post.image);
+      setFeaturedImagePreview(post.image.getDirectURL());
+      setFeaturedImageSize(post.imageSize || '');
+    }
+  }, [post]);
 
   const handleFeaturedImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
     setFeaturedImageFile(file);
+    setExistingImageBlob(null);
     setFeaturedImageSize(`${Math.round(file.size / 1024)}KB`);
-    setExistingFeaturedImage(null);
     const reader = new FileReader();
     reader.onload = (ev) => {
       setFeaturedImagePreview(ev.target?.result as string);
@@ -104,10 +104,11 @@ export default function EditBlogPostPage() {
     setFeaturedImageFile(null);
     setFeaturedImagePreview(null);
     setFeaturedImageSize('');
-    setExistingFeaturedImage(null);
+    setExistingImageBlob(null);
     if (featuredImageRef.current) featuredImageRef.current.value = '';
   };
 
+  // Quill image handler
   const imageHandler = () => {
     const input = document.createElement('input');
     input.setAttribute('type', 'file');
@@ -161,8 +162,7 @@ export default function EditBlogPostPage() {
         contentImages.push(blob);
         img.setAttribute('src', `blob-placeholder-${i}`);
         img.setAttribute('data-blob-index', String(i));
-      } else if (src.startsWith('http') || src.startsWith('blob:') || src.includes('icp')) {
-        // External URL (already stored blob) - preserve it
+      } else if (src.startsWith('http') || src.startsWith('blob:')) {
         const blob = ExternalBlob.fromURL(src);
         contentImages.push(blob);
         img.setAttribute('data-blob-index', String(i));
@@ -175,7 +175,7 @@ export default function EditBlogPostPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!post) return;
+    setErrorMessage(null);
 
     if (!title.trim()) { toast.error('Title is required'); return; }
     if (!slug.trim()) { toast.error('Slug is required'); return; }
@@ -187,16 +187,13 @@ export default function EditBlogPostPage() {
 
     try {
       // Prepare featured image
-      let featuredImageBlob: ExternalBlob | null = null;
-      let featuredImageSizeStr: string | null = null;
+      let featuredImageBlob: ExternalBlob | null = existingImageBlob;
+      let featuredImageSizeStr: string | null = featuredImageSize || null;
 
       if (featuredImageFile) {
         const arrayBuffer = await featuredImageFile.arrayBuffer();
         const bytes = new Uint8Array(arrayBuffer);
         featuredImageBlob = ExternalBlob.fromBytes(bytes);
-        featuredImageSizeStr = featuredImageSize || null;
-      } else if (existingFeaturedImage) {
-        featuredImageBlob = existingFeaturedImage;
         featuredImageSizeStr = featuredImageSize || null;
       }
 
@@ -209,41 +206,37 @@ export default function EditBlogPostPage() {
         .map((t) => t.trim())
         .filter(Boolean);
 
-      // Determine publish state
-      const shouldPublish = post.isPublished || publishImmediately;
-      const now = BigInt(Date.now()) * BigInt(1_000_000); // nanoseconds
-      // Preserve existing publishedAt if already published, otherwise set now if publishing
-      const publishedAt: bigint | null = shouldPublish
-        ? (post.publishedDate ? BigInt(post.publishedDate) : now)
+      const publishedAt = isPublished
+        ? (post?.publishedDate ? BigInt(post.publishedDate) : BigInt(Date.now()) * BigInt(1_000_000))
         : null;
 
-      await updatePostMutation.mutateAsync({
-        id: post.id,
+      const success = await updatePostMutation.mutateAsync({
+        id,
         title: title.trim(),
         slug: slug.trim(),
         category,
         content: finalContent,
         excerpt: excerpt.trim(),
         readTime: BigInt(parsedReadTime),
-        author: author.trim() || 'AyurGlow Team',
+        author: author.trim(),
         tags: tagList,
         image: featuredImageBlob,
         imageSize: featuredImageSizeStr,
         contentImages,
-        isPublished: shouldPublish,
+        isPublished,
         publishedAt,
       });
 
-      if (publishImmediately && !post.isPublished) {
-        toast.success('Post updated and published!');
-      } else {
-        toast.success('Post updated successfully!');
+      if (!success) {
+        throw new Error('Post update failed');
       }
 
+      toast.success('Post updated successfully!');
       navigate({ to: '/admin' });
     } catch (err: any) {
-      console.error('Error updating post:', err);
-      toast.error(err?.message || 'Failed to update post. Please try again.');
+      const msg = getFriendlyErrorMessage(err);
+      setErrorMessage(msg);
+      toast.error(msg);
     }
   };
 
@@ -263,15 +256,11 @@ export default function EditBlogPostPage() {
   if (error || !post) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="text-center max-w-md mx-auto p-8">
-          <AlertCircle className="w-12 h-12 text-destructive mx-auto mb-4" />
-          <h2 className="text-xl font-semibold text-foreground mb-2">Post Not Found</h2>
-          <p className="text-muted-foreground mb-4">
-            The post you're trying to edit could not be found.
-          </p>
-          <Button variant="outline" onClick={() => navigate({ to: '/admin' })}>
-            Back to Admin
-          </Button>
+        <div className="text-center space-y-4">
+          <AlertCircle className="w-12 h-12 text-destructive mx-auto" />
+          <h2 className="text-xl font-semibold text-foreground">Post Not Found</h2>
+          <p className="text-muted-foreground">The post you're trying to edit could not be found.</p>
+          <Button onClick={() => navigate({ to: '/admin' })}>Back to Admin</Button>
         </div>
       </div>
     );
@@ -290,6 +279,14 @@ export default function EditBlogPostPage() {
             <p className="text-muted-foreground text-sm">Update the details of your blog post</p>
           </div>
         </div>
+
+        {/* Error Alert */}
+        {errorMessage && (
+          <div className="mb-6 p-4 bg-destructive/10 border border-destructive/20 rounded-lg flex items-start gap-3">
+            <AlertCircle className="w-5 h-5 text-destructive flex-shrink-0 mt-0.5" />
+            <p className="text-sm text-destructive">{errorMessage}</p>
+          </div>
+        )}
 
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Title */}
@@ -349,7 +346,7 @@ export default function EditBlogPostPage() {
               id="category"
               value={category}
               onChange={(e) => setCategory(e.target.value)}
-              className="w-full border border-input bg-background text-foreground rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
+              className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
             >
               {CATEGORIES.map((cat) => (
                 <option key={cat} value={cat}>{cat}</option>
@@ -388,9 +385,8 @@ export default function EditBlogPostPage() {
               <div className="relative inline-block">
                 <img
                   src={featuredImagePreview}
-                  alt="Featured"
+                  alt="Featured preview"
                   className="w-full max-w-sm h-48 object-cover rounded-lg border border-border"
-                  onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
                 />
                 <Button
                   type="button"
@@ -401,15 +397,18 @@ export default function EditBlogPostPage() {
                 >
                   <X className="w-3 h-3" />
                 </Button>
+                {featuredImageSize && (
+                  <p className="text-xs text-muted-foreground mt-1">{featuredImageSize}</p>
+                )}
               </div>
             ) : (
               <div
-                className="border-2 border-dashed border-border rounded-lg p-8 text-center cursor-pointer hover:border-primary transition-colors"
+                className="border-2 border-dashed border-border rounded-lg p-8 text-center cursor-pointer hover:border-primary/50 transition-colors"
                 onClick={() => featuredImageRef.current?.click()}
               >
                 <Upload className="w-8 h-8 text-muted-foreground mx-auto mb-2" />
                 <p className="text-sm text-muted-foreground">Click to upload featured image</p>
-                <p className="text-xs text-muted-foreground mt-1">PNG, JPG, WebP supported</p>
+                <p className="text-xs text-muted-foreground mt-1">PNG, JPG, GIF up to 10MB</p>
               </div>
             )}
             <input
@@ -431,47 +430,45 @@ export default function EditBlogPostPage() {
                 value={content}
                 onChange={setContent}
                 modules={modules}
-                placeholder="Write your post content here..."
+                placeholder="Write your blog post content here..."
                 style={{ minHeight: '300px' }}
               />
             </div>
           </div>
 
-          {/* Publish Immediately (only show if not already published) */}
-          {!post.isPublished && (
-            <div className="flex items-center gap-3 p-4 bg-muted/30 rounded-lg border border-border">
-              <Checkbox
-                id="publishImmediately"
-                checked={publishImmediately}
-                onCheckedChange={(checked) => setPublishImmediately(checked === true)}
-              />
-              <div>
-                <Label htmlFor="publishImmediately" className="cursor-pointer font-medium">
-                  Publish Immediately
-                </Label>
-                <p className="text-xs text-muted-foreground mt-0.5">
-                  If checked, the post will be published after saving.
-                </p>
-              </div>
+          {/* Published State */}
+          <div className="flex items-center gap-3 p-4 bg-muted/30 rounded-lg border border-border">
+            <Checkbox
+              id="isPublished"
+              checked={isPublished}
+              onCheckedChange={(checked) => setIsPublished(checked === true)}
+            />
+            <div>
+              <Label htmlFor="isPublished" className="cursor-pointer font-medium">
+                Published
+              </Label>
+              <p className="text-xs text-muted-foreground mt-0.5">
+                {isPublished
+                  ? 'This post is visible to the public.'
+                  : 'This post is saved as a draft and not visible to the public.'}
+              </p>
             </div>
-          )}
+          </div>
 
-          {post.isPublished && (
-            <div className="p-4 bg-primary/10 rounded-lg border border-primary/20">
-              <p className="text-sm text-primary font-medium">✓ This post is currently published</p>
-            </div>
-          )}
-
-          {/* Submit */}
-          <div className="flex items-center gap-4 pt-4">
-            <Button type="submit" disabled={isSubmitting} className="min-w-[160px]">
+          {/* Submit Buttons */}
+          <div className="flex items-center gap-3 pt-4">
+            <Button
+              type="submit"
+              disabled={isSubmitting}
+              className="flex items-center gap-2"
+            >
               {isSubmitting ? (
                 <>
-                  <Loader2 className="w-4 h-4 animate-spin mr-2" />
-                  {publishImmediately ? 'Publishing...' : 'Saving...'}
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  Saving...
                 </>
               ) : (
-                publishImmediately && !post.isPublished ? 'Save & Publish' : 'Save Changes'
+                'Save Changes'
               )}
             </Button>
             <Button

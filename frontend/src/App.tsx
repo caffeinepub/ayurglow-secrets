@@ -110,7 +110,7 @@ const termsRoute = createRoute({
   component: TermsOfServicePage,
 });
 
-// Admin routes (wrapped with AdminRoute guard)
+// Admin route (admin-only: delete, publish/unpublish)
 const adminRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/admin',
@@ -131,24 +131,17 @@ const adminPostsRoute = createRoute({
   ),
 });
 
+// Create/Edit post routes — accessible to any authenticated user
 const createPostRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/admin/create-post',
-  component: () => (
-    <AdminRoute>
-      <CreateBlogPostPage />
-    </AdminRoute>
-  ),
+  component: CreateBlogPostPage,
 });
 
 const editPostRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/admin/edit-post/$id',
-  component: () => (
-    <AdminRoute>
-      <EditBlogPostPage />
-    </AdminRoute>
-  ),
+  component: EditBlogPostPage,
 });
 
 // Health Remedies sub-routes

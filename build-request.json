@@ -1,90 +1,55 @@
 {
   "kind": "build_request",
-  "title": "Fix admin blog post save and publish functionality",
+  "title": "Remove admin access requirement for posting blog posts",
   "projectName": "AyurGlow Secrets",
-  "priority": "high",
+  "priority": "normal",
   "requirements": [
     {
       "id": "REQ-1",
-      "text": "Fix the backend blog post creation so that when an admin submits the Create Blog Post form, the post is correctly persisted in the canister stable storage and a valid post ID is returned.",
+      "text": "Remove the admin-only authorization check on the backend createBlogPost (and updateBlogPost if applicable) functions so that any authenticated user can create and publish blog posts without needing admin privileges.",
       "target": "backend",
       "source": {
         "messageIds": [
-          "msg-1"
+          "msg-5"
         ],
         "quotes": [
-          "admin part is not working properly my blog post are not getting saved or published please fix it"
+          "just remove admin access for posting any blog post"
         ]
       },
       "acceptanceCriteria": [
-        "Submitting the Create Blog Post form successfully stores the post in the backend actor.",
-        "The returned post ID is valid and non-null.",
-        "The newly created post appears in the admin posts list after creation."
+        "Any authenticated (non-admin) user can call createBlogPost without receiving an authorization error.",
+        "The backend no longer checks isAdmin before allowing post creation or editing.",
+        "Admin-only operations unrelated to posting (e.g., deleting posts) remain unchanged."
       ]
     },
     {
       "id": "REQ-2",
-      "text": "Fix the backend publish/unpublish logic so that toggling the published state of a blog post (via the publish button or checkbox) correctly updates the post's published flag in stable storage.",
-      "target": "backend",
-      "source": {
-        "messageIds": [
-          "msg-1"
-        ],
-        "quotes": [
-          "my blog post are not getting saved or published please fix it"
-        ]
-      },
-      "acceptanceCriteria": [
-        "Clicking Publish on an unpublished post sets its published flag to true in the backend.",
-        "The post appears in the public published posts list after publishing.",
-        "Clicking Unpublish sets the published flag back to false and removes it from the public list."
-      ]
-    },
-    {
-      "id": "REQ-3",
-      "text": "Fix the CreateBlogPostPage form submission so that it correctly calls the backend createPost mutation, handles the response (including error states), and navigates back to the admin posts list on success.",
+      "text": "Remove any frontend admin access guards on the Create and Edit blog post pages (CreateBlogPostPage and EditBlogPostPage) so that any authenticated user can navigate to and submit these pages without being blocked or redirected by an admin check.",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-1"
+          "msg-5"
         ],
         "quotes": [
-          "my blog post are not getting saved or published please fix it"
+          "just remove admin access for posting any blog post"
         ]
       },
       "acceptanceCriteria": [
-        "Submitting the Create Blog Post form invokes the backend createPost mutation.",
-        "On success, the user is redirected to the AdminPostsPage.",
-        "On failure, a visible error message is displayed to the admin."
-      ]
-    },
-    {
-      "id": "REQ-4",
-      "text": "Fix the AdminPostsPage publish button and the CreateBlogPostPage publish checkbox so that they correctly invoke the backend publish/unpublish mutations and reflect the updated state in the UI without requiring a full page reload.",
-      "target": "frontend",
-      "source": {
-        "messageIds": [
-          "msg-1"
-        ],
-        "quotes": [
-          "my blog post are not getting saved or published please fix it"
-        ]
-      },
-      "acceptanceCriteria": [
-        "The publish/unpublish button on AdminPostsPage triggers the correct mutation.",
-        "The post's status updates optimistically or refetches after the mutation completes.",
-        "The publish checkbox on CreateBlogPostPage correctly sets the post's initial published state."
+        "CreateBlogPostPage is accessible to any logged-in user, not just admins.",
+        "EditBlogPostPage is accessible to any logged-in user who owns or has permission on the post.",
+        "No 'Access Denied' screen or admin-only error message appears for non-admin authenticated users attempting to create or edit posts.",
+        "The AdminRoute wrapper (if used for these pages) is replaced with a simple authenticated-user guard or removed entirely."
       ]
     }
   ],
   "constraints": [
-    "Do not change the existing blog post data schema in a way that breaks existing stored posts without providing a migration.",
-    "Immutable frontend paths (useInternetIdentity, useActor, main.tsx, ui components) must not be modified."
+    "Do not remove admin checks from operations that should remain admin-only (e.g., deleting posts, managing users).",
+    "Do not modify immutable frontend paths: frontend/src/hooks/useInternetIdentity.ts, frontend/src/hooks/useActor.ts, frontend/src/main.tsx, frontend/src/components/ui."
   ],
   "nonGoals": [
-    "Adding new admin features beyond save and publish.",
-    "Changing the visual design of the admin pages.",
-    "Modifying comment or user profile functionality."
+    "Changing authentication mechanism or Internet Identity integration.",
+    "Modifying any non-blog-post admin features.",
+    "Altering the visual design or layout of any pages."
   ],
   "imageRequirements": {
     "required": [],

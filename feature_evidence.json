@@ -2,11 +2,12 @@
   "kind": "feature_evidence_report",
   "features": [
     {
-      "featureId": "feature-fix-the-createblogpostpage-form-submission-so-that-it-correctly-calls-the-backend-createpost-mutation-handles-the-response-including-error-states-and-navigates-back-to-the-admin-posts-list-on-success",
-      "featureTitle": "Fix the CreateBlogPostPage form submission so that it correctly calls the backend createPost mutation, handles the response (including error states), and navigates back to the admin posts list on success.",
+      "featureId": "feature-remove-any-frontend-admin-access-guards-on-the-create-and-edit-blog-post-pages-createblogpostpage-and-editblogpostpage-so-that-any-authenticated-user-can-navigate-to-and-submit-these-pages-without-being-blocked-or-redirected-by-an-admin-check",
+      "featureTitle": "Remove any frontend admin access guards on the Create and Edit blog post pages (CreateBlogPostPage and EditBlogPostPage) so that any authenticated user can navigate to and submit these pages without being blocked or redirected by an admin check.",
       "files": [
-        "frontend/src/hooks/useQueries.ts",
-        "frontend/src/pages/CreateBlogPostPage.tsx"
+        "frontend/src/App.tsx",
+        "frontend/src/pages/CreateBlogPostPage.tsx",
+        "frontend/src/pages/EditBlogPostPage.tsx"
       ],
       "components": [
         "core-infrastructure@1.0.2",
@@ -18,29 +19,7 @@
         "authorization@4.0.0"
       ],
       "testIds": [
-        "REQ-3"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-fix-the-adminpostspage-publish-button-and-the-createblogpostpage-publish-checkbox-so-that-they-correctly-invoke-the-backend-publish-unpublish-mutations-and-reflect-the-updated-state-in-the-ui-without-requiring-a-full-page-reload",
-      "featureTitle": "Fix the AdminPostsPage publish button and the CreateBlogPostPage publish checkbox so that they correctly invoke the backend publish/unpublish mutations and reflect the updated state in the UI without requiring a full page reload.",
-      "files": [
-        "frontend/src/hooks/useQueries.ts",
-        "frontend/src/pages/AdminPostsPage.tsx",
-        "frontend/src/pages/CreateBlogPostPage.tsx"
-      ],
-      "components": [
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0",
-        "blob-storage@4.0.0",
-        "authorization@4.0.0"
-      ],
-      "testIds": [
-        "REQ-4"
+        "REQ-2"
       ],
       "confidence": "high"
     }

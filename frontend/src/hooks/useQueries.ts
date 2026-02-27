@@ -179,6 +179,10 @@ export function useCreatePost() {
       queryClient.invalidateQueries({ queryKey: ['allVisiblePosts'] });
       queryClient.invalidateQueries({ queryKey: ['publishedPosts'] });
     },
+    onError: (err: any) => {
+      // Errors are handled at the call site; no additional processing needed here
+      console.error('createPost error:', err?.message || err);
+    },
   });
 }
 
@@ -225,6 +229,10 @@ export function useUpdatePost() {
       queryClient.invalidateQueries({ queryKey: ['allVisiblePosts'] });
       queryClient.invalidateQueries({ queryKey: ['publishedPosts'] });
       queryClient.invalidateQueries({ queryKey: ['post', variables.id] });
+    },
+    onError: (err: any) => {
+      // Errors are handled at the call site; no additional processing needed here
+      console.error('updatePost error:', err?.message || err);
     },
   });
 }
