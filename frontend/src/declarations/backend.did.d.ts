@@ -83,10 +83,12 @@ export interface _SERVICE {
       [] | [ExternalBlob],
       [] | [string],
       Array<ExternalBlob>,
+      boolean,
+      [] | [bigint],
     ],
-    undefined
+    string
   >,
-  'deletePost' : ActorMethod<[string], undefined>,
+  'deletePost' : ActorMethod<[string], boolean>,
   'getAllVisiblePosts' : ActorMethod<[], Array<BlogPostView>>,
   'getCallerUserProfile' : ActorMethod<[], [] | [UserProfile]>,
   'getCallerUserRole' : ActorMethod<[], UserRole>,
@@ -95,9 +97,8 @@ export interface _SERVICE {
   'getPublishedPosts' : ActorMethod<[], Array<BlogPostView>>,
   'getUserProfile' : ActorMethod<[Principal], [] | [UserProfile]>,
   'isCallerAdmin' : ActorMethod<[], boolean>,
-  'publishPost' : ActorMethod<[string, [] | [bigint]], boolean>,
   'saveCallerUserProfile' : ActorMethod<[UserProfile], undefined>,
-  'unpublishPost' : ActorMethod<[string], boolean>,
+  'setPublishedState' : ActorMethod<[string, boolean, [] | [bigint]], boolean>,
   'updatePost' : ActorMethod<
     [
       string,
@@ -112,8 +113,10 @@ export interface _SERVICE {
       [] | [ExternalBlob],
       [] | [string],
       Array<ExternalBlob>,
+      boolean,
+      [] | [bigint],
     ],
-    undefined
+    boolean
   >,
 }
 export declare const idlService: IDL.ServiceClass;

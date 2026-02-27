@@ -9,7 +9,8 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Checkbox } from '@/components/ui/checkbox';
-import { useCreatePost, usePublishPost } from '../hooks/useQueries';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { useCreatePost } from '../hooks/useQueries';
 import { ExternalBlob } from '../backend';
 import { injectBlobIndexAttributes } from '../utils/imageUtils';
 
@@ -39,7 +40,6 @@ function generateSlug(title: string): string {
 export default function CreateBlogPostPage() {
   const navigate = useNavigate();
   const createPostMutation = useCreatePost();
-  const publishPostMutation = usePublishPost();
 
   const [title, setTitle] = useState('');
   const [slug, setSlug] = useState('');
@@ -50,6 +50,7 @@ export default function CreateBlogPostPage() {
   const [readTime, setReadTime] = useState('5');
   const [tags, setTags] = useState('');
   const [publishImmediately, setPublishImmediately] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   // Featured image state
   const [featuredImageFile, setFeaturedImageFile] = useState<File | null>(null);
@@ -57,8 +58,7 @@ export default function CreateBlogPostPage() {
   const [featuredImageSize, setFeaturedImageSize] = useState<string>('');
   const featuredImageRef = useRef<HTMLInputElement>(null);
 
-  // Inline images collected from editor
-  const inlineImageBlobsRef = useRef<ExternalBlob[]>([]);
+  const quillRef = useRef<ReactQuill>(null);
 
   // Auto-generate slug from title
   useEffect(() => {
@@ -109,8 +109,6 @@ export default function CreateBlogPostPage() {
     };
   };
 
-  const quillRef = useRef<ReactQuill>(null);
-
   const modules = {
     toolbar: {
       container: [
@@ -157,6 +155,7 @@ export default function CreateBlogPostPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setErrorMessage(null);
 
     if (!title.trim()) { toast.error('Title is required'); return; }
     if (!slug.trim()) { toast.error('Slug is required'); return; }
@@ -187,8 +186,9 @@ export default function CreateBlogPostPage() {
         .filter(Boolean);
 
       const postId = generateId();
+      const now = BigInt(Date.now()) * BigInt(1_000_000); // nanoseconds
 
-      await createPostMutation.mutateAsync({
+      const returnedId = await createPostMutation.mutateAsync({
         id: postId,
         title: title.trim(),
         slug: slug.trim(),
@@ -201,10 +201,15 @@ export default function CreateBlogPostPage() {
         image: featuredImageBlob,
         imageSize: featuredImageSizeStr,
         contentImages,
+        isPublished: publishImmediately,
+        publishedAt: publishImmediately ? now : null,
       });
 
+      if (!returnedId) {
+        throw new Error('Post creation failed: no ID returned from backend');
+      }
+
       if (publishImmediately) {
-        await publishPostMutation.mutateAsync({ id: postId, publishedDate: null });
         toast.success('Post created and published successfully!');
       } else {
         toast.success('Post saved as draft!');
@@ -212,12 +217,13 @@ export default function CreateBlogPostPage() {
 
       navigate({ to: '/admin' });
     } catch (err: any) {
-      console.error('Error creating post:', err);
-      toast.error(err?.message || 'Failed to create post. Please try again.');
+      const msg = err?.message || 'Failed to create post. Please try again.';
+      setErrorMessage(msg);
+      toast.error(msg);
     }
   };
 
-  const isSubmitting = createPostMutation.isPending || publishPostMutation.isPending;
+  const isSubmitting = createPostMutation.isPending;
 
   return (
     <div className="min-h-screen bg-background">
@@ -232,6 +238,13 @@ export default function CreateBlogPostPage() {
             <p className="text-muted-foreground text-sm">Fill in the details to create a new blog post</p>
           </div>
         </div>
+
+        {/* Error Alert */}
+        {errorMessage && (
+          <Alert variant="destructive" className="mb-6">
+            <AlertDescription>{errorMessage}</AlertDescription>
+          </Alert>
+        )}
 
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Title */}
@@ -291,7 +304,7 @@ export default function CreateBlogPostPage() {
               id="category"
               value={category}
               onChange={(e) => setCategory(e.target.value)}
-              className="w-full border border-input bg-background text-foreground rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
+              className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
             >
               {CATEGORIES.map((cat) => (
                 <option key={cat} value={cat}>{cat}</option>
@@ -330,7 +343,7 @@ export default function CreateBlogPostPage() {
               <div className="relative inline-block">
                 <img
                   src={featuredImagePreview}
-                  alt="Featured"
+                  alt="Featured preview"
                   className="w-full max-w-sm h-48 object-cover rounded-lg border border-border"
                 />
                 <Button
@@ -342,15 +355,18 @@ export default function CreateBlogPostPage() {
                 >
                   <X className="w-3 h-3" />
                 </Button>
+                {featuredImageSize && (
+                  <p className="text-xs text-muted-foreground mt-1">{featuredImageSize}</p>
+                )}
               </div>
             ) : (
               <div
-                className="border-2 border-dashed border-border rounded-lg p-8 text-center cursor-pointer hover:border-primary transition-colors"
+                className="border-2 border-dashed border-border rounded-lg p-8 text-center cursor-pointer hover:border-primary/50 transition-colors"
                 onClick={() => featuredImageRef.current?.click()}
               >
                 <Upload className="w-8 h-8 text-muted-foreground mx-auto mb-2" />
                 <p className="text-sm text-muted-foreground">Click to upload featured image</p>
-                <p className="text-xs text-muted-foreground mt-1">PNG, JPG, WebP supported</p>
+                <p className="text-xs text-muted-foreground mt-1">PNG, JPG, GIF up to 10MB</p>
               </div>
             )}
             <input
@@ -372,7 +388,7 @@ export default function CreateBlogPostPage() {
                 value={content}
                 onChange={setContent}
                 modules={modules}
-                placeholder="Write your post content here..."
+                placeholder="Write your blog post content here..."
                 style={{ minHeight: '300px' }}
               />
             </div>
@@ -387,24 +403,30 @@ export default function CreateBlogPostPage() {
             />
             <div>
               <Label htmlFor="publishImmediately" className="cursor-pointer font-medium">
-                Publish Immediately
+                Publish immediately
               </Label>
               <p className="text-xs text-muted-foreground mt-0.5">
-                If checked, the post will be published right after creation. Otherwise it will be saved as a draft.
+                {publishImmediately
+                  ? 'This post will be visible to the public right away.'
+                  : 'This post will be saved as a draft and not visible to the public.'}
               </p>
             </div>
           </div>
 
-          {/* Submit */}
-          <div className="flex items-center gap-4 pt-4">
-            <Button type="submit" disabled={isSubmitting} className="min-w-[160px]">
+          {/* Submit Buttons */}
+          <div className="flex items-center gap-3 pt-4">
+            <Button
+              type="submit"
+              disabled={isSubmitting}
+              className="flex items-center gap-2"
+            >
               {isSubmitting ? (
                 <>
-                  <Loader2 className="w-4 h-4 animate-spin mr-2" />
+                  <Loader2 className="w-4 h-4 animate-spin" />
                   {publishImmediately ? 'Publishing...' : 'Saving...'}
                 </>
               ) : (
-                publishImmediately ? 'Create & Publish' : 'Save as Draft'
+                publishImmediately ? 'Publish Post' : 'Save as Draft'
               )}
             </Button>
             <Button

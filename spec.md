@@ -1,11 +1,12 @@
 # Specification
 
 ## Summary
-**Goal:** Retry the full build and deployment of the AyurGlow Secrets application, fixing any errors that prevented the previous deployment from succeeding.
+**Goal:** Fix the admin blog post save and publish functionality so that posts are correctly persisted and published in the backend.
 
 **Planned changes:**
-- Resolve any build or deployment errors in the backend Motoko canister
-- Resolve any build or deployment errors in the React frontend
-- Redeploy both backend and frontend canisters successfully
+- Fix backend blog post creation to correctly persist posts in canister stable storage and return a valid post ID
+- Fix backend publish/unpublish logic to correctly update the published flag in stable storage
+- Fix the CreateBlogPostPage form submission to properly call the backend createPost mutation, handle errors, and redirect on success
+- Fix the AdminPostsPage publish button and CreateBlogPostPage publish checkbox to correctly invoke publish/unpublish mutations and reflect updated state in the UI without a full page reload
 
-**User-visible outcome:** The AyurGlow Secrets application is fully deployed and accessible, with all existing features functional.
+**User-visible outcome:** Admins can create blog posts that are saved correctly, and can publish or unpublish posts with the UI reflecting the updated state immediately.

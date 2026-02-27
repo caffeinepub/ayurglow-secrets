@@ -49,8 +49,8 @@ export interface backendInterface {
     addComment(postId: string, author: string, content: string): Promise<boolean>;
     assignCallerUserRole(user: Principal, role: UserRole): Promise<void>;
     canCallerAccessAdminSection(): Promise<boolean>;
-    createPost(id: string, title: string, slug: string, category: string, content: string, excerpt: string, readTime: bigint, author: string, tags: Array<string>, image: ExternalBlob | null, imageSize: string | null, contentImages: Array<ExternalBlob>): Promise<void>;
-    deletePost(id: string): Promise<void>;
+    createPost(id: string, title: string, slug: string, category: string, content: string, excerpt: string, readTime: bigint, author: string, tags: Array<string>, image: ExternalBlob | null, imageSize: string | null, contentImages: Array<ExternalBlob>, isPublished: boolean, publishedAt: bigint | null): Promise<string>;
+    deletePost(id: string): Promise<boolean>;
     getAllVisiblePosts(): Promise<Array<BlogPostView>>;
     getCallerUserProfile(): Promise<UserProfile | null>;
     getCallerUserRole(): Promise<UserRole>;
@@ -59,8 +59,7 @@ export interface backendInterface {
     getPublishedPosts(): Promise<Array<BlogPostView>>;
     getUserProfile(user: Principal): Promise<UserProfile | null>;
     isCallerAdmin(): Promise<boolean>;
-    publishPost(id: string, publishedDate: bigint | null): Promise<boolean>;
     saveCallerUserProfile(profile: UserProfile): Promise<void>;
-    unpublishPost(id: string): Promise<boolean>;
-    updatePost(id: string, title: string, slug: string, category: string, content: string, excerpt: string, readTime: bigint, author: string, tags: Array<string>, image: ExternalBlob | null, imageSize: string | null, contentImages: Array<ExternalBlob>): Promise<void>;
+    setPublishedState(id: string, isPublished: boolean, publishedDate: bigint | null): Promise<boolean>;
+    updatePost(id: string, title: string, slug: string, category: string, content: string, excerpt: string, readTime: bigint, author: string, tags: Array<string>, image: ExternalBlob | null, imageSize: string | null, contentImages: Array<ExternalBlob>, isPublished: boolean, publishedAt: bigint | null): Promise<boolean>;
 }

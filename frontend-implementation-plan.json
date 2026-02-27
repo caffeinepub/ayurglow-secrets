@@ -1,80 +1,52 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Retry deployment of AyurGlow Secrets app",
+  "title": "Fix admin blog post save and publish functionality",
   "requirements": [
     {
-      "id": "REQ-1",
-      "summary": "Retry the full build and deployment of the AyurGlow Secrets application, resolving any errors that caused the previous deployment to fail",
+      "id": "REQ-3",
+      "summary": "Fix the CreateBlogPostPage form submission to correctly call the backend createPost mutation, handle responses, and navigate on success",
       "acceptanceCriteria": [
-        "The frontend builds and deploys without errors.",
-        "The application is accessible and functional after deployment."
+        "Submitting the Create Blog Post form invokes the backend createPost mutation.",
+        "On success, the user is redirected to the AdminPostsPage.",
+        "On failure, a visible error message is displayed to the admin."
       ],
       "file_operations": [
         {
-          "path": "frontend/package.json",
+          "path": "frontend/src/pages/CreateBlogPostPage.tsx",
           "operation": "modify",
-          "description": "Review and fix any dependency version conflicts or missing dependencies that may cause build failures. Ensure all required build scripts are present and properly configured."
+          "description": "Fix the form submission handler to properly await the createPost mutation, pass all required parameters including the isPublished checkbox state, handle the returned post ID, display error messages in the UI on failure, and navigate to /admin/posts on success using the router's navigate function."
         },
         {
-          "path": "frontend/vite.config.ts",
+          "path": "frontend/src/hooks/useQueries.ts",
           "operation": "modify",
-          "description": "Verify Vite configuration for proper build output, asset handling, and deployment settings. Ensure the build configuration is compatible with IC deployment requirements."
+          "description": "Review and fix the useCreatePost mutation hook to ensure it correctly passes all parameters to actor.createPost (including id, title, slug, category, content, excerpt, readTime, author, tags, image, imageSize, contentImages, isPublished, publishedAt), returns the post ID from the mutation, handles ExternalBlob serialization, and properly invalidates the 'posts' query cache on success."
+        }
+      ]
+    },
+    {
+      "id": "REQ-4",
+      "summary": "Fix the AdminPostsPage publish button and CreateBlogPostPage publish checkbox to correctly invoke backend publish/unpublish mutations and reflect updated state in the UI",
+      "acceptanceCriteria": [
+        "The publish/unpublish button on AdminPostsPage triggers the correct mutation.",
+        "The post's status updates optimistically or refetches after the mutation completes.",
+        "The publish checkbox on CreateBlogPostPage correctly sets the post's initial published state."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/pages/AdminPostsPage.tsx",
+          "operation": "modify",
+          "description": "Fix the publish/unpublish button click handler to correctly call the setPublishedState mutation with the post ID, the toggled isPublished boolean, and the appropriate publishedDate (Date.now() when publishing, null when unpublishing). Ensure the mutation result triggers a query refetch or optimistic update to reflect the new published state in the UI immediately."
         },
         {
-          "path": "frontend/tsconfig.json",
+          "path": "frontend/src/hooks/useQueries.ts",
           "operation": "modify",
-          "description": "Check TypeScript configuration for any strict type errors or path resolution issues that could prevent successful compilation."
+          "description": "Review and fix the useSetPublishedState mutation hook to ensure it correctly invokes actor.setPublishedState with id, isPublished boolean, and publishedDate (bigint or null), handles the boolean return value, properly invalidates both 'posts' and 'publishedPosts' query caches on success, and exposes error states for UI display."
         },
         {
-          "path": "frontend/src/main.tsx",
+          "path": "frontend/src/pages/CreateBlogPostPage.tsx",
           "operation": "modify",
-          "description": "Verify that the application entry point correctly initializes all providers (React Query, Internet Identity) and mounts the root component without runtime errors."
-        },
-        {
-          "path": "frontend/src/App.tsx",
-          "operation": "modify",
-          "description": "Ensure the TanStack Router configuration is correct and all routes are properly registered. Verify that the AdminRoute guard component is correctly applied to admin routes."
-        },
-        {
-          "path": "frontend/src/hooks/useActor.ts",
-          "operation": "modify",
-          "description": "Verify the actor initialization logic handles both anonymous and authenticated states correctly. Ensure proper error handling for backend connection failures."
-        },
-        {
-          "path": "frontend/src/hooks/useInternetIdentity.ts",
-          "operation": "modify",
-          "description": "Check Internet Identity integration for proper initialization and error handling. Ensure login/logout flows work correctly without causing deployment issues."
-        },
-        {
-          "path": "frontend/index.html",
-          "operation": "modify",
-          "description": "Verify the HTML entry point has correct meta tags, title, and script references. Ensure the root div mounting point is properly configured."
-        },
-        {
-          "path": "frontend/index.css",
-          "operation": "modify",
-          "description": "Check global CSS imports and Tailwind directives for any syntax errors or broken import paths that could cause build failures."
-        },
-        {
-          "path": "frontend/tailwind.config.js",
-          "operation": "modify",
-          "description": "Verify Tailwind configuration has valid syntax and all custom theme settings are properly defined without causing build errors."
-        },
-        {
-          "path": "frontend/src/components/Navigation.tsx",
-          "operation": "modify",
-          "description": "Ensure Navigation component renders without errors and all route links are valid. Verify the component handles authentication state correctly."
-        },
-        {
-          "path": "frontend/src/pages/HomePage.tsx",
-          "operation": "modify",
-          "description": "Verify HomePage renders correctly with proper data fetching hooks and handles loading/error states. Ensure all image assets reference valid paths under frontend/public/assets/generated/."
-        },
-        {
-          "path": "frontend/public/assets/generated/.gitkeep",
-          "operation": "create",
-          "description": "Ensure the assets directory structure exists. Create a .gitkeep file if the generated assets folder is missing, which could cause deployment to fail when the app tries to load images."
+          "description": "Ensure the publish checkbox value is correctly bound to the form state and passed as the isPublished parameter when calling the createPost mutation. If the checkbox is checked, also pass Date.now() as publishedAt; otherwise pass null."
         }
       ]
     }

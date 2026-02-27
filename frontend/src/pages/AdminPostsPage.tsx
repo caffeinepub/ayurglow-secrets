@@ -15,19 +15,17 @@ import {
 } from '@/components/ui/alert-dialog';
 import { toast } from 'sonner';
 import {
-  useGetAllPosts,
+  useGetAllVisiblePosts,
   useDeletePost,
-  usePublishPost,
-  useUnpublishPost,
+  useSetPublishedState,
 } from '../hooks/useQueries';
 import { BlogPostView } from '../backend';
 
 export default function AdminPostsPage() {
   const navigate = useNavigate();
-  const { data: posts, isLoading } = useGetAllPosts();
+  const { data: posts, isLoading } = useGetAllVisiblePosts();
   const deletePostMutation = useDeletePost();
-  const publishPostMutation = usePublishPost();
-  const unpublishPostMutation = useUnpublishPost();
+  const setPublishedStateMutation = useSetPublishedState();
 
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [postToDelete, setPostToDelete] = useState<BlogPostView | null>(null);
@@ -61,14 +59,23 @@ export default function AdminPostsPage() {
   const handleTogglePublish = async (post: BlogPostView) => {
     try {
       if (post.isPublished) {
-        await unpublishPostMutation.mutateAsync(post.id);
+        await setPublishedStateMutation.mutateAsync({
+          id: post.id,
+          isPublished: false,
+          publishedDate: null,
+        });
         toast.success('Post unpublished');
       } else {
-        await publishPostMutation.mutateAsync({ id: post.id, publishedDate: null });
+        const now = BigInt(Date.now()) * BigInt(1_000_000); // nanoseconds
+        await setPublishedStateMutation.mutateAsync({
+          id: post.id,
+          isPublished: true,
+          publishedDate: now,
+        });
         toast.success('Post published');
       }
-    } catch (err) {
-      toast.error('Failed to update post status');
+    } catch (err: any) {
+      toast.error(err?.message || 'Failed to update post status');
     }
   };
 
@@ -192,9 +199,11 @@ export default function AdminPostsPage() {
                             size="icon"
                             onClick={() => handleTogglePublish(post)}
                             title={post.isPublished ? 'Unpublish' : 'Publish'}
-                            disabled={publishPostMutation.isPending || unpublishPostMutation.isPending}
+                            disabled={setPublishedStateMutation.isPending}
                           >
-                            {post.isPublished ? (
+                            {setPublishedStateMutation.isPending ? (
+                              <Loader2 className="w-4 h-4 animate-spin text-muted-foreground" />
+                            ) : post.isPublished ? (
                               <EyeOff className="w-4 h-4 text-muted-foreground" />
                             ) : (
                               <Eye className="w-4 h-4 text-muted-foreground" />

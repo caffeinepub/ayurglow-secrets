@@ -1,5 +1,4 @@
 import Map "mo:core/Map";
-import Int "mo:core/Int";
 import Iter "mo:core/Iter";
 import List "mo:core/List";
 import Time "mo:core/Time";
@@ -7,13 +6,10 @@ import Runtime "mo:core/Runtime";
 import Principal "mo:core/Principal";
 import Storage "blob-storage/Storage";
 import MixinStorage "blob-storage/Mixin";
-import MixinAuthorization "authorization/MixinAuthorization";
 import AccessControl "authorization/access-control";
+import MixinAuthorization "authorization/MixinAuthorization";
 
 actor {
-  let accessControlState = AccessControl.initState();
-  include MixinAuthorization(accessControlState);
-
   type Comment = {
     author : Text;
     content : Text;
@@ -39,7 +35,7 @@ actor {
     comments : List.List<Comment>;
   };
 
-  type BlogPostView = {
+  public type BlogPostView = {
     id : Text;
     title : Text;
     slug : Text;
@@ -62,6 +58,9 @@ actor {
     name : Text;
   };
 
+  let accessControlState = AccessControl.initState();
+  include MixinAuthorization(accessControlState);
+
   let blogPosts = Map.empty<Text, BlogPost>();
   let userProfiles = Map.empty<Principal, UserProfile>();
 
@@ -69,7 +68,7 @@ actor {
 
   // Core Auth Queries (for frontend)
   public query ({ caller }) func canCallerAccessAdminSection() : async Bool {
-    AccessControl.hasPermission(accessControlState, caller, #admin);
+    AccessControl.isAdmin(accessControlState, caller);
   };
 
   // User profile management
@@ -94,7 +93,7 @@ actor {
     userProfiles.add(caller, profile);
   };
 
-  // Blog post management (admin-only write operations)
+  // Create/Update Post (admin only)
   public shared ({ caller }) func createPost(
     id : Text,
     title : Text,
@@ -108,7 +107,9 @@ actor {
     image : ?Storage.ExternalBlob,
     imageSize : ?Text,
     contentImages : [Storage.ExternalBlob],
-  ) : async () {
+    isPublished : Bool,
+    publishedAt : ?Int,
+  ) : async Text {
     if (not (AccessControl.hasPermission(accessControlState, caller, #admin))) {
       Runtime.trap("Unauthorized: Only admins can create posts");
     };
@@ -122,15 +123,20 @@ actor {
       readTime;
       author;
       createdAt = Time.now();
-      publishedAt = null;
+      publishedAt = switch (isPublished, publishedAt) {
+        case (true, null) { ?Time.now() };
+        case (true, ?val) { ?val };
+        case (false, _) { null };
+      };
       tags;
-      isPublished = false;
+      isPublished;
       image;
       imageSize;
       contentImages;
       comments = List.empty<Comment>();
     };
     blogPosts.add(id, newPost);
+    id;
   };
 
   public shared ({ caller }) func updatePost(
@@ -146,12 +152,14 @@ actor {
     image : ?Storage.ExternalBlob,
     imageSize : ?Text,
     contentImages : [Storage.ExternalBlob],
-  ) : async () {
+    isPublished : Bool,
+    publishedAt : ?Int,
+  ) : async Bool {
     if (not (AccessControl.hasPermission(accessControlState, caller, #admin))) {
       Runtime.trap("Unauthorized: Only admins can update posts");
     };
     switch (blogPosts.get(id)) {
-      case (null) { () };
+      case (null) { false };
       case (?existingPost) {
         let updatedPost : BlogPost = {
           id;
@@ -163,35 +171,43 @@ actor {
           readTime;
           author;
           createdAt = existingPost.createdAt;
-          publishedAt = existingPost.publishedAt;
+          publishedAt = switch (isPublished, publishedAt) {
+            case (true, null) { ?Time.now() };
+            case (true, ?val) { ?val };
+            case (false, _) { null };
+          };
           tags;
-          isPublished = existingPost.isPublished;
+          isPublished;
           image;
           imageSize;
           contentImages;
           comments = existingPost.comments;
         };
         blogPosts.add(id, updatedPost);
+        true;
       };
     };
   };
 
-  public shared ({ caller }) func publishPost(
+  // Publish/Unpublish (admin only)
+  public shared ({ caller }) func setPublishedState(
     id : Text,
+    isPublished : Bool,
     publishedDate : ?Int,
   ) : async Bool {
     if (not (AccessControl.hasPermission(accessControlState, caller, #admin))) {
-      Runtime.trap("Unauthorized: Only admins can publish posts");
+      Runtime.trap("Unauthorized: Only admins can change publishing state");
     };
     switch (blogPosts.get(id)) {
       case (null) { false };
       case (?post) {
         let updatedPost : BlogPost = {
           post with
-          isPublished = true;
-          publishedAt = switch (publishedDate) {
-            case (?date) { ?date };
-            case (null) { ?Time.now() };
+          isPublished;
+          publishedAt = switch (isPublished, publishedDate) {
+            case (true, null) { ?Time.now() };
+            case (true, ?date) { ?date };
+            case (false, _) { null };
           };
         };
         blogPosts.add(id, updatedPost);
@@ -200,29 +216,17 @@ actor {
     };
   };
 
-  public shared ({ caller }) func unpublishPost(id : Text) : async Bool {
-    if (not (AccessControl.hasPermission(accessControlState, caller, #admin))) {
-      Runtime.trap("Unauthorized: Only admins can unpublish posts");
-    };
-    switch (blogPosts.get(id)) {
-      case (null) { false };
-      case (?post) {
-        let updatedPost : BlogPost = {
-          post with
-          isPublished = false;
-          publishedAt = null;
-        };
-        blogPosts.add(id, updatedPost);
-        true;
-      };
-    };
-  };
-
-  public shared ({ caller }) func deletePost(id : Text) : async () {
+  public shared ({ caller }) func deletePost(id : Text) : async Bool {
     if (not (AccessControl.hasPermission(accessControlState, caller, #admin))) {
       Runtime.trap("Unauthorized: Only admins can delete posts");
     };
-    blogPosts.remove(id);
+    switch (blogPosts.get(id)) {
+      case (null) { false };
+      case (_post) {
+        blogPosts.remove(id);
+        true;
+      };
+    };
   };
 
   func toBlogPostView(post : BlogPost) : BlogPostView {
@@ -234,7 +238,7 @@ actor {
     };
   };
 
-  // Public read operations (no auth required for published content)
+  // Read Only Queries
   public query ({ caller }) func getPost(id : Text) : async ?BlogPostView {
     switch (blogPosts.get(id)) {
       case (null) { null };
@@ -249,28 +253,27 @@ actor {
     iter.map(func(p) { toBlogPostView(p) }).toArray();
   };
 
-  // Admin-only: view all posts including unpublished
   public query ({ caller }) func getAllVisiblePosts() : async [BlogPostView] {
     if (not (AccessControl.hasPermission(accessControlState, caller, #admin))) {
       Runtime.trap("Unauthorized: Only admins can view all posts");
     };
-    let posts = blogPosts.values();
-    posts.map(func(p) { toBlogPostView(p) }).toArray();
+    blogPosts.values().map(func(p) { toBlogPostView(p) }).toArray();
   };
 
-  // Comments: require registered user to add, public to read
+  // Comments
   public shared ({ caller }) func addComment(postId : Text, author : Text, content : Text) : async Bool {
     if (not (AccessControl.hasPermission(accessControlState, caller, #user))) {
-      Runtime.trap("Unauthorized: Only registered users can add comments");
+      Runtime.trap("Unauthorized: Only users can add comments");
     };
+    let comment : Comment = {
+      author;
+      content;
+      timestamp = Time.now();
+    };
+
     switch (blogPosts.get(postId)) {
       case (null) { false };
       case (?post) {
-        let comment : Comment = {
-          author;
-          content;
-          timestamp = Time.now();
-        };
         post.comments.add(comment);
         blogPosts.add(postId, post);
         true;

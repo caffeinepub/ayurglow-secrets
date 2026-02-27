@@ -1,49 +1,72 @@
 {
   "kind": "coverage_report",
   "version": "1.0",
-  "generatedAt": "2026-02-27T07:59:00.099Z",
+  "generatedAt": "2026-02-27T09:49:26.592Z",
   "sources": {
     "buildRequest": true,
     "implementationPlan": true
   },
   "requirements": {
-    "total": 1,
-    "implemented": 1,
+    "total": 4,
+    "implemented": 2,
     "items": [
       {
         "id": "REQ-1",
-        "summary": "Retry the full build and deployment of the AyurGlow Secrets application, including the backend Motoko actor and the React frontend, resolving any errors that caused the previous deployment to fail.",
+        "summary": "Fix the backend blog post creation so that when an admin submits the Create Blog Post form, the post is correctly persisted in the canister stable storage and a valid post ID is returned.",
+        "status": "unknown",
+        "plannedFiles": [],
+        "matchedFiles": []
+      },
+      {
+        "id": "REQ-2",
+        "summary": "Fix the backend publish/unpublish logic so that toggling the published state of a blog post (via the publish button or checkbox) correctly updates the post's published flag in stable storage.",
+        "status": "unknown",
+        "plannedFiles": [],
+        "matchedFiles": []
+      },
+      {
+        "id": "REQ-3",
+        "summary": "Fix the CreateBlogPostPage form submission so that it correctly calls the backend createPost mutation, handles the response (including error states), and navigates back to the admin posts list on success.",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/package.json",
-          "frontend/vite.config.ts",
-          "frontend/tsconfig.json",
-          "frontend/src/main.tsx",
-          "frontend/src/App.tsx",
-          "frontend/src/hooks/useActor.ts",
-          "frontend/src/hooks/useInternetIdentity.ts",
-          "frontend/index.html",
-          "frontend/index.css",
-          "frontend/tailwind.config.js",
-          "frontend/src/components/Navigation.tsx",
-          "frontend/src/pages/HomePage.tsx",
-          "frontend/public/assets/generated/.gitkeep"
+          "frontend/src/pages/CreateBlogPostPage.tsx",
+          "frontend/src/hooks/useQueries.ts"
         ],
         "matchedFiles": [
-          "frontend/src/App.tsx",
-          "frontend/tailwind.config.js"
+          "frontend/src/pages/CreateBlogPostPage.tsx",
+          "frontend/src/hooks/useQueries.ts"
+        ]
+      },
+      {
+        "id": "REQ-4",
+        "summary": "Fix the AdminPostsPage publish button and the CreateBlogPostPage publish checkbox so that they correctly invoke the backend publish/unpublish mutations and reflect the updated state in the UI without requiring a full page reload.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/pages/AdminPostsPage.tsx",
+          "frontend/src/hooks/useQueries.ts",
+          "frontend/src/pages/CreateBlogPostPage.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/pages/AdminPostsPage.tsx",
+          "frontend/src/hooks/useQueries.ts",
+          "frontend/src/pages/CreateBlogPostPage.tsx"
         ]
       }
     ]
   },
   "changedFiles": [
+    "backend/main.mo",
     "build-request.json",
     "feature_evidence.json",
     "frontend-file-summaries.txt",
     "frontend-implementation-plan.json",
-    "frontend/src/App.tsx",
-    "frontend/src/index.css",
-    "frontend/tailwind.config.js",
+    "frontend/src/backend.d.ts",
+    "frontend/src/backend.ts",
+    "frontend/src/declarations/backend.did.d.ts",
+    "frontend/src/declarations/backend.did.js",
+    "frontend/src/hooks/useQueries.ts",
+    "frontend/src/pages/AdminPostsPage.tsx",
+    "frontend/src/pages/CreateBlogPostPage.tsx",
     "project_state.json",
     "scratch/component-selection.json",
     "spec.md",

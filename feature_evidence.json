@@ -2,11 +2,11 @@
   "kind": "feature_evidence_report",
   "features": [
     {
-      "featureId": "feature-retry-the-full-build-and-deployment-of-the-ayurglow-secrets-application-including-the-backend-motoko-actor-and-the-react-frontend-resolving-any-errors-that-caused-the-previous-deployment-to-fail",
-      "featureTitle": "Retry the full build and deployment of the AyurGlow Secrets application, including the backend Motoko actor and the React frontend, resolving any errors that caused the previous deployment to fail.",
+      "featureId": "feature-fix-the-createblogpostpage-form-submission-so-that-it-correctly-calls-the-backend-createpost-mutation-handles-the-response-including-error-states-and-navigates-back-to-the-admin-posts-list-on-success",
+      "featureTitle": "Fix the CreateBlogPostPage form submission so that it correctly calls the backend createPost mutation, handles the response (including error states), and navigates back to the admin posts list on success.",
       "files": [
-        "frontend/src/App.tsx",
-        "frontend/tailwind.config.js"
+        "frontend/src/hooks/useQueries.ts",
+        "frontend/src/pages/CreateBlogPostPage.tsx"
       ],
       "components": [
         "core-infrastructure@1.0.2",
@@ -18,7 +18,29 @@
         "authorization@4.0.0"
       ],
       "testIds": [
-        "REQ-1"
+        "REQ-3"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-fix-the-adminpostspage-publish-button-and-the-createblogpostpage-publish-checkbox-so-that-they-correctly-invoke-the-backend-publish-unpublish-mutations-and-reflect-the-updated-state-in-the-ui-without-requiring-a-full-page-reload",
+      "featureTitle": "Fix the AdminPostsPage publish button and the CreateBlogPostPage publish checkbox so that they correctly invoke the backend publish/unpublish mutations and reflect the updated state in the UI without requiring a full page reload.",
+      "files": [
+        "frontend/src/hooks/useQueries.ts",
+        "frontend/src/pages/AdminPostsPage.tsx",
+        "frontend/src/pages/CreateBlogPostPage.tsx"
+      ],
+      "components": [
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0",
+        "blob-storage@4.0.0",
+        "authorization@4.0.0"
+      ],
+      "testIds": [
+        "REQ-4"
       ],
       "confidence": "high"
     }

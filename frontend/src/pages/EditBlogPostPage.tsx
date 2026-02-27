@@ -9,7 +9,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Checkbox } from '@/components/ui/checkbox';
-import { useGetPost, useUpdatePost, usePublishPost } from '../hooks/useQueries';
+import { useGetPost, useUpdatePost } from '../hooks/useQueries';
 import { ExternalBlob } from '../backend';
 import { injectBlobIndexAttributes, replaceContentImageUrls } from '../utils/imageUtils';
 
@@ -29,7 +29,6 @@ export default function EditBlogPostPage() {
 
   const { data: post, isLoading, error } = useGetPost(id);
   const updatePostMutation = useUpdatePost();
-  const publishPostMutation = usePublishPost();
 
   const [title, setTitle] = useState('');
   const [slug, setSlug] = useState('');
@@ -210,6 +209,14 @@ export default function EditBlogPostPage() {
         .map((t) => t.trim())
         .filter(Boolean);
 
+      // Determine publish state
+      const shouldPublish = post.isPublished || publishImmediately;
+      const now = BigInt(Date.now()) * BigInt(1_000_000); // nanoseconds
+      // Preserve existing publishedAt if already published, otherwise set now if publishing
+      const publishedAt: bigint | null = shouldPublish
+        ? (post.publishedDate ? BigInt(post.publishedDate) : now)
+        : null;
+
       await updatePostMutation.mutateAsync({
         id: post.id,
         title: title.trim(),
@@ -223,10 +230,11 @@ export default function EditBlogPostPage() {
         image: featuredImageBlob,
         imageSize: featuredImageSizeStr,
         contentImages,
+        isPublished: shouldPublish,
+        publishedAt,
       });
 
       if (publishImmediately && !post.isPublished) {
-        await publishPostMutation.mutateAsync({ id: post.id, publishedDate: null });
         toast.success('Post updated and published!');
       } else {
         toast.success('Post updated successfully!');
@@ -239,7 +247,7 @@ export default function EditBlogPostPage() {
     }
   };
 
-  const isSubmitting = updatePostMutation.isPending || publishPostMutation.isPending;
+  const isSubmitting = updatePostMutation.isPending;
 
   if (isLoading) {
     return (

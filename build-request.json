@@ -1,34 +1,90 @@
 {
   "kind": "build_request",
-  "title": "Retry deployment of AyurGlow Secrets app",
+  "title": "Fix admin blog post save and publish functionality",
   "projectName": "AyurGlow Secrets",
-  "priority": "normal",
+  "priority": "high",
   "requirements": [
     {
       "id": "REQ-1",
-      "text": "Retry the full build and deployment of the AyurGlow Secrets application, including the backend Motoko actor and the React frontend, resolving any errors that caused the previous deployment to fail.",
-      "target": "both",
+      "text": "Fix the backend blog post creation so that when an admin submits the Create Blog Post form, the post is correctly persisted in the canister stable storage and a valid post ID is returned.",
+      "target": "backend",
       "source": {
         "messageIds": [
-          "msg-3"
+          "msg-1"
         ],
         "quotes": [
-          "try again"
+          "admin part is not working properly my blog post are not getting saved or published please fix it"
         ]
       },
       "acceptanceCriteria": [
-        "The backend canister deploys successfully without errors.",
-        "The frontend builds and deploys without errors.",
-        "The application is accessible and functional after deployment."
+        "Submitting the Create Blog Post form successfully stores the post in the backend actor.",
+        "The returned post ID is valid and non-null.",
+        "The newly created post appears in the admin posts list after creation."
+      ]
+    },
+    {
+      "id": "REQ-2",
+      "text": "Fix the backend publish/unpublish logic so that toggling the published state of a blog post (via the publish button or checkbox) correctly updates the post's published flag in stable storage.",
+      "target": "backend",
+      "source": {
+        "messageIds": [
+          "msg-1"
+        ],
+        "quotes": [
+          "my blog post are not getting saved or published please fix it"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Clicking Publish on an unpublished post sets its published flag to true in the backend.",
+        "The post appears in the public published posts list after publishing.",
+        "Clicking Unpublish sets the published flag back to false and removes it from the public list."
+      ]
+    },
+    {
+      "id": "REQ-3",
+      "text": "Fix the CreateBlogPostPage form submission so that it correctly calls the backend createPost mutation, handles the response (including error states), and navigates back to the admin posts list on success.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-1"
+        ],
+        "quotes": [
+          "my blog post are not getting saved or published please fix it"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Submitting the Create Blog Post form invokes the backend createPost mutation.",
+        "On success, the user is redirected to the AdminPostsPage.",
+        "On failure, a visible error message is displayed to the admin."
+      ]
+    },
+    {
+      "id": "REQ-4",
+      "text": "Fix the AdminPostsPage publish button and the CreateBlogPostPage publish checkbox so that they correctly invoke the backend publish/unpublish mutations and reflect the updated state in the UI without requiring a full page reload.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-1"
+        ],
+        "quotes": [
+          "my blog post are not getting saved or published please fix it"
+        ]
+      },
+      "acceptanceCriteria": [
+        "The publish/unpublish button on AdminPostsPage triggers the correct mutation.",
+        "The post's status updates optimistically or refetches after the mutation completes.",
+        "The publish checkbox on CreateBlogPostPage correctly sets the post's initial published state."
       ]
     }
   ],
   "constraints": [
-    "Do not change any existing application logic, data models, or UI unless required to fix a build/deployment error."
+    "Do not change the existing blog post data schema in a way that breaks existing stored posts without providing a migration.",
+    "Immutable frontend paths (useInternetIdentity, useActor, main.tsx, ui components) must not be modified."
   ],
   "nonGoals": [
-    "Adding new features or pages.",
-    "Changing the visual design or theme."
+    "Adding new admin features beyond save and publish.",
+    "Changing the visual design of the admin pages.",
+    "Modifying comment or user profile functionality."
   ],
   "imageRequirements": {
     "required": [],
