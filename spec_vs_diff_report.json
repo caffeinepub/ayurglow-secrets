@@ -1,32 +1,42 @@
 {
   "kind": "spec_vs_diff_report",
   "version": "1.0",
-  "generatedAt": "2026-02-27T18:51:31.186Z",
-  "summary": "The diff implements fixes across frontend hooks, the admin page, and the backend to address the three requirements. REQ-2 is clearly addressed (useGetAllVisiblePosts fixed to call getAllPosts()). REQ-1 is addressed per the file summary for AdminPostsPage. REQ-3 is partially addressed in backend/main.mo. However, the backend diff is truncated, making it impossible to fully verify REQ-3's access control fix.",
+  "generatedAt": "2026-02-28T14:25:01.433Z",
+  "summary": "The diff implements most of the three requirements. REQ-1 (Insert Image toolbar button) is present in CreateBlogPostPage.tsx and EditBlogPostPage.tsx with inline image marker insertion and rendering via imageUtils.ts. REQ-2 (remove auth gate) is addressed by AdminRoute.tsx now passing through children unconditionally. REQ-3 (fix missing post in admin) is addressed via useGetAllPostsForAdmin with a fallback chain calling getAllPostsForAdminPage/getAllPosts. However, the AdminPostsPage still conditionally shows a 'Login for Full Access' button and references authentication state, and the backend createPost/updatePost still require admin permission — the create/edit functionality may still fail without login, partially violating REQ-2 AC. The backend does not show a new getAllPostsForAdminPage method that skips publish filtering, so REQ-3's backend fix is not fully confirmed.",
   "missing_requirements": [
     {
-      "id": "REQ-3",
-      "requirement": "Verify and fix the backend getAllPosts method to correctly return all blog posts regardless of publish status, callable without authentication for listing, while keeping CRUD operations admin-protected.",
-      "reason": "The backend/main.mo diff is truncated and does not show the getAllPosts method implementation or its access control. It is impossible to confirm from the diff whether getAllPosts is a public query (no auth required) returning all posts regardless of isPublished status.",
+      "id": "REQ-2",
+      "requirement": "The create/edit/delete blog post functionality remains fully operational without authentication.",
+      "reason": "The backend createPost and updatePost methods still check AccessControl.hasPermission for admin, meaning unauthenticated users will get an Unauthorized trap when trying to create or update posts. The frontend also still conditionally shows a login button referencing isAuthenticated, suggesting auth is still required for mutation operations.",
       "evidence": [
-        "backend/main.mo"
+        "backend/main.mo",
+        "frontend/src/pages/AdminPostsPage.tsx"
       ]
-    }
-  ],
-  "hallucinated_features": [
+    },
     {
-      "description": "CreateBlogPostPage and EditBlogPostPage routes mounted without AdminRoute wrapper",
-      "reason": "The build request does not mention removing AdminRoute guards from CreateBlogPostPage or EditBlogPostPage. This is a routing/access-control change not requested in any REQ.",
+      "id": "REQ-3",
+      "requirement": "The backend query used by AdminPostsPage fetches all posts without filtering out drafts or unpublished posts.",
+      "reason": "The diff does not show a new getAllPostsForAdminPage backend method being added to main.mo. The fallback chain in useGetAllPostsForAdmin falls back to getAllPosts and then getPublishedPosts, but it is not confirmed that getAllPosts or a new admin-specific method returns all posts regardless of publish state.",
       "evidence": [
-        "frontend-file-summaries.txt"
+        "backend/main.mo",
+        "frontend/src/hooks/useQueries.ts"
       ]
     }
   ],
-  "confidence": 0.72,
+  "hallucinated_features": [],
+  "confidence": 0.62,
   "changed_files": [
     "backend/main.mo",
     "frontend-file-summaries.txt",
+    "frontend/src/components/AdminRoute.tsx",
+    "frontend/src/components/CommentSection.tsx",
     "frontend/src/hooks/useQueries.ts",
+    "frontend/src/index.css",
+    "frontend/src/pages/AdminPostsPage.tsx",
+    "frontend/src/pages/BlogPostDetailPage.tsx",
+    "frontend/src/pages/CreateBlogPostPage.tsx",
+    "frontend/src/pages/EditBlogPostPage.tsx",
+    "frontend/src/utils/imageUtils.ts",
     "project_state.json"
   ]
 }

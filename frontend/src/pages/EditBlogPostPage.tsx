@@ -1,501 +1,604 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate, useParams } from '@tanstack/react-router';
+import { ImagePlus, X, Upload, Loader2, Image as ImageIcon } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import { Switch } from '@/components/ui/switch';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Badge } from '@/components/ui/badge';
 import { useGetPost, useUpdatePost } from '../hooks/useQueries';
-import { ExternalBlob, ImageMeta, ImageFit, ImageSize } from '../backend';
-import { injectBlobIndexAttributes } from '../utils/imageUtils';
-
-interface FormData {
-  title: string;
-  slug: string;
-  category: string;
-  content: string;
-  excerpt: string;
-  readTime: string;
-  author: string;
-  tags: string;
-  imageFit: ImageFit;
-  imageSize: ImageSize;
-  publishImmediately: boolean;
-  publicationDate: string;
-}
+import { ExternalBlob, ImageFit, ImageSize, ImageMeta, InlineImage } from '../backend';
+import { toast } from 'sonner';
 
 const CATEGORIES = [
-  'Health Remedies',
-  'Skin Care',
-  'Hair Care',
-  'Weight Management',
-  'Lifestyle & Wellness',
-  'Ayurveda',
-  'Nutrition',
+  'skin-care', 'hair-care', 'health-remedies',
+  'lifestyle-wellness', 'weight-management', 'general',
 ];
 
+interface InlineImageEntry {
+  blob: ExternalBlob;
+  fit: ImageFit;
+  size: ImageSize;
+  previewUrl: string;
+  position: number;
+}
+
 export default function EditBlogPostPage() {
-  const navigate = useNavigate();
   const { postId } = useParams({ from: '/admin/edit/$postId' });
+  const navigate = useNavigate();
+  const { data: post, isLoading } = useGetPost(postId);
   const updatePost = useUpdatePost();
 
-  const { data: post, isLoading: postLoading } = useGetPost(postId);
+  // Form fields
+  const [title, setTitle] = useState('');
+  const [slug, setSlug] = useState('');
+  const [category, setCategory] = useState('general');
+  const [content, setContent] = useState('');
+  const [excerpt, setExcerpt] = useState('');
+  const [author, setAuthor] = useState('');
+  const [tags, setTags] = useState<string[]>([]);
+  const [tagInput, setTagInput] = useState('');
+  const [publishImmediately, setPublishImmediately] = useState(false);
 
-  const [formData, setFormData] = useState<FormData>({
-    title: '',
-    slug: '',
-    category: CATEGORIES[0],
-    content: '',
-    excerpt: '',
-    readTime: '5',
-    author: '',
-    tags: '',
-    imageFit: ImageFit.original,
-    imageSize: ImageSize.medium,
-    publishImmediately: false,
-    publicationDate: '',
-  });
+  // Featured image
+  const [featuredImageBlob, setFeaturedImageBlob] = useState<ExternalBlob | null>(null);
+  const [featuredImagePreview, setFeaturedImagePreview] = useState<string | null>(null);
+  const [featuredImageFit, setFeaturedImageFit] = useState<ImageFit>(ImageFit.cover);
+  const [featuredImageSize, setFeaturedImageSize] = useState<ImageSize>(ImageSize.large);
+  const [featuredUploading, setFeaturedUploading] = useState(false);
+  const [featuredUploadProgress, setFeaturedUploadProgress] = useState(0);
 
-  const [imageFile, setImageFile] = useState<File | null>(null);
-  const [imagePreview, setImagePreview] = useState<string | null>(null);
-  const [existingImageUrl, setExistingImageUrl] = useState<string | null>(null);
-  const [error, setError] = useState<string | null>(null);
-  const [uploadProgress, setUploadProgress] = useState<number>(0);
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  // Inline images
+  const [inlineImages, setInlineImages] = useState<InlineImageEntry[]>([]);
+  const [inlineUploading, setInlineUploading] = useState(false);
+  const [inlineUploadProgress, setInlineUploadProgress] = useState(0);
 
+  const featuredFileRef = useRef<HTMLInputElement>(null);
+  const inlineFileRef = useRef<HTMLInputElement>(null);
+  const contentRef = useRef<HTMLTextAreaElement>(null);
+
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [initialized, setInitialized] = useState(false);
+
+  // Populate form from existing post
   useEffect(() => {
-    if (post) {
-      let pubDateStr = '';
-      if (post.publicationDate) {
-        const ms = Number(post.publicationDate) / 1_000_000;
-        pubDateStr = new Date(ms).toISOString().split('T')[0];
+    if (post && !initialized) {
+      setTitle(post.title);
+      setSlug(post.slug);
+      setCategory(post.category);
+      setContent(post.content);
+      setExcerpt(post.excerpt);
+      setAuthor(post.author);
+      setTags(post.tags);
+      setPublishImmediately(post.isPublished);
+
+      if (post.featuredImage) {
+        setFeaturedImageBlob(post.featuredImage.blob);
+        setFeaturedImagePreview(post.featuredImage.blob.getDirectURL());
+        setFeaturedImageFit(post.featuredImage.fit as ImageFit);
+        setFeaturedImageSize(post.featuredImage.size as ImageSize);
       }
 
-      setFormData({
-        title: post.title,
-        slug: post.slug,
-        category: post.category,
-        content: post.content,
-        excerpt: post.excerpt,
-        readTime: post.readTime ? post.readTime.toString() : '5',
-        author: post.author,
-        tags: post.tags.join(', '),
-        imageFit: post.featuredImage?.fit ?? ImageFit.original,
-        imageSize: post.featuredImage?.size ?? ImageSize.medium,
-        publishImmediately: post.isPublished,
-        publicationDate: pubDateStr,
+      // Load existing inline images
+      if (post.inlineImages && post.inlineImages.length > 0) {
+        const entries: InlineImageEntry[] = post.inlineImages.map((img, idx) => ({
+          blob: img.image.blob,
+          fit: img.image.fit as ImageFit,
+          size: img.image.size as ImageSize,
+          previewUrl: img.image.blob.getDirectURL(),
+          position: idx,
+        }));
+        setInlineImages(entries);
+      }
+
+      setInitialized(true);
+    }
+  }, [post, initialized]);
+
+  const addTag = () => {
+    const t = tagInput.trim();
+    if (t && !tags.includes(t)) setTags([...tags, t]);
+    setTagInput('');
+  };
+  const removeTag = (tag: string) => setTags(tags.filter((t) => t !== tag));
+
+  // Featured image upload
+  const handleFeaturedImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setFeaturedUploading(true);
+    setFeaturedUploadProgress(0);
+    try {
+      const arrayBuffer = await file.arrayBuffer();
+      const bytes = new Uint8Array(arrayBuffer);
+      const blob = ExternalBlob.fromBytes(bytes).withUploadProgress((pct) => {
+        setFeaturedUploadProgress(pct);
+      });
+      setFeaturedImageBlob(blob);
+      setFeaturedImagePreview(URL.createObjectURL(file));
+    } catch {
+      toast.error('Failed to load featured image');
+    } finally {
+      setFeaturedUploading(false);
+    }
+  };
+
+  // Inline image upload and insert at cursor
+  const handleInlineImageInsert = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    e.target.value = '';
+
+    setInlineUploading(true);
+    setInlineUploadProgress(0);
+    try {
+      const arrayBuffer = await file.arrayBuffer();
+      const bytes = new Uint8Array(arrayBuffer);
+      const blob = ExternalBlob.fromBytes(bytes).withUploadProgress((pct) => {
+        setInlineUploadProgress(pct);
+      });
+      const previewUrl = URL.createObjectURL(file);
+      const index = inlineImages.length;
+
+      const entry: InlineImageEntry = {
+        blob,
+        fit: ImageFit.original,
+        size: ImageSize.medium,
+        previewUrl,
+        position: index,
+      };
+      setInlineImages((prev) => [...prev, entry]);
+
+      // Insert marker at cursor position
+      const marker = `{{inline-image:${index}}}`;
+      const textarea = contentRef.current;
+      if (textarea) {
+        const start = textarea.selectionStart ?? content.length;
+        const end = textarea.selectionEnd ?? content.length;
+        const newContent = content.slice(0, start) + '\n' + marker + '\n' + content.slice(end);
+        setContent(newContent);
+        setTimeout(() => {
+          textarea.selectionStart = start + marker.length + 2;
+          textarea.selectionEnd = start + marker.length + 2;
+          textarea.focus();
+        }, 0);
+      } else {
+        setContent((prev) => prev + '\n' + marker + '\n');
+      }
+
+      toast.success('Image inserted into content');
+    } catch {
+      toast.error('Failed to insert image');
+    } finally {
+      setInlineUploading(false);
+    }
+  };
+
+  const updateInlineImageFit = (index: number, fit: ImageFit) => {
+    setInlineImages((prev) =>
+      prev.map((img, i) => (i === index ? { ...img, fit } : img))
+    );
+  };
+
+  const updateInlineImageSize = (index: number, size: ImageSize) => {
+    setInlineImages((prev) =>
+      prev.map((img, i) => (i === index ? { ...img, size } : img))
+    );
+  };
+
+  const removeInlineImage = (index: number) => {
+    setInlineImages((prev) => prev.filter((_, i) => i !== index));
+    const marker = `{{inline-image:${index}}}`;
+    setContent((prev) => prev.replace(new RegExp(`\\n?${marker.replace(/[{}:]/g, '\\$&')}\\n?`, 'g'), '\n'));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!title || !content || !excerpt) {
+      toast.error('Please fill in title, content, and excerpt');
+      return;
+    }
+    setIsSubmitting(true);
+    try {
+      const readTime = BigInt(Math.max(1, Math.ceil(content.split(' ').length / 200)));
+
+      let finalFeaturedImage: ImageMeta | null = null;
+      if (featuredImageBlob) {
+        finalFeaturedImage = {
+          blob: featuredImageBlob,
+          fit: featuredImageFit,
+          size: featuredImageSize,
+        };
+      }
+
+      const finalInlineImages: InlineImage[] = inlineImages.map((img, idx) => ({
+        image: { blob: img.blob, fit: img.fit, size: img.size },
+        position: BigInt(idx),
+      }));
+
+      await updatePost.mutateAsync({
+        id: postId,
+        title,
+        slug,
+        category,
+        content,
+        excerpt,
+        readTime,
+        author,
+        tags,
+        featuredImage: finalFeaturedImage,
+        inlineImages: finalInlineImages,
+        isPublished: publishImmediately,
+        publishImmediately,
+        publicationDate: null,
       });
 
-      if (post.featuredImage?.blob) {
-        try {
-          setExistingImageUrl(post.featuredImage.blob.getDirectURL());
-        } catch {
-          setExistingImageUrl(null);
-        }
-      }
+      toast.success('Post updated successfully!');
+      navigate({ to: '/admin' });
+    } catch (err) {
+      toast.error('Failed to update post. Make sure you are logged in as admin.');
+    } finally {
+      setIsSubmitting(false);
     }
-  }, [post]);
+  };
 
-  if (postLoading) {
+  if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
-        <div className="text-center p-8">
-          <div className="animate-spin h-8 w-8 border-4 border-primary border-t-transparent rounded-full mx-auto mb-4" />
-          <p className="text-muted-foreground">Loading post...</p>
-        </div>
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-primary"></div>
+        <span className="ml-3 text-muted-foreground">Loading post...</span>
       </div>
     );
   }
 
   if (!post) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
-        <div className="text-center p-8">
-          <h2 className="text-2xl font-bold text-foreground mb-4">Post Not Found</h2>
-          <p className="text-muted-foreground">The post you are trying to edit does not exist.</p>
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <p className="text-muted-foreground text-lg">Post not found.</p>
+          <Button className="mt-4" onClick={() => navigate({ to: '/admin' })}>
+            Back to Admin
+          </Button>
         </div>
       </div>
     );
   }
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
-  ) => {
-    const { name, value, type } = e.target;
-    if (type === 'checkbox') {
-      setFormData((prev) => ({
-        ...prev,
-        [name]: (e.target as HTMLInputElement).checked,
-      }));
-    } else {
-      setFormData((prev) => ({ ...prev, [name]: value }));
-    }
-  };
-
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setImageFile(file);
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setImagePreview(reader.result as string);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-
-  const getFriendlyErrorMessage = (err: unknown): string => {
-    const msg = err instanceof Error ? err.message : String(err);
-    if (msg.includes('Expected v3 response body') || msg.includes('v3 response')) {
-      return 'There was a communication error with the server. Please check your inputs and try again.';
-    }
-    if (msg.includes('Unauthorized') || msg.includes('unauthorized')) {
-      return 'You are not authorized to update posts. Please make sure you are logged in as admin.';
-    }
-    return `Failed to update post: ${msg}`;
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError(null);
-
-    if (!formData.title.trim()) { setError('Title is required.'); return; }
-    if (!formData.slug.trim()) { setError('Slug is required.'); return; }
-    if (!formData.content.trim()) { setError('Content is required.'); return; }
-    if (!formData.excerpt.trim()) { setError('Excerpt is required.'); return; }
-    if (!formData.author.trim()) { setError('Author is required.'); return; }
-
-    try {
-      const tagsArray = formData.tags
-        .split(',')
-        .map((t) => t.trim())
-        .filter((t) => t.length > 0);
-
-      const readTimeNum = parseInt(formData.readTime, 10);
-      const readTimeBigInt = BigInt(isNaN(readTimeNum) || readTimeNum < 1 ? 1 : readTimeNum);
-
-      let featuredImage: ImageMeta | null = null;
-
-      if (imageFile) {
-        // New image uploaded
-        const arrayBuffer = await imageFile.arrayBuffer();
-        const uint8Array = new Uint8Array(arrayBuffer);
-        const blob = ExternalBlob.fromBytes(uint8Array).withUploadProgress((pct) => {
-          setUploadProgress(pct);
-        });
-        featuredImage = {
-          blob,
-          fit: formData.imageFit,
-          size: formData.imageSize,
-        };
-      } else if (post.featuredImage) {
-        // Keep existing image with potentially updated size/fit
-        featuredImage = {
-          blob: post.featuredImage.blob,
-          fit: formData.imageFit,
-          size: formData.imageSize,
-        };
-      }
-
-      const processedContent = injectBlobIndexAttributes(formData.content, 0);
-
-      let publicationDate: bigint | null = null;
-      if (formData.publicationDate) {
-        publicationDate = BigInt(new Date(formData.publicationDate).getTime()) * BigInt(1_000_000);
-      } else if (formData.publishImmediately) {
-        publicationDate = BigInt(Date.now()) * BigInt(1_000_000);
-      }
-
-      await updatePost.mutateAsync({
-        id: post.id,
-        title: formData.title.trim(),
-        slug: formData.slug.trim(),
-        category: formData.category,
-        content: processedContent,
-        excerpt: formData.excerpt.trim(),
-        readTime: readTimeBigInt,
-        author: formData.author.trim(),
-        tags: tagsArray,
-        featuredImage,
-        inlineImages: post.inlineImages ?? [],
-        isPublished: formData.publishImmediately,
-        publishImmediately: formData.publishImmediately,
-        publicationDate,
-      });
-
-      navigate({ to: '/admin' });
-    } catch (err) {
-      setError(getFriendlyErrorMessage(err));
-    }
-  };
-
   return (
-    <div className="min-h-screen bg-background py-8">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-background">
+      <div className="max-w-4xl mx-auto px-4 py-8">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-foreground font-serif">Edit Blog Post</h1>
-          <p className="text-muted-foreground mt-2">Update the details of your blog post.</p>
+          <h1 className="text-3xl font-bold font-playfair text-foreground">Edit Post</h1>
+          <p className="text-muted-foreground mt-1">Update your blog post</p>
         </div>
 
-        {error && (
-          <div className="mb-6 p-4 bg-destructive/10 border border-destructive/30 rounded-lg text-destructive text-sm">
-            {error}
-          </div>
-        )}
-
         <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Featured Image */}
-          <div className="bg-card border border-border rounded-xl p-5">
-            <h2 className="text-base font-semibold text-foreground mb-4">Featured Image</h2>
-            {(existingImageUrl || imagePreview) && (
-              <div className="mb-3">
-                <img
-                  src={imagePreview || existingImageUrl || ''}
-                  alt="Current featured image"
-                  className="w-full max-h-56 object-cover rounded-lg border border-border"
-                />
-                <p className="text-xs text-muted-foreground mt-1">
-                  {imagePreview ? 'New image selected' : 'Current featured image'}
-                </p>
-              </div>
-            )}
-            <input
-              ref={fileInputRef}
-              type="file"
-              accept="image/*"
-              onChange={handleImageChange}
-              className="w-full px-4 py-2 border border-border rounded-lg bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
-            />
-            {uploadProgress > 0 && uploadProgress < 100 && (
-              <div className="mt-2">
-                <div className="w-full bg-muted rounded-full h-2">
-                  <div
-                    className="bg-primary h-2 rounded-full transition-all"
-                    style={{ width: `${uploadProgress}%` }}
-                  />
-                </div>
-                <p className="text-xs text-muted-foreground mt-1">Uploading: {uploadProgress}%</p>
-              </div>
-            )}
-            <div className="grid grid-cols-2 gap-4 mt-4">
+          {/* Basic Info */}
+          <Card>
+            <CardHeader><CardTitle>Post Details</CardTitle></CardHeader>
+            <CardContent className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-foreground mb-1">Image Size</label>
-                <select
-                  name="imageSize"
-                  value={formData.imageSize}
-                  onChange={handleChange}
-                  className="w-full px-3 py-2 border border-border rounded-lg bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/50"
-                >
-                  <option value={ImageSize.small}>Small</option>
-                  <option value={ImageSize.medium}>Medium</option>
-                  <option value={ImageSize.large}>Large</option>
-                </select>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-foreground mb-1">Image Fit</label>
-                <select
-                  name="imageFit"
-                  value={formData.imageFit}
-                  onChange={handleChange}
-                  className="w-full px-3 py-2 border border-border rounded-lg bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/50"
-                >
-                  <option value={ImageFit.original}>Original</option>
-                  <option value={ImageFit.cover}>Cover</option>
-                  <option value={ImageFit.contain}>Contain</option>
-                </select>
-              </div>
-            </div>
-          </div>
-
-          {/* Post Details */}
-          <div className="bg-card border border-border rounded-xl p-5">
-            <h2 className="text-base font-semibold text-foreground mb-4">Post Details</h2>
-            <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-foreground mb-1">
-                  Title <span className="text-destructive">*</span>
-                </label>
-                <input
-                  type="text"
-                  name="title"
-                  value={formData.title}
-                  onChange={handleChange}
+                <Label htmlFor="title">Title *</Label>
+                <Input
+                  id="title"
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
                   placeholder="Enter post title"
-                  className="w-full px-4 py-2 border border-border rounded-lg bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
                   required
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-foreground mb-1">
-                  Slug <span className="text-destructive">*</span>
-                </label>
-                <input
-                  type="text"
-                  name="slug"
-                  value={formData.slug}
-                  onChange={handleChange}
+                <Label htmlFor="slug">Slug</Label>
+                <Input
+                  id="slug"
+                  value={slug}
+                  onChange={(e) => setSlug(e.target.value)}
                   placeholder="post-url-slug"
-                  className="w-full px-4 py-2 border border-border rounded-lg bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
+                />
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label>Category</Label>
+                  <Select value={category} onValueChange={setCategory}>
+                    <SelectTrigger><SelectValue /></SelectTrigger>
+                    <SelectContent>
+                      {CATEGORIES.map((c) => (
+                        <SelectItem key={c} value={c}>{c}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <Label htmlFor="author">Author</Label>
+                  <Input
+                    id="author"
+                    value={author}
+                    onChange={(e) => setAuthor(e.target.value)}
+                  />
+                </div>
+              </div>
+              <div>
+                <Label htmlFor="excerpt">Excerpt *</Label>
+                <Textarea
+                  id="excerpt"
+                  value={excerpt}
+                  onChange={(e) => setExcerpt(e.target.value)}
+                  placeholder="Brief description of the post"
+                  rows={2}
                   required
                 />
               </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-foreground mb-1">Category</label>
-                  <select
-                    name="category"
-                    value={formData.category}
-                    onChange={handleChange}
-                    className="w-full px-3 py-2 border border-border rounded-lg bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/50"
+            </CardContent>
+          </Card>
+
+          {/* Content Editor */}
+          <Card>
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <CardTitle>Content *</CardTitle>
+                <div className="flex items-center gap-2">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => inlineFileRef.current?.click()}
+                    disabled={inlineUploading}
+                    className="flex items-center gap-2"
                   >
-                    {CATEGORIES.map((cat) => (
-                      <option key={cat} value={cat}>
-                        {cat}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-foreground mb-1">
-                    Author <span className="text-destructive">*</span>
-                  </label>
+                    {inlineUploading ? (
+                      <>
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                        Uploading {inlineUploadProgress}%
+                      </>
+                    ) : (
+                      <>
+                        <ImageIcon className="w-4 h-4" />
+                        Insert Image
+                      </>
+                    )}
+                  </Button>
                   <input
-                    type="text"
-                    name="author"
-                    value={formData.author}
-                    onChange={handleChange}
-                    placeholder="Author name"
-                    className="w-full px-4 py-2 border border-border rounded-lg bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
-                    required
+                    ref={inlineFileRef}
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={handleInlineImageInsert}
                   />
                 </div>
               </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-foreground mb-1">
-                    Read Time (minutes)
-                  </label>
-                  <input
-                    type="number"
-                    name="readTime"
-                    value={formData.readTime}
-                    onChange={handleChange}
-                    min="1"
-                    max="60"
-                    className="w-full px-4 py-2 border border-border rounded-lg bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
-                  />
+              <p className="text-xs text-muted-foreground">
+                Click "Insert Image" to upload an image and insert it at the cursor position.
+              </p>
+            </CardHeader>
+            <CardContent>
+              <Textarea
+                ref={contentRef}
+                value={content}
+                onChange={(e) => setContent(e.target.value)}
+                placeholder="Write your blog post content here..."
+                rows={16}
+                required
+                className="font-mono text-sm"
+              />
+              {/* Inline images manager */}
+              {inlineImages.length > 0 && (
+                <div className="mt-4 space-y-3">
+                  <p className="text-sm font-medium text-foreground">Inline Images ({inlineImages.length})</p>
+                  {inlineImages.map((img, idx) => (
+                    <div key={idx} className="flex items-start gap-3 p-3 border rounded-lg bg-muted/30">
+                      <img
+                        src={img.previewUrl}
+                        alt={`Inline ${idx}`}
+                        className="w-16 h-16 object-cover rounded border flex-shrink-0"
+                      />
+                      <div className="flex-1 space-y-2">
+                        <p className="text-xs font-mono text-muted-foreground">
+                          Marker: <code className="bg-muted px-1 rounded">{`{{inline-image:${idx}}}`}</code>
+                        </p>
+                        <div className="flex gap-2">
+                          <Select
+                            value={img.size}
+                            onValueChange={(v) => updateInlineImageSize(idx, v as ImageSize)}
+                          >
+                            <SelectTrigger className="h-7 text-xs w-28">
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value={ImageSize.small}>Small</SelectItem>
+                              <SelectItem value={ImageSize.medium}>Medium</SelectItem>
+                              <SelectItem value={ImageSize.large}>Large</SelectItem>
+                            </SelectContent>
+                          </Select>
+                          <Select
+                            value={img.fit}
+                            onValueChange={(v) => updateInlineImageFit(idx, v as ImageFit)}
+                          >
+                            <SelectTrigger className="h-7 text-xs w-28">
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value={ImageFit.original}>Original</SelectItem>
+                              <SelectItem value={ImageFit.cover}>Cover</SelectItem>
+                              <SelectItem value={ImageFit.contain}>Contain</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                      </div>
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon"
+                        className="h-7 w-7 text-destructive hover:text-destructive"
+                        onClick={() => removeInlineImage(idx)}
+                      >
+                        <X className="w-3 h-3" />
+                      </Button>
+                    </div>
+                  ))}
                 </div>
-                <div>
-                  <label className="block text-sm font-medium text-foreground mb-1">
-                    Tags (comma-separated)
-                  </label>
-                  <input
-                    type="text"
-                    name="tags"
-                    value={formData.tags}
-                    onChange={handleChange}
-                    placeholder="ayurveda, health, herbs"
-                    className="w-full px-4 py-2 border border-border rounded-lg bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Excerpt */}
-          <div className="bg-card border border-border rounded-xl p-5">
-            <label className="block text-sm font-semibold text-foreground mb-2">
-              Excerpt <span className="text-destructive">*</span>
-            </label>
-            <textarea
-              name="excerpt"
-              value={formData.excerpt}
-              onChange={handleChange}
-              placeholder="Brief summary of the post"
-              rows={3}
-              className="w-full px-4 py-2 border border-border rounded-lg bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 resize-none"
-              required
-            />
-          </div>
-
-          {/* Content */}
-          <div className="bg-card border border-border rounded-xl p-5">
-            <label className="block text-sm font-semibold text-foreground mb-2">
-              Content <span className="text-destructive">*</span>
-            </label>
-            <textarea
-              name="content"
-              value={formData.content}
-              onChange={handleChange}
-              placeholder="Write your full blog post content here."
-              rows={16}
-              className="w-full px-4 py-2 border border-border rounded-lg bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 resize-y font-mono text-sm"
-              required
-            />
-          </div>
-
-          {/* Publication Settings */}
-          <div className="bg-card border border-border rounded-xl p-5">
-            <h2 className="text-base font-semibold text-foreground mb-4">Publication Settings</h2>
-            <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-foreground mb-1">
-                  Publication Date
-                </label>
-                <input
-                  type="date"
-                  name="publicationDate"
-                  value={formData.publicationDate}
-                  onChange={handleChange}
-                  className="w-full px-4 py-2 border border-border rounded-lg bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
-                />
-              </div>
-              <div className="flex items-center gap-3">
-                <input
-                  type="checkbox"
-                  id="publishImmediately"
-                  name="publishImmediately"
-                  checked={formData.publishImmediately}
-                  onChange={handleChange}
-                  className="w-4 h-4 accent-primary"
-                />
-                <label
-                  htmlFor="publishImmediately"
-                  className="text-sm font-medium text-foreground cursor-pointer"
-                >
-                  Publish Immediately
-                </label>
-              </div>
-              {formData.publishImmediately && (
-                <p className="text-xs text-primary bg-primary/10 px-3 py-2 rounded-lg">
-                  ✓ This post will be published and visible to all visitors.
-                </p>
               )}
-            </div>
-          </div>
+            </CardContent>
+          </Card>
+
+          {/* Featured Image */}
+          <Card>
+            <CardHeader><CardTitle>Featured Image</CardTitle></CardHeader>
+            <CardContent className="space-y-4">
+              <div
+                className="border-2 border-dashed border-border rounded-lg p-6 text-center cursor-pointer hover:border-primary/50 transition-colors"
+                onClick={() => featuredFileRef.current?.click()}
+              >
+                {featuredImagePreview ? (
+                  <div className="relative">
+                    <img
+                      src={featuredImagePreview}
+                      alt="Featured"
+                      className="max-h-48 mx-auto rounded object-cover"
+                    />
+                    <Button
+                      type="button"
+                      variant="destructive"
+                      size="icon"
+                      className="absolute top-2 right-2 h-6 w-6"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setFeaturedImagePreview(null);
+                        setFeaturedImageBlob(null);
+                      }}
+                    >
+                      <X className="w-3 h-3" />
+                    </Button>
+                  </div>
+                ) : (
+                  <div className="flex flex-col items-center gap-2 text-muted-foreground">
+                    {featuredUploading ? (
+                      <>
+                        <Loader2 className="w-8 h-8 animate-spin" />
+                        <p>Uploading... {featuredUploadProgress}%</p>
+                      </>
+                    ) : (
+                      <>
+                        <ImagePlus className="w-8 h-8" />
+                        <p>Click to replace featured image</p>
+                      </>
+                    )}
+                  </div>
+                )}
+              </div>
+              <input
+                ref={featuredFileRef}
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={handleFeaturedImageChange}
+              />
+              {featuredImageBlob && (
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label>Image Fit</Label>
+                    <Select
+                      value={featuredImageFit}
+                      onValueChange={(v) => setFeaturedImageFit(v as ImageFit)}
+                    >
+                      <SelectTrigger><SelectValue /></SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value={ImageFit.cover}>Cover</SelectItem>
+                        <SelectItem value={ImageFit.contain}>Contain</SelectItem>
+                        <SelectItem value={ImageFit.original}>Original</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div>
+                    <Label>Image Size</Label>
+                    <Select
+                      value={featuredImageSize}
+                      onValueChange={(v) => setFeaturedImageSize(v as ImageSize)}
+                    >
+                      <SelectTrigger><SelectValue /></SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value={ImageSize.small}>Small</SelectItem>
+                        <SelectItem value={ImageSize.medium}>Medium</SelectItem>
+                        <SelectItem value={ImageSize.large}>Large</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+
+          {/* Tags */}
+          <Card>
+            <CardHeader><CardTitle>Tags</CardTitle></CardHeader>
+            <CardContent className="space-y-3">
+              <div className="flex gap-2">
+                <Input
+                  value={tagInput}
+                  onChange={(e) => setTagInput(e.target.value)}
+                  placeholder="Add a tag"
+                  onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); addTag(); } }}
+                />
+                <Button type="button" variant="outline" onClick={addTag}>Add</Button>
+              </div>
+              {tags.length > 0 && (
+                <div className="flex flex-wrap gap-2">
+                  {tags.map((tag) => (
+                    <Badge key={tag} variant="secondary" className="flex items-center gap-1">
+                      {tag}
+                      <button type="button" onClick={() => removeTag(tag)}>
+                        <X className="w-3 h-3" />
+                      </button>
+                    </Badge>
+                  ))}
+                </div>
+              )}
+            </CardContent>
+          </Card>
+
+          {/* Publish Settings */}
+          <Card>
+            <CardHeader><CardTitle>Publish Settings</CardTitle></CardHeader>
+            <CardContent>
+              <div className="flex items-center gap-3">
+                <Switch
+                  id="publish"
+                  checked={publishImmediately}
+                  onCheckedChange={setPublishImmediately}
+                />
+                <Label htmlFor="publish">Published</Label>
+              </div>
+            </CardContent>
+          </Card>
 
           {/* Actions */}
-          <div className="flex items-center gap-4 pb-8">
-            <button
-              type="submit"
-              disabled={updatePost.isPending}
-              className="flex items-center gap-2 bg-primary text-primary-foreground px-8 py-3 rounded-full font-semibold hover:bg-primary/90 transition-colors disabled:opacity-50"
-            >
-              {updatePost.isPending ? (
-                <>
-                  <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                  {uploadProgress > 0 && uploadProgress < 100
-                    ? `Uploading ${uploadProgress}%...`
-                    : 'Saving...'}
-                </>
-              ) : formData.publishImmediately ? (
-                'Save & Publish'
-              ) : (
-                'Save as Draft'
-              )}
-            </button>
-            <button
+          <div className="flex gap-3 justify-end">
+            <Button
               type="button"
+              variant="outline"
               onClick={() => navigate({ to: '/admin' })}
-              className="px-8 py-3 rounded-full font-semibold border border-border text-foreground hover:bg-muted transition-colors"
             >
               Cancel
-            </button>
+            </Button>
+            <Button
+              type="submit"
+              disabled={isSubmitting}
+              className="bg-primary hover:bg-primary/90 text-primary-foreground"
+            >
+              {isSubmitting ? (
+                <>
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  Saving...
+                </>
+              ) : (
+                <>
+                  <Upload className="w-4 h-4 mr-2" />
+                  Save Changes
+                </>
+              )}
+            </Button>
           </div>
         </form>
       </div>

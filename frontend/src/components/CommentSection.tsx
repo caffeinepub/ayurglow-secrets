@@ -1,141 +1,165 @@
 import { useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { MessageCircle, Send, User, Clock } from 'lucide-react';
+import { useGetComments, useAddComment } from '../hooks/useQueries';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { Label } from '@/components/ui/label';
-import { useGetComments, useAddComment } from '@/hooks/useQueries';
-import { Loader2, MessageSquare } from 'lucide-react';
+import { toast } from 'sonner';
+import type { Comment } from '../backend';
 
 interface CommentSectionProps {
   postId: string;
+  /** Optional pre-loaded comments from the post data. Falls back to fetching via useGetComments. */
+  comments?: Comment[];
 }
 
-export default function CommentSection({ postId }: CommentSectionProps) {
-  const [author, setAuthor] = useState('');
-  const [content, setContent] = useState('');
-  
-  const { data: comments = [], isLoading } = useGetComments(postId);
-  const addCommentMutation = useAddComment();
+export default function CommentSection({ postId, comments: propComments }: CommentSectionProps) {
+  const [authorName, setAuthorName] = useState('');
+  const [commentText, setCommentText] = useState('');
+
+  // Only fetch comments from backend if they weren't passed as a prop
+  const { data: fetchedComments = [], isLoading } = useGetComments(
+    propComments === undefined ? postId : ''
+  );
+
+  const comments = propComments !== undefined ? propComments : fetchedComments;
+  const loading = propComments === undefined ? isLoading : false;
+
+  const addComment = useAddComment();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    if (!author.trim() || !content.trim()) return;
+    if (!authorName.trim() || !commentText.trim()) {
+      toast.error('Please fill in all fields');
+      return;
+    }
 
     try {
-      await addCommentMutation.mutateAsync({
+      await addComment.mutateAsync({
         postId,
-        author: author.trim(),
-        content: content.trim(),
+        author: authorName.trim(),
+        content: commentText.trim(),
       });
-      
-      setAuthor('');
-      setContent('');
-    } catch (error) {
-      console.error('Error adding comment:', error);
+      setAuthorName('');
+      setCommentText('');
+      toast.success('Comment added successfully!');
+    } catch {
+      toast.error('Failed to add comment. Please try again.');
     }
   };
 
-  return (
-    <div className="space-y-6">
-      <Card className="border-sage-green/20">
-        <CardHeader>
-          <CardTitle className="text-xl md:text-2xl font-serif text-earth-green flex items-center gap-2">
-            <MessageSquare className="w-6 h-6" />
-            Share Your Comment
-          </CardTitle>
-          <p className="text-sm text-foreground/70">
-            We'd love to hear your thoughts! Share your experience or ask questions below.
-          </p>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="author">Your Name</Label>
-              <Input
-                id="author"
-                value={author}
-                onChange={(e) => setAuthor(e.target.value)}
-                placeholder="Enter your name"
-                required
-              />
-            </div>
-            
-            <div className="space-y-2">
-              <Label htmlFor="content">Your Comment</Label>
-              <Textarea
-                id="content"
-                value={content}
-                onChange={(e) => setContent(e.target.value)}
-                placeholder="Share your thoughts..."
-                rows={4}
-                required
-              />
-            </div>
-            
-            <Button 
-              type="submit" 
-              disabled={addCommentMutation.isPending}
-              className="bg-earth-green hover:bg-earth-green/90"
-            >
-              {addCommentMutation.isPending ? (
-                <>
-                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                  Posting...
-                </>
-              ) : (
-                'Post Comment'
-              )}
-            </Button>
-          </form>
-        </CardContent>
-      </Card>
+  const formatDate = (timestamp: bigint) => {
+    const date = new Date(Number(timestamp) / 1_000_000);
+    return date.toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    });
+  };
 
-      {isLoading ? (
-        <div className="flex justify-center py-8">
-          <Loader2 className="w-6 h-6 animate-spin text-earth-green" />
-        </div>
-      ) : comments.length > 0 ? (
+  return (
+    <section>
+      <div className="flex items-center gap-2 mb-6">
+        <MessageCircle className="h-6 w-6 text-primary" />
+        <h2 className="text-2xl font-playfair font-bold text-foreground">
+          Share Your Comment
+        </h2>
+      </div>
+      <p className="text-muted-foreground mb-8">
+        We'd love to hear your thoughts! Share your experience with these Ayurvedic remedies or ask a question.
+      </p>
+
+      {/* Comment Form */}
+      <form onSubmit={handleSubmit} className="bg-muted/30 rounded-xl p-6 mb-8 border border-border">
+        <h3 className="font-semibold text-foreground mb-4">Leave a Comment</h3>
         <div className="space-y-4">
-          <h3 className="text-lg font-semibold text-earth-green font-serif">
-            Comments ({comments.length})
-          </h3>
-          {comments.map((comment, index) => (
-            <Card key={index} className="border-sage-green/20">
-              <CardContent className="pt-6">
-                <div className="flex items-start gap-3">
-                  <div className="w-10 h-10 rounded-full bg-sage-green/20 flex items-center justify-center flex-shrink-0">
-                    <span className="text-earth-green font-semibold">
-                      {comment.author.charAt(0).toUpperCase()}
-                    </span>
-                  </div>
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2 mb-1">
-                      <span className="font-semibold text-earth-green">{comment.author}</span>
-                      <span className="text-xs text-foreground/60">
-                        {new Date(Number(comment.timestamp)).toLocaleDateString('en-US', {
-                          month: 'short',
-                          day: 'numeric',
-                          year: 'numeric',
-                        })}
-                      </span>
-                    </div>
-                    <p className="text-foreground/80 leading-relaxed">{comment.content}</p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
+          <div>
+            <label htmlFor="author" className="block text-sm font-medium text-foreground mb-1">
+              Your Name
+            </label>
+            <Input
+              id="author"
+              type="text"
+              value={authorName}
+              onChange={(e) => setAuthorName(e.target.value)}
+              placeholder="Enter your name"
+              className="w-full"
+            />
+          </div>
+          <div>
+            <label htmlFor="comment" className="block text-sm font-medium text-foreground mb-1">
+              Comment
+            </label>
+            <Textarea
+              id="comment"
+              value={commentText}
+              onChange={(e) => setCommentText(e.target.value)}
+              placeholder="Share your thoughts, experiences, or questions..."
+              rows={4}
+              className="w-full"
+            />
+          </div>
+          <Button
+            type="submit"
+            disabled={addComment.isPending}
+            className="flex items-center gap-2"
+          >
+            {addComment.isPending ? (
+              <>
+                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-current" />
+                Submitting...
+              </>
+            ) : (
+              <>
+                <Send className="h-4 w-4" />
+                Submit Comment
+              </>
+            )}
+          </Button>
         </div>
-      ) : (
-        <Card className="border-sage-green/20">
-          <CardContent className="py-8 text-center">
-            <MessageSquare className="w-12 h-12 mx-auto mb-3 text-sage-green/50" />
-            <p className="text-foreground/70">No comments yet. Be the first to share your thoughts!</p>
-          </CardContent>
-        </Card>
-      )}
-    </div>
+      </form>
+
+      {/* Comments List */}
+      <div>
+        <h3 className="font-semibold text-foreground mb-4">
+          {comments.length} {comments.length === 1 ? 'Comment' : 'Comments'}
+        </h3>
+
+        {loading ? (
+          <div className="space-y-4">
+            {[1, 2].map((i) => (
+              <div key={i} className="animate-pulse bg-muted rounded-lg p-4">
+                <div className="h-4 bg-muted-foreground/20 rounded w-1/4 mb-2" />
+                <div className="h-3 bg-muted-foreground/20 rounded w-full mb-1" />
+                <div className="h-3 bg-muted-foreground/20 rounded w-3/4" />
+              </div>
+            ))}
+          </div>
+        ) : comments.length === 0 ? (
+          <div className="text-center py-8 text-muted-foreground">
+            <MessageCircle className="h-12 w-12 mx-auto mb-3 opacity-30" />
+            <p>No comments yet. Be the first to share your thoughts!</p>
+          </div>
+        ) : (
+          <div className="space-y-4">
+            {comments.map((comment, index) => (
+              <div key={index} className="bg-card border border-border rounded-lg p-4">
+                <div className="flex items-center gap-2 mb-2">
+                  <div className="bg-primary/10 rounded-full p-1.5">
+                    <User className="h-4 w-4 text-primary" />
+                  </div>
+                  <span className="font-medium text-foreground">{comment.author}</span>
+                  <span className="text-muted-foreground text-sm flex items-center gap-1 ml-auto">
+                    <Clock className="h-3 w-3" />
+                    {formatDate(comment.timestamp)}
+                  </span>
+                </div>
+                <p className="text-foreground/80 text-sm leading-relaxed">{comment.content}</p>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </section>
   );
 }

@@ -3,30 +3,28 @@ import { ArrowLeft, Clock } from 'lucide-react';
 
 const practices = [
   {
-    title: 'Dinacharya (Complete Daily Routine)',
-    emoji: '📅',
+    title: 'Dinacharya (Daily Routine)',
+    emoji: '🌅',
     steps: [
-      'Wake up during Brahma Muhurta (4:30–6 AM), 1.5 hours before sunrise.',
-      'Drink 1–2 glasses of warm water to flush the digestive system.',
-      'Perform tongue scraping and oil pulling (15–20 minutes).',
-      'Practice yoga and pranayama for 30–45 minutes.',
-      'Take a warm bath or shower to refresh the body.',
-      'Eat a nourishing breakfast suited to your dosha type.',
-      'Work during peak mental hours (10 AM–2 PM).',
-      'Eat the largest meal at midday when digestive fire is strongest.',
-      'Take a short walk after meals to aid digestion.',
-      'Wind down by 9 PM; avoid screens 1 hour before bed.',
+      'Wake up before sunrise (Brahma Muhurta — around 5:30–6 AM).',
+      'Drink a glass of warm water to stimulate digestion.',
+      'Practice tongue scraping and oil pulling.',
+      'Do 20–30 minutes of yoga or light exercise.',
+      'Eat breakfast mindfully, without distractions.',
+      'Work during peak energy hours (10 AM–2 PM).',
+      'Have your largest meal at lunch when digestion is strongest.',
+      'Wind down after sunset; avoid heavy meals at night.',
       'Sleep by 10 PM for optimal rest and rejuvenation.',
     ],
     benefits: [
-      'Aligns body with natural circadian rhythms',
-      'Optimizes digestion and metabolism',
+      'Aligns body with natural rhythms',
+      'Improves digestion and metabolism',
+      'Enhances mental clarity',
       'Reduces stress and anxiety',
-      'Improves sleep quality',
-      'Boosts overall energy and vitality',
+      'Promotes deep, restful sleep',
     ],
     frequency: 'Daily — consistency is key',
-    duration: 'Lifelong practice for lasting health',
+    duration: 'Lifelong practice for optimal health',
   },
   {
     title: 'Abhyanga (Self-Oil Massage)',
@@ -34,52 +32,52 @@ const practices = [
     steps: [
       'Choose oil based on your dosha: sesame (Vata), coconut (Pitta), mustard (Kapha).',
       'Warm the oil slightly by placing the bottle in warm water.',
-      'Apply oil to the crown of your head and massage in circular motions.',
-      'Work down to face, neck, and shoulders using gentle strokes.',
-      'Use long strokes on arms and legs, circular motions on joints.',
+      'Begin at the crown of the head, massaging in circular motions.',
+      'Work down to the face, neck, and shoulders.',
+      'Use long strokes on limbs and circular motions on joints.',
       'Massage the abdomen in clockwise circular motions.',
-      'Leave oil on for 15–20 minutes to allow absorption.',
-      'Take a warm shower to remove excess oil.',
+      'Leave oil on for 15–20 minutes.',
+      'Shower with warm water — avoid soap on oiled areas if possible.',
     ],
     benefits: [
-      'Nourishes skin and deeper tissues',
+      'Nourishes skin and tissues',
       'Calms the nervous system',
-      'Improves lymphatic circulation',
-      'Reduces Vata imbalance and anxiety',
-      'Promotes deep, restful sleep',
+      'Improves circulation',
+      'Reduces Vata imbalance',
+      'Promotes longevity',
     ],
     frequency: 'Daily or 3–4 times per week',
     duration: 'Ongoing daily practice',
   },
   {
-    title: 'Evening Wind-Down Ritual',
+    title: 'Evening Wind-Down Routine',
     emoji: '🌙',
     steps: [
-      'Dim lights and reduce screen exposure after 8 PM.',
+      'Dim lights after 7 PM to signal the body to wind down.',
+      'Avoid screens (phone, TV) at least 1 hour before bed.',
       'Drink warm golden milk (turmeric milk) or chamomile tea.',
-      'Practice 10–15 minutes of gentle yoga or stretching.',
-      'Write in a gratitude journal — list 3 things you are grateful for.',
-      'Apply warm sesame oil to the soles of your feet (Padabhyanga).',
-      'Practice 5–10 minutes of deep breathing or meditation.',
-      'Ensure bedroom is cool, dark, and quiet.',
-      'Sleep by 10 PM for optimal Pitta-time rest.',
+      'Practice 10 minutes of gentle yoga or stretching.',
+      'Do 5 minutes of deep breathing or meditation.',
+      'Write in a gratitude journal — note 3 things you are grateful for.',
+      'Apply warm sesame oil to the soles of your feet.',
+      'Sleep by 10 PM in a cool, dark, quiet room.',
     ],
     benefits: [
-      'Signals the body to prepare for sleep',
-      'Reduces cortisol and stress hormones',
-      'Improves sleep onset and quality',
-      'Promotes emotional balance',
-      'Supports overnight cellular repair',
+      'Improves sleep quality',
+      'Reduces cortisol levels',
+      'Calms the mind',
+      'Supports nervous system recovery',
+      'Enhances next-day energy',
     ],
     frequency: 'Every evening',
-    duration: 'Lifelong practice',
+    duration: 'Ongoing daily practice',
   },
 ];
 
 export default function DailyRoutinesPage() {
   return (
     <div className="min-h-screen bg-background">
-      <section className="bg-gradient-to-br from-forest to-primary py-16 text-white">
+      <section className="bg-gradient-to-br from-primary to-forest py-16 text-white">
         <div className="max-w-4xl mx-auto px-4">
           <Link
             to="/lifestyle-wellness"
@@ -90,7 +88,8 @@ export default function DailyRoutinesPage() {
           <div className="text-5xl mb-4">📅</div>
           <h1 className="font-serif text-4xl md:text-5xl font-bold mb-4">Daily Ayurvedic Routines</h1>
           <p className="text-white/85 text-lg max-w-2xl">
-            Follow the ancient Dinacharya (daily routine) to align your body with nature's rhythms for optimal health and vitality.
+            Follow the ancient Dinacharya (daily routine) to align your body with nature's rhythms for
+            optimal health, energy, and vitality.
           </p>
         </div>
       </section>

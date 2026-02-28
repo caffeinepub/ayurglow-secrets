@@ -283,6 +283,13 @@ actor {
     blogPosts.values().map(func(p) { toBlogPostView(p) }).toArray();
   };
 
+  public query ({ caller }) func getAllPostsForAdminPage() : async [BlogPostView] {
+    if (not AccessControl.isAdmin(accessControlState, caller)) {
+      Runtime.trap("Unauthorized: Only admins can view all posts");
+    };
+    blogPosts.values().map(func(p) { toBlogPostView(p) }).toArray();
+  };
+
   public shared ({ caller }) func addComment(postId : Text, author : Text, content : Text) : async Bool {
     if (not (AccessControl.hasPermission(accessControlState, caller, #user))) {
       Runtime.trap("Unauthorized: Only users can add comments");

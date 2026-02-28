@@ -1,69 +1,142 @@
-import PostCard from '@/components/PostCard';
-import BlogSidebar from '@/components/BlogSidebar';
-import { useGetPublishedPosts } from '@/hooks/useQueries';
-import { Loader2 } from 'lucide-react';
+import { Link } from '@tanstack/react-router';
+import { Calendar, Clock, User, ArrowRight } from 'lucide-react';
+import { useGetPublishedPosts } from '../hooks/useQueries';
+import BlogSidebar from '../components/BlogSidebar';
+import { Badge } from '@/components/ui/badge';
+import { Skeleton } from '@/components/ui/skeleton';
+import type { BlogPostView } from '../backend';
 
-export default function BlogPage() {
-  const { data: posts = [], isLoading, error } = useGetPublishedPosts();
+function PostCard({ post }: { post: BlogPostView }) {
+  const featuredImageUrl = post.featuredImage?.blob.getDirectURL();
 
-  console.log('BlogPage - isLoading:', isLoading);
-  console.log('BlogPage - posts:', posts);
-  console.log('BlogPage - error:', error);
-
-  if (error) {
-    console.error('BlogPage error:', error);
-    return (
-      <div className="container mx-auto px-4 py-12">
-        <div className="text-center text-red-600">
-          <p>Error loading blog posts. Please try again later.</p>
-          <p className="text-sm mt-2">{error instanceof Error ? error.message : 'Unknown error'}</p>
-        </div>
-      </div>
-    );
-  }
+  const formatDate = (timestamp: bigint | undefined) => {
+    if (!timestamp) return '';
+    const date = new Date(Number(timestamp) / 1_000_000);
+    return date.toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    });
+  };
 
   return (
-    <div className="bg-background min-h-screen">
-      <div className="container mx-auto px-4 py-12">
-        <div className="mb-8">
-          <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-ocean-blue mb-3 font-serif">
-            Latest Posts
-          </h1>
-          <p className="text-foreground/70 text-base md:text-lg leading-relaxed">
-            Explore our collection of natural health and wellness articles
-          </p>
+    <article className="bg-card border border-border rounded-xl overflow-hidden hover:shadow-md transition-shadow group">
+      {featuredImageUrl && (
+        <div className="h-48 overflow-hidden">
+          <img
+            src={featuredImageUrl}
+            alt={post.title}
+            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+          />
         </div>
+      )}
+      {!featuredImageUrl && (
+        <div className="h-48 bg-gradient-to-br from-primary/10 to-secondary/10 flex items-center justify-center">
+          <img
+            src="/assets/generated/blog-featured-placeholder.dim_800x450.png"
+            alt="Blog post"
+            className="w-full h-full object-cover opacity-60"
+          />
+        </div>
+      )}
+      <div className="p-6">
+        {post.category && (
+          <Badge className="mb-3 bg-primary/10 text-primary border-primary/20 text-xs">
+            {post.category}
+          </Badge>
+        )}
+        <h2 className="text-xl font-playfair font-bold text-foreground mb-2 line-clamp-2 group-hover:text-primary transition-colors">
+          {post.title}
+        </h2>
+        {post.excerpt && (
+          <p className="text-muted-foreground text-sm mb-4 line-clamp-3">{post.excerpt}</p>
+        )}
+        <div className="flex items-center gap-3 text-xs text-muted-foreground mb-4 flex-wrap">
+          {post.author && (
+            <span className="flex items-center gap-1">
+              <User className="h-3 w-3" />
+              {post.author}
+            </span>
+          )}
+          {post.publishedDate && (
+            <span className="flex items-center gap-1">
+              <Calendar className="h-3 w-3" />
+              {formatDate(post.publishedDate)}
+            </span>
+          )}
+          {post.readTime && (
+            <span className="flex items-center gap-1">
+              <Clock className="h-3 w-3" />
+              {Number(post.readTime)} min read
+            </span>
+          )}
+        </div>
+        <Link
+          to="/blog/$postId"
+          params={{ postId: post.slug || post.id }}
+          className="inline-flex items-center gap-1 text-sm font-medium text-primary hover:text-primary/80 transition-colors"
+        >
+          Read More
+          <ArrowRight className="h-3 w-3" />
+        </Link>
+      </div>
+    </article>
+  );
+}
 
-        <div className="flex flex-col lg:flex-row gap-8">
-          {/* Main Content */}
-          <div className="flex-1">
-            {isLoading ? (
-              <div className="flex justify-center items-center py-20">
-                <Loader2 className="w-8 h-8 animate-spin text-ocean-blue" />
-              </div>
-            ) : posts.length === 0 ? (
-              <div className="text-center py-20">
-                <p className="text-foreground/70 text-base md:text-lg mb-4">No published posts yet.</p>
-                <p className="text-sm text-muted-foreground">
-                  Posts need to be created and marked as "Published" to appear here.
-                </p>
-              </div>
-            ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {posts.map((post) => {
-                  console.log('Rendering post:', post.id, post.title);
-                  return <PostCard key={post.id} post={post} />;
-                })}
-              </div>
-            )}
-          </div>
+export default function BlogPage() {
+  const { data: posts = [], isLoading } = useGetPublishedPosts();
 
-          {/* Sidebar */}
-          {posts.length > 0 && (
-            <div className="lg:w-80">
-              <BlogSidebar posts={posts} />
+  return (
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      {/* Header */}
+      <div className="text-center mb-12">
+        <h1 className="text-3xl sm:text-4xl font-playfair font-bold text-foreground mb-4">
+          AyurGlow Blog
+        </h1>
+        <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+          Explore our collection of Ayurvedic wisdom, natural remedies, and holistic wellness tips
+          for a healthier, more balanced life.
+        </p>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+        {/* Main Content */}
+        <div className="lg:col-span-3">
+          {isLoading ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+              {[1, 2, 3, 4].map((i) => (
+                <div key={i} className="bg-card border border-border rounded-xl overflow-hidden">
+                  <Skeleton className="h-48 w-full" />
+                  <div className="p-6 space-y-3">
+                    <Skeleton className="h-4 w-20" />
+                    <Skeleton className="h-6 w-full" />
+                    <Skeleton className="h-4 w-3/4" />
+                    <Skeleton className="h-4 w-1/2" />
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : posts.length === 0 ? (
+            <div className="text-center py-16 bg-muted/30 rounded-xl border border-border">
+              <h3 className="text-xl font-semibold text-foreground mb-2">No posts yet</h3>
+              <p className="text-muted-foreground">
+                Check back soon! We're working on bringing you amazing Ayurvedic content.
+                Posts need to be published by an admin to appear here.
+              </p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+              {posts.map((post) => (
+                <PostCard key={post.id} post={post} />
+              ))}
             </div>
           )}
+        </div>
+
+        {/* Sidebar */}
+        <div className="lg:col-span-1">
+          <BlogSidebar posts={posts} />
         </div>
       </div>
     </div>

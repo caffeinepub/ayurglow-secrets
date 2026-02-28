@@ -1,44 +1,87 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Fix admin panel blog post display and editing",
+  "title": "Inline image insertion in blog posts, remove login page, fix missing post in admin",
   "requirements": [
     {
       "id": "REQ-1",
-      "summary": "Fix the admin panel (AdminPostsPage) so that all blog posts are fetched and displayed correctly in the posts list table, including posts created via the Create Blog Post form",
+      "summary": "Add inline image insertion toolbar button to blog post create and edit forms, allowing users to upload images and insert them at cursor position in the content textarea, with proper rendering in the detail view",
       "acceptanceCriteria": [
-        "All blog posts (published and draft) appear in the admin panel list when navigating to the admin page",
-        "Each post row shows the post title, category, publish status, and action buttons (edit, delete, toggle publish)",
-        "The edit button navigates to the EditBlogPostPage for the selected post",
-        "The delete button triggers a confirmation dialog and removes the post on confirmation",
-        "The toggle publish button correctly switches a post between published and draft states",
-        "Loading and empty states are handled gracefully with appropriate messages"
+        "An 'Insert Image' button is visible in the content editor toolbar on both CreateBlogPostPage and EditBlogPostPage.",
+        "Clicking the button opens a file picker or upload dialog for selecting an image.",
+        "The selected image is uploaded and an inline image tag/placeholder is inserted at the current cursor position in the content textarea.",
+        "When the blog post is viewed on BlogPostDetailPage, inline images appear correctly at the positions they were inserted.",
+        "Existing inline image rendering logic in BlogPostDetailPage and imageUtils.ts is preserved and extended to support new insertions."
       ],
       "file_operations": [
         {
-          "path": "frontend/src/pages/AdminPostsPage.tsx",
+          "path": "frontend/src/pages/CreateBlogPostPage.tsx",
           "operation": "modify",
-          "description": "Update the AdminPostsPage component to properly fetch and display all blog posts (including drafts) using the useGetAllVisiblePosts hook. Ensure the posts list table shows title, category, publish status (with visual distinction for drafts via a badge), and action buttons (edit, delete, toggle publish). Wire the edit button to navigate to EditBlogPostPage with the post ID. Implement a confirmation dialog for the delete action. Ensure the toggle publish button correctly updates the post's published state. Add proper loading spinner and empty state messaging when no posts exist. Verify that newly created posts from the Create Blog Post form appear in the list immediately after creation."
+          "description": "Add an 'Insert Image' toolbar button above the content textarea. Use the blob-storage component to handle image uploads via ExternalBlob.fromBytes with upload progress tracking. When an image is uploaded, insert an inline image marker (e.g., {{image:position}}) at the current cursor position in the textarea. Store the uploaded ExternalBlob in the inlineImages array with its position index. Verify the blob-storage component's usage instructions before implementing. Use a file input with accept='image/*' for the file picker."
+        },
+        {
+          "path": "frontend/src/pages/EditBlogPostPage.tsx",
+          "operation": "modify",
+          "description": "Add an 'Insert Image' toolbar button above the content textarea, identical to CreateBlogPostPage. Use the blob-storage component to handle image uploads via ExternalBlob.fromBytes with upload progress tracking. When an image is uploaded, insert an inline image marker at the current cursor position and append the ExternalBlob to the existing inlineImages array. Verify the blob-storage component's usage instructions before implementing. Preserve existing inline images when editing."
+        },
+        {
+          "path": "frontend/src/pages/BlogPostDetailPage.tsx",
+          "operation": "modify",
+          "description": "Extend the existing inline image rendering logic to handle newly inserted inline image markers from the content field. Use the existing imageUtils.ts functions to replace inline image markers with actual image URLs from the inlineImages array. Ensure images render at the correct positions where they were inserted during post creation/editing. Preserve all existing rendering behavior for previously created inline images."
+        },
+        {
+          "path": "frontend/src/utils/imageUtils.ts",
+          "operation": "modify",
+          "description": "Extend the existing inline image utility functions to support parsing and replacing the new inline image markers (e.g., {{image:position}}) inserted by the editor toolbar. Add a function to replace markers with <img> tags using ExternalBlob.getDirectURL() for each inline image. Preserve all existing utility functions and their behavior for backward compatibility."
         }
       ]
     },
     {
       "id": "REQ-2",
-      "summary": "Ensure the admin panel uses the correct React Query hook that fetches ALL blog posts (including unpublished drafts), not just published posts, so admins can manage all content",
+      "summary": "Remove the login/authentication gate from admin pages, making CreateBlogPostPage and AdminPostsPage directly accessible without requiring Internet Identity login",
       "acceptanceCriteria": [
-        "AdminPostsPage calls the hook that retrieves all visible posts (useGetAllPosts or equivalent), not the published-only hook",
-        "Draft posts are visible in the admin list and are visually distinguished from published posts (e.g., a 'Draft' badge)"
+        "Navigating to the admin page (e.g., /admin or /admin/posts) does not redirect to a login page or show an access-denied screen.",
+        "The AdminRoute guard is removed or set to always allow access for admin-facing pages.",
+        "The create/edit/delete blog post functionality remains fully operational without authentication.",
+        "Internet Identity login/logout in the Navigation bar can remain for other purposes but is not required to access admin pages."
       ],
       "file_operations": [
         {
-          "path": "frontend/src/hooks/useQueries.ts",
+          "path": "frontend/src/components/AdminRoute.tsx",
           "operation": "modify",
-          "description": "Review and ensure the useGetAllVisiblePosts hook (or equivalent) correctly calls the backend's getAllPosts method to fetch all blog posts regardless of publish status. Verify the hook is properly exported and available for use in AdminPostsPage. If the hook does not exist or is incorrectly named, add or rename it to useGetAllVisiblePosts for clarity. Ensure it uses the actor's getAllPosts method from the backend interface."
+          "description": "Remove or bypass the authentication and admin permission checks. Allow all users to access wrapped admin pages by directly rendering the children prop without checking identity or calling canCallerAccessAdminSection(). Optionally remove the entire component if no longer needed, but if kept, ensure it always renders children without any guards."
         },
+        {
+          "path": "frontend/src/App.tsx",
+          "operation": "modify",
+          "description": "Remove AdminRoute wrapper from admin-related routes (e.g., /admin, /admin/posts, /admin/posts/create, /admin/posts/edit/:id) so they render directly without authentication guards. Ensure admin pages are accessible to all users without requiring login. Keep the route definitions intact but remove any guard components wrapping them."
+        },
+        {
+          "path": "frontend/src/components/Navigation.tsx",
+          "operation": "modify",
+          "description": "Keep the Internet Identity login/logout functionality in the navigation bar for other purposes, but ensure the Admin link is visible and accessible to all users without requiring authentication. Remove any conditional rendering that hides the Admin link based on authentication state."
+        }
+      ]
+    },
+    {
+      "id": "REQ-3",
+      "summary": "Fix the bug where the blog post titled 'Best Ayurvedic Herbs for Glowing Skin' does not appear on the admin page by investigating data fetch, publish state filters, or backend query issues, and ensuring all posts are listed regardless of publish state",
+      "acceptanceCriteria": [
+        "The 'Best Ayurvedic Herbs for Glowing Skin' blog post is visible in the admin posts list.",
+        "All blog posts, including unpublished/draft ones, are shown on the admin page.",
+        "The backend query used by AdminPostsPage fetches all posts without filtering out drafts or unpublished posts.",
+        "No console errors related to missing posts appear when the admin page loads."
+      ],
+      "file_operations": [
         {
           "path": "frontend/src/pages/AdminPostsPage.tsx",
           "operation": "modify",
-          "description": "Replace any usage of useGetPublishedPosts with useGetAllVisiblePosts (or the correct hook that fetches all posts) to ensure draft posts are included in the admin panel list. Add visual distinction for draft posts by rendering a 'Draft' badge or label next to unpublished posts in the table rows. Ensure the component correctly handles the data structure returned by the all-posts hook."
+          "description": "Review the data fetching logic to ensure it calls the correct backend query hook that retrieves all posts (including drafts and unpublished posts). Verify that the hook uses getAllPostsForAdminPage() rather than getPublishedPosts(). Add console logging to debug if posts are being filtered on the frontend. Ensure no local filtering removes unpublished or draft posts from the displayed list. Add error handling and display any fetch errors to the user."
+        },
+        {
+          "path": "frontend/src/hooks/useQueries.ts",
+          "operation": "modify",
+          "description": "Review the useGetAllPostsForAdminPage() hook (or equivalent) to ensure it correctly calls actor.getAllPostsForAdminPage() and does not apply any frontend filtering that would exclude unpublished or draft posts. Verify the query key and enabled state are correct. Add error logging to capture any issues during the backend call. Ensure the hook returns all posts as received from the backend without modification."
         }
       ]
     }

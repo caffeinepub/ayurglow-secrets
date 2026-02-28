@@ -1,89 +1,103 @@
 import { ExternalBlob } from '../backend';
 
 /**
- * Converts an ExternalBlob to a direct URL for display.
- * Returns a fallback URL if provided and the blob URL fails.
+ * Convert an ExternalBlob to a direct URL for display.
  */
-export function getBlobImageUrl(blob: ExternalBlob | null | undefined, fallback?: string): string {
-  if (!blob) return fallback || '';
-  try {
-    return blob.getDirectURL();
-  } catch {
-    return fallback || '';
-  }
+export function getBlobImageUrl(blob: ExternalBlob): string {
+  return blob.getDirectURL();
 }
 
 /**
- * Injects data-blob-index attributes onto img tags in HTML content.
- * This is called before saving content to the backend so we can
- * later resolve images by index.
- *
- * @param htmlContent - The HTML content string
- * @param startIndex - The starting index for blob numbering (0 for no featured image offset)
+ * Inject data-blob-index attributes onto <img> tags in HTML content
+ * before saving, so we can resolve them later.
  */
-export function injectBlobIndexAttributes(htmlContent: string, startIndex: number): string {
-  if (!htmlContent) return htmlContent;
-  let index = startIndex;
-  return htmlContent.replace(/<img([^>]*?)>/gi, (match, attrs) => {
-    // Only inject if not already present
-    if (/data-blob-index/i.test(attrs)) {
-      return match;
+export function injectBlobIndexAttributes(content: string): string {
+  return content.replace(/<img([^>]*?)data-blob-index="(\d+)"([^>]*?)>/g, (match) => match);
+}
+
+/**
+ * Replace inline image markers {{inline-image:N}} with actual <img> tags
+ * using the ExternalBlob direct URLs from the inlineImages array.
+ *
+ * Also handles legacy {{image:N}} markers for backward compatibility.
+ */
+export function replaceInlineImageMarkers(
+  content: string,
+  inlineImages: Array<{ image: { blob: ExternalBlob; fit: string; size: string }; position: bigint }>
+): string {
+  if (!inlineImages || inlineImages.length === 0) return content;
+
+  let result = content;
+
+  // Build a map from position index to image URL
+  const imageMap = new Map<number, { url: string; fit: string; size: string }>();
+  inlineImages.forEach((inlineImg, idx) => {
+    const url = inlineImg.image.blob.getDirectURL();
+    imageMap.set(idx, { url, fit: inlineImg.image.fit, size: inlineImg.image.size });
+    // Also map by position value
+    const posNum = Number(inlineImg.position);
+    if (!imageMap.has(posNum)) {
+      imageMap.set(posNum, { url, fit: inlineImg.image.fit, size: inlineImg.image.size });
     }
-    const newAttrs = attrs + ` data-blob-index="${index}"`;
-    index++;
-    return `<img${newAttrs}>`;
   });
+
+  // Replace {{inline-image:N}} markers
+  result = result.replace(/\{\{inline-image:(\d+)\}\}/g, (match, indexStr) => {
+    const index = parseInt(indexStr, 10);
+    const imgData = imageMap.get(index);
+    if (!imgData) return match;
+    const sizeClass = getSizeClass(imgData.size);
+    const fitStyle = getFitStyle(imgData.fit);
+    return `<img src="${imgData.url}" class="inline-blog-image ${sizeClass}" style="${fitStyle}" alt="Inline image" />`;
+  });
+
+  // Replace legacy {{image:N}} markers
+  result = result.replace(/\{\{image:(\d+)\}\}/g, (match, indexStr) => {
+    const index = parseInt(indexStr, 10);
+    const imgData = imageMap.get(index);
+    if (!imgData) return match;
+    const sizeClass = getSizeClass(imgData.size);
+    const fitStyle = getFitStyle(imgData.fit);
+    return `<img src="${imgData.url}" class="inline-blog-image ${sizeClass}" style="${fitStyle}" alt="Inline image" />`;
+  });
+
+  return result;
 }
 
 /**
- * Replaces image src attributes in HTML content with resolved ExternalBlob URLs.
- * Uses data-blob-index attributes to map images to their corresponding blobs.
- *
- * @param htmlContent - The HTML content string with placeholder or stale src values
- * @param contentImages - Array of ExternalBlob objects for inline images
- * @param hasBeginningImage - Whether the post has a featured image (affects index offset)
+ * Replace content image URLs using blob index attributes (legacy support).
  */
 export function replaceContentImageUrls(
-  htmlContent: string,
-  contentImages: ExternalBlob[],
-  hasBeginningImage: boolean
+  content: string,
+  inlineImages: Array<{ image: { blob: ExternalBlob; fit: string; size: string }; position: bigint }>
 ): string {
-  if (!htmlContent || !contentImages || contentImages.length === 0) {
-    return htmlContent;
+  if (!inlineImages || inlineImages.length === 0) return content;
+
+  let result = content;
+
+  result = result.replace(/data-blob-index="(\d+)"/g, (match, indexStr) => {
+    const index = parseInt(indexStr, 10);
+    const inlineImg = inlineImages[index];
+    if (!inlineImg) return match;
+    const url = inlineImg.image.blob.getDirectURL();
+    return `src="${url}" ${match}`;
+  });
+
+  return result;
+}
+
+function getSizeClass(size: string): string {
+  switch (size) {
+    case 'small': return 'inline-blog-image--small';
+    case 'large': return 'inline-blog-image--large';
+    default: return 'inline-blog-image--medium';
   }
+}
 
-  try {
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(htmlContent, 'text/html');
-    const images = doc.querySelectorAll('img');
-
-    images.forEach((img, positionalIndex) => {
-      // Try data-blob-index first
-      const blobIndexAttr = img.getAttribute('data-blob-index');
-      let blobIndex: number;
-
-      if (blobIndexAttr !== null && blobIndexAttr !== undefined) {
-        blobIndex = parseInt(blobIndexAttr, 10);
-      } else {
-        // Fallback: use positional index
-        blobIndex = positionalIndex;
-      }
-
-      if (!isNaN(blobIndex) && blobIndex >= 0 && blobIndex < contentImages.length) {
-        try {
-          const url = contentImages[blobIndex].getDirectURL();
-          if (url) {
-            img.setAttribute('src', url);
-          }
-        } catch (err) {
-          // Keep original src if resolution fails
-        }
-      }
-    });
-
-    return doc.body.innerHTML;
-  } catch (err) {
-    console.error('Error replacing content image URLs:', err);
-    return htmlContent;
+function getFitStyle(fit: string): string {
+  switch (fit) {
+    case 'cover': return 'object-fit: cover;';
+    case 'contain': return 'object-fit: contain;';
+    default: return '';
   }
 }

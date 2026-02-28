@@ -3,11 +3,12 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ThemeProvider } from 'next-themes';
 import { Toaster } from '@/components/ui/sonner';
 import Layout from './components/Layout';
-
-// Pages
 import HomePage from './pages/HomePage';
 import BlogPage from './pages/BlogPage';
 import BlogPostDetailPage from './pages/BlogPostDetailPage';
+import AdminPostsPage from './pages/AdminPostsPage';
+import CreateBlogPostPage from './pages/CreateBlogPostPage';
+import EditBlogPostPage from './pages/EditBlogPostPage';
 import AboutPage from './pages/AboutPage';
 import HealthRemediesPage from './pages/HealthRemediesPage';
 import SkinCarePage from './pages/SkinCarePage';
@@ -16,9 +17,6 @@ import WeightManagementPage from './pages/WeightManagementPage';
 import LifestyleWellnessPage from './pages/LifestyleWellnessPage';
 import PrivacyPolicyPage from './pages/PrivacyPolicyPage';
 import TermsOfServicePage from './pages/TermsOfServicePage';
-import AdminPostsPage from './pages/AdminPostsPage';
-import CreateBlogPostPage from './pages/CreateBlogPostPage';
-import EditBlogPostPage from './pages/EditBlogPostPage';
 
 // Health Remedies sub-pages
 import ImmunityBoostPage from './pages/health-remedies/ImmunityBoostPage';
@@ -51,11 +49,13 @@ import MorningRitualsPage from './pages/lifestyle-wellness/MorningRitualsPage';
 import YogaMeditationPage from './pages/lifestyle-wellness/YogaMeditationPage';
 import DailyRoutinesPage from './pages/lifestyle-wellness/DailyRoutinesPage';
 
+import AdminRoute from './components/AdminRoute';
+
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      staleTime: 1000 * 60 * 5,
-      retry: 2,
+      retry: 1,
+      staleTime: 30000,
     },
   },
 });
@@ -75,11 +75,6 @@ const aboutRoute = createRoute({ getParentRoute: () => rootRoute, path: '/about'
 const privacyRoute = createRoute({ getParentRoute: () => rootRoute, path: '/privacy', component: PrivacyPolicyPage });
 const termsRoute = createRoute({ getParentRoute: () => rootRoute, path: '/terms', component: TermsOfServicePage });
 
-// Admin routes
-const adminRoute = createRoute({ getParentRoute: () => rootRoute, path: '/admin', component: AdminPostsPage });
-const createPostRoute = createRoute({ getParentRoute: () => rootRoute, path: '/admin/create', component: CreateBlogPostPage });
-const editPostRoute = createRoute({ getParentRoute: () => rootRoute, path: '/admin/edit/$postId', component: EditBlogPostPage });
-
 // Category routes
 const healthRemediesRoute = createRoute({ getParentRoute: () => rootRoute, path: '/health-remedies', component: HealthRemediesPage });
 const skinCareRoute = createRoute({ getParentRoute: () => rootRoute, path: '/skin-care', component: SkinCarePage });
@@ -96,7 +91,7 @@ const stressSleepRoute = createRoute({ getParentRoute: () => rootRoute, path: '/
 
 // Skin Care sub-routes
 const naturalGlowRoute = createRoute({ getParentRoute: () => rootRoute, path: '/skin-care/natural-glow', component: NaturalGlowPage });
-const acneRoute = createRoute({ getParentRoute: () => rootRoute, path: '/skin-care/acne-treatment', component: AcneTreatmentPage });
+const acneTreatmentRoute = createRoute({ getParentRoute: () => rootRoute, path: '/skin-care/acne-treatment', component: AcneTreatmentPage });
 const pigmentationRoute = createRoute({ getParentRoute: () => rootRoute, path: '/skin-care/pigmentation', component: PigmentationPage });
 const antiAgingRoute = createRoute({ getParentRoute: () => rootRoute, path: '/skin-care/anti-aging', component: AntiAgingPage });
 const diyFacePacksRoute = createRoute({ getParentRoute: () => rootRoute, path: '/skin-care/diy-face-packs', component: DIYFacePacksPage });
@@ -118,6 +113,19 @@ const morningRitualsRoute = createRoute({ getParentRoute: () => rootRoute, path:
 const yogaMeditationRoute = createRoute({ getParentRoute: () => rootRoute, path: '/lifestyle-wellness/yoga-meditation', component: YogaMeditationPage });
 const dailyRoutinesRoute = createRoute({ getParentRoute: () => rootRoute, path: '/lifestyle-wellness/daily-routines', component: DailyRoutinesPage });
 
+// Admin routes
+const adminRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/admin',
+  component: () => (
+    <AdminRoute>
+      <AdminPostsPage />
+    </AdminRoute>
+  ),
+});
+const adminCreateRoute = createRoute({ getParentRoute: () => rootRoute, path: '/admin/create', component: CreateBlogPostPage });
+const adminEditRoute = createRoute({ getParentRoute: () => rootRoute, path: '/admin/edit/$postId', component: EditBlogPostPage });
+
 const routeTree = rootRoute.addChildren([
   indexRoute,
   blogRoute,
@@ -125,9 +133,6 @@ const routeTree = rootRoute.addChildren([
   aboutRoute,
   privacyRoute,
   termsRoute,
-  adminRoute,
-  createPostRoute,
-  editPostRoute,
   healthRemediesRoute,
   skinCareRoute,
   hairCareRoute,
@@ -139,7 +144,7 @@ const routeTree = rootRoute.addChildren([
   diabetesBPRoute,
   stressSleepRoute,
   naturalGlowRoute,
-  acneRoute,
+  acneTreatmentRoute,
   pigmentationRoute,
   antiAgingRoute,
   diyFacePacksRoute,
@@ -154,6 +159,9 @@ const routeTree = rootRoute.addChildren([
   morningRitualsRoute,
   yogaMeditationRoute,
   dailyRoutinesRoute,
+  adminRoute,
+  adminCreateRoute,
+  adminEditRoute,
 ]);
 
 const router = createRouter({ routeTree });
@@ -164,13 +172,15 @@ declare module '@tanstack/react-router' {
   }
 }
 
-export default function App() {
+function App() {
   return (
-    <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
-      <QueryClientProvider client={queryClient}>
+    <QueryClientProvider client={queryClient}>
+      <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
         <RouterProvider router={router} />
-        <Toaster />
-      </QueryClientProvider>
-    </ThemeProvider>
+        <Toaster richColors position="top-right" />
+      </ThemeProvider>
+    </QueryClientProvider>
   );
 }
+
+export default App;

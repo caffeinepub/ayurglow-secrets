@@ -54,7 +54,10 @@ export default function MetabolismBoostersPage() {
     <div className="min-h-screen bg-background">
       <section className="bg-gradient-to-br from-secondary to-primary py-16 text-white">
         <div className="max-w-4xl mx-auto px-4">
-          <Link to="/weight-management" className="inline-flex items-center gap-2 text-white/80 hover:text-white mb-6 transition-colors text-sm">
+          <Link
+            to="/weight-management"
+            className="inline-flex items-center gap-2 text-white/80 hover:text-white mb-6 transition-colors text-sm"
+          >
             <ArrowLeft className="w-4 h-4" /> Back to Weight Management
           </Link>
           <div className="text-5xl mb-4">🔥</div>

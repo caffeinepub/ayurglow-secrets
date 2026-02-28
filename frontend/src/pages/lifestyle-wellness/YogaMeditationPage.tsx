@@ -13,57 +13,82 @@ const practices = [
       'Release right nostril, exhale for 8 counts.',
       'Repeat on the other side. Do 10–15 rounds.',
     ],
-    benefits: ['Calms the nervous system', 'Reduces stress and anxiety', 'Improves lung capacity', 'Balances left and right brain', 'Enhances mental clarity'],
-    frequency: 'Every morning for 10–15 minutes',
-    duration: 'Daily practice for lifelong benefits',
+    benefits: ['Calms the nervous system', 'Reduces stress and anxiety', 'Improves lung capacity', 'Balances left and right brain', 'Enhances focus and clarity'],
+    frequency: 'Daily, preferably in the morning',
+    duration: '10–20 minutes per session',
   },
   {
-    title: 'Surya Namaskar (Sun Salutation)',
+    title: 'Sun Salutation (Surya Namaskar)',
     emoji: '☀️',
     steps: [
-      'Stand in Tadasana (Mountain Pose) facing east.',
+      'Stand in Tadasana (Mountain Pose) with hands in prayer.',
       'Inhale and raise arms overhead (Urdhva Hastasana).',
       'Exhale and fold forward (Uttanasana).',
-      'Inhale, step right foot back into lunge.',
-      'Hold breath, step left foot back (Plank Pose).',
-      'Exhale, lower to floor (Chaturanga).',
-      'Inhale, lift chest (Cobra/Upward Dog).',
-      'Exhale, lift hips (Downward Dog).',
-      'Complete the sequence in reverse. Do 5–12 rounds.',
+      'Inhale, step right foot back into a lunge.',
+      'Hold breath, step left foot back into Plank Pose.',
+      'Exhale, lower to the ground (Chaturanga).',
+      'Inhale into Cobra or Upward Dog.',
+      'Exhale into Downward Dog.',
+      'Inhale, step right foot forward.',
+      'Exhale, step left foot forward and fold.',
+      'Inhale, rise up with arms overhead.',
+      'Exhale, return to prayer position.',
     ],
-    benefits: ['Full body workout', 'Improves flexibility', 'Boosts metabolism', 'Strengthens muscles', 'Improves cardiovascular health'],
-    frequency: '5–12 rounds every morning',
-    duration: 'Daily practice for best results',
+    benefits: ['Strengthens the entire body', 'Improves flexibility', 'Boosts circulation', 'Energizes the body', 'Balances all doshas'],
+    frequency: '5–12 rounds daily',
+    duration: '10–20 minutes',
   },
   {
-    title: 'Guided Meditation (Dhyana)',
+    title: 'Mindfulness Meditation',
     emoji: '🧘',
     steps: [
       'Find a quiet, comfortable place to sit.',
       'Set a timer for 10–20 minutes.',
       'Close your eyes and take 3 deep breaths.',
-      'Focus on your natural breath — observe without controlling.',
-      'When thoughts arise, gently return focus to breath.',
-      'End by slowly opening eyes and taking a moment of gratitude.',
+      'Focus your attention on the natural rhythm of your breath.',
+      'When thoughts arise, gently acknowledge them and return to the breath.',
+      'Notice sensations in your body without judgment.',
+      'Gradually expand awareness to sounds around you.',
+      'When the timer ends, slowly open your eyes.',
     ],
-    benefits: ['Reduces cortisol (stress hormone)', 'Improves focus and concentration', 'Enhances emotional well-being', 'Promotes better sleep', 'Increases self-awareness'],
-    frequency: 'Once or twice daily (morning and evening)',
-    duration: 'Start with 10 minutes, gradually increase',
+    benefits: ['Reduces cortisol levels', 'Improves emotional regulation', 'Enhances self-awareness', 'Improves sleep quality', 'Increases compassion and patience'],
+    frequency: 'Daily, morning or evening',
+    duration: '10–20 minutes per session',
+  },
+  {
+    title: 'Yoga Nidra (Yogic Sleep)',
+    emoji: '💤',
+    steps: [
+      'Lie down in Savasana (Corpse Pose) on a comfortable surface.',
+      'Close your eyes and set a sankalpa (intention).',
+      'Rotate awareness through each body part systematically.',
+      'Observe pairs of opposites: heaviness/lightness, warmth/coolness.',
+      'Visualize images as they arise without attachment.',
+      'Return to your sankalpa.',
+      'Gradually bring awareness back to the body and room.',
+      'Roll to the right side before sitting up slowly.',
+    ],
+    benefits: ['Deep relaxation equivalent to hours of sleep', 'Reduces chronic stress', 'Heals trauma', 'Improves creativity', 'Balances the nervous system'],
+    frequency: '3–4 times per week',
+    duration: '20–45 minutes per session',
   },
 ];
 
 export default function YogaMeditationPage() {
   return (
     <div className="min-h-screen bg-background">
-      <section className="bg-gradient-to-br from-secondary to-forest py-16 text-white">
+      <section className="bg-gradient-to-br from-secondary to-primary py-16 text-white">
         <div className="max-w-4xl mx-auto px-4">
-          <Link to="/lifestyle-wellness" className="inline-flex items-center gap-2 text-white/80 hover:text-white mb-6 transition-colors text-sm">
+          <Link
+            to="/lifestyle-wellness"
+            className="inline-flex items-center gap-2 text-white/80 hover:text-white mb-6 transition-colors text-sm"
+          >
             <ArrowLeft className="w-4 h-4" /> Back to Lifestyle & Wellness
           </Link>
           <div className="text-5xl mb-4">🧘</div>
           <h1 className="font-serif text-4xl md:text-5xl font-bold mb-4">Yoga & Meditation</h1>
           <p className="text-white/85 text-lg max-w-2xl">
-            Integrate ancient yoga and meditation practices into your daily routine for mind-body balance and inner peace.
+            Integrate yoga and meditation into your daily routine for profound mind-body balance and inner peace.
           </p>
         </div>
       </section>

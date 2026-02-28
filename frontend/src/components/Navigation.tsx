@@ -1,67 +1,83 @@
 import { useState } from 'react';
 import { Link, useNavigate } from '@tanstack/react-router';
 import { Menu, X, ChevronDown, Leaf } from 'lucide-react';
+import { useInternetIdentity } from '../hooks/useInternetIdentity';
+import { useQueryClient } from '@tanstack/react-query';
+import { Button } from '@/components/ui/button';
 
 const categories = [
-  { name: 'Health Remedies', path: '/health-remedies', emoji: '🌿' },
-  { name: 'Skin Care', path: '/skin-care', emoji: '💆' },
-  { name: 'Hair Care', path: '/hair-care', emoji: '💇' },
-  { name: 'Weight Management', path: '/weight-management', emoji: '⚖️' },
-  { name: 'Lifestyle & Wellness', path: '/lifestyle-wellness', emoji: '🧘' },
+  { name: 'Health Remedies', path: '/health-remedies' },
+  { name: 'Skin Care', path: '/skin-care' },
+  { name: 'Hair Care', path: '/hair-care' },
 ];
 
 export default function Navigation() {
-  const [mobileOpen, setMobileOpen] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [categoriesOpen, setCategoriesOpen] = useState(false);
+  const { login, clear, loginStatus, identity } = useInternetIdentity();
+  const queryClient = useQueryClient();
   const navigate = useNavigate();
 
+  const isAuthenticated = !!identity;
+  const isLoggingIn = loginStatus === 'logging-in';
+
+  const handleAuth = async () => {
+    if (isAuthenticated) {
+      await clear();
+      queryClient.clear();
+      navigate({ to: '/' });
+    } else {
+      try {
+        await login();
+      } catch (error: any) {
+        if (error.message === 'User is already authenticated') {
+          await clear();
+          setTimeout(() => login(), 300);
+        }
+      }
+    }
+  };
+
   return (
-    <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-border shadow-sm">
+    <header className="sticky top-0 z-50 bg-background/95 backdrop-blur-sm border-b border-border shadow-soft">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-2 group">
+          <Link to="/" className="flex items-center gap-2 flex-shrink-0">
             <img
               src="/assets/generated/ayurglow-logo.dim_400x120.png"
               alt="AyurGlow Secrets"
               className="h-10 w-auto"
-              onError={(e) => {
-                const target = e.currentTarget;
-                target.style.display = 'none';
-                const sibling = target.nextElementSibling as HTMLElement;
-                if (sibling) sibling.style.display = 'flex';
-              }}
             />
-            <span
-              className="hidden items-center gap-1.5 font-serif text-xl font-bold text-primary"
-              style={{ display: 'none' }}
-            >
-              <Leaf className="w-5 h-5 text-primary" />
-              AyurGlow Secrets
-            </span>
           </Link>
 
-          {/* Desktop Nav */}
+          {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center gap-6">
-            <Link to="/" className="text-sm font-medium text-foreground hover:text-primary transition-colors">
+            <Link
+              to="/"
+              className="text-sm font-medium text-foreground hover:text-primary transition-colors"
+            >
               Home
             </Link>
 
             {/* Categories Dropdown */}
-            <div className="relative" onMouseEnter={() => setCategoriesOpen(true)} onMouseLeave={() => setCategoriesOpen(false)}>
-              <button className="flex items-center gap-1 text-sm font-medium text-foreground hover:text-primary transition-colors">
-                Categories <ChevronDown className="w-4 h-4" />
+            <div className="relative">
+              <button
+                onClick={() => setCategoriesOpen(!categoriesOpen)}
+                className="flex items-center gap-1 text-sm font-medium text-foreground hover:text-primary transition-colors"
+              >
+                Categories
+                <ChevronDown className={`h-4 w-4 transition-transform ${categoriesOpen ? 'rotate-180' : ''}`} />
               </button>
               {categoriesOpen && (
-                <div className="absolute top-full left-0 mt-1 w-56 bg-white rounded-xl shadow-card-hover border border-border py-2 z-50">
+                <div className="absolute top-full left-0 mt-2 w-48 bg-card border border-border rounded-lg shadow-lg py-1 z-50">
                   {categories.map((cat) => (
                     <Link
                       key={cat.path}
                       to={cat.path}
-                      className="flex items-center gap-2 px-4 py-2.5 text-sm text-foreground hover:bg-accent hover:text-primary transition-colors"
+                      className="block px-4 py-2 text-sm text-foreground hover:bg-muted hover:text-primary transition-colors"
                       onClick={() => setCategoriesOpen(false)}
                     >
-                      <span>{cat.emoji}</span>
                       {cat.name}
                     </Link>
                   ))}
@@ -69,77 +85,123 @@ export default function Navigation() {
               )}
             </div>
 
-            <Link to="/blog" className="text-sm font-medium text-foreground hover:text-primary transition-colors">
+            <Link
+              to="/blog"
+              className="text-sm font-medium text-foreground hover:text-primary transition-colors"
+            >
               Blog
             </Link>
-            <Link to="/about" className="text-sm font-medium text-foreground hover:text-primary transition-colors">
+
+            <Link
+              to="/about"
+              className="text-sm font-medium text-foreground hover:text-primary transition-colors"
+            >
               About
             </Link>
-            <Link
-              to="/admin"
-              className="text-sm font-medium bg-primary text-primary-foreground px-4 py-1.5 rounded-full hover:bg-primary/90 transition-colors"
+
+            {isAuthenticated && (
+              <Link
+                to="/admin"
+                className="text-sm font-medium text-foreground hover:text-primary transition-colors"
+              >
+                Admin
+              </Link>
+            )}
+
+            <Button
+              onClick={handleAuth}
+              disabled={isLoggingIn}
+              variant={isAuthenticated ? 'outline' : 'default'}
+              size="sm"
+              className="ml-2"
             >
-              Admin
-            </Link>
+              {isLoggingIn ? 'Logging in...' : isAuthenticated ? 'Logout' : 'Login'}
+            </Button>
           </nav>
 
           {/* Mobile menu button */}
           <button
-            className="md:hidden p-2 rounded-lg text-foreground hover:bg-accent transition-colors"
-            onClick={() => setMobileOpen(!mobileOpen)}
-            aria-label="Toggle menu"
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            className="md:hidden p-2 rounded-md text-foreground hover:bg-muted transition-colors"
           >
-            {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+            {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
           </button>
         </div>
       </div>
 
       {/* Mobile Menu */}
-      {mobileOpen && (
-        <div className="md:hidden bg-white border-t border-border">
-          <div className="px-4 py-4 space-y-1">
+      {mobileMenuOpen && (
+        <div className="md:hidden bg-card border-t border-border">
+          <div className="px-4 py-3 space-y-2">
             <Link
               to="/"
-              className="block px-3 py-2 rounded-lg text-sm font-medium text-foreground hover:bg-accent hover:text-primary transition-colors"
-              onClick={() => setMobileOpen(false)}
+              className="block py-2 text-sm font-medium text-foreground hover:text-primary transition-colors"
+              onClick={() => setMobileMenuOpen(false)}
             >
               Home
             </Link>
-            <div className="px-3 py-2">
-              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Categories</p>
-              {categories.map((cat) => (
-                <Link
-                  key={cat.path}
-                  to={cat.path}
-                  className="flex items-center gap-2 px-2 py-2 rounded-lg text-sm text-foreground hover:bg-accent hover:text-primary transition-colors"
-                  onClick={() => setMobileOpen(false)}
-                >
-                  <span>{cat.emoji}</span>
-                  {cat.name}
-                </Link>
-              ))}
+
+            <div>
+              <button
+                onClick={() => setCategoriesOpen(!categoriesOpen)}
+                className="flex items-center gap-1 py-2 text-sm font-medium text-foreground hover:text-primary transition-colors w-full text-left"
+              >
+                Categories
+                <ChevronDown className={`h-4 w-4 transition-transform ${categoriesOpen ? 'rotate-180' : ''}`} />
+              </button>
+              {categoriesOpen && (
+                <div className="pl-4 space-y-1">
+                  {categories.map((cat) => (
+                    <Link
+                      key={cat.path}
+                      to={cat.path}
+                      className="block py-2 text-sm text-muted-foreground hover:text-primary transition-colors"
+                      onClick={() => { setMobileMenuOpen(false); setCategoriesOpen(false); }}
+                    >
+                      {cat.name}
+                    </Link>
+                  ))}
+                </div>
+              )}
             </div>
+
             <Link
               to="/blog"
-              className="block px-3 py-2 rounded-lg text-sm font-medium text-foreground hover:bg-accent hover:text-primary transition-colors"
-              onClick={() => setMobileOpen(false)}
+              className="block py-2 text-sm font-medium text-foreground hover:text-primary transition-colors"
+              onClick={() => setMobileMenuOpen(false)}
             >
               Blog
             </Link>
+
             <Link
               to="/about"
-              className="block px-3 py-2 rounded-lg text-sm font-medium text-foreground hover:bg-accent hover:text-primary transition-colors"
-              onClick={() => setMobileOpen(false)}
+              className="block py-2 text-sm font-medium text-foreground hover:text-primary transition-colors"
+              onClick={() => setMobileMenuOpen(false)}
             >
               About
             </Link>
-            <Link
-              to="/admin"
-              className="block px-3 py-2 rounded-lg text-sm font-medium bg-primary text-primary-foreground hover:bg-primary/90 transition-colors text-center mt-2"
-              onClick={() => setMobileOpen(false)}
-            >
-              Admin
-            </Link>
+
+            {isAuthenticated && (
+              <Link
+                to="/admin"
+                className="block py-2 text-sm font-medium text-foreground hover:text-primary transition-colors"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Admin
+              </Link>
+            )}
+
+            <div className="pt-2 border-t border-border">
+              <Button
+                onClick={() => { handleAuth(); setMobileMenuOpen(false); }}
+                disabled={isLoggingIn}
+                variant={isAuthenticated ? 'outline' : 'default'}
+                size="sm"
+                className="w-full"
+              >
+                {isLoggingIn ? 'Logging in...' : isAuthenticated ? 'Logout' : 'Login'}
+              </Button>
+            </div>
           </div>
         </div>
       )}

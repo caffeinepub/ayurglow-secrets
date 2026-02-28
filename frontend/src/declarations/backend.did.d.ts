@@ -103,6 +103,7 @@ export interface _SERVICE {
   >,
   'deletePost' : ActorMethod<[string], boolean>,
   'getAllPosts' : ActorMethod<[], Array<BlogPostView>>,
+  'getAllPostsForAdminPage' : ActorMethod<[], Array<BlogPostView>>,
   'getCallerUserProfile' : ActorMethod<[], [] | [UserProfile]>,
   'getCallerUserRole' : ActorMethod<[], UserRole>,
   'getComments' : ActorMethod<[string], Array<Comment>>,
