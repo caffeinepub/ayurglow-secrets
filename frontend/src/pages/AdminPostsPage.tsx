@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
 import { useNavigate } from '@tanstack/react-router';
-import { Plus, Edit, Trash2, Eye, EyeOff, Calendar, User, Tag, AlertCircle, LogIn } from 'lucide-react';
+import { Plus, Edit, Trash2, Eye, EyeOff, Calendar, User, Tag } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Alert, AlertDescription } from '@/components/ui/alert';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -17,20 +16,15 @@ import {
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
 import { useGetAllPostsForAdmin, useDeletePost, useSetPublishedState } from '../hooks/useQueries';
-import { useInternetIdentity } from '../hooks/useInternetIdentity';
 import { toast } from 'sonner';
 
 export default function AdminPostsPage() {
   const navigate = useNavigate();
-  const { data: posts, isLoading, error, refetch } = useGetAllPostsForAdmin();
+  const { data: posts, isLoading, error } = useGetAllPostsForAdmin();
   const deleteMutation = useDeletePost();
   const publishMutation = useSetPublishedState();
-  const { identity, login, loginStatus } = useInternetIdentity();
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [togglingId, setTogglingId] = useState<string | null>(null);
-
-  const isAuthenticated = !!identity;
-  const isLoggingIn = loginStatus === 'logging-in';
 
   const handleDelete = async (postId: string) => {
     setDeletingId(postId);
@@ -38,7 +32,7 @@ export default function AdminPostsPage() {
       await deleteMutation.mutateAsync(postId);
       toast.success('Post deleted successfully');
     } catch (err) {
-      toast.error('Failed to delete post. Please make sure you are logged in as admin.');
+      toast.error('Failed to delete post.');
     } finally {
       setDeletingId(null);
     }
@@ -55,7 +49,7 @@ export default function AdminPostsPage() {
       });
       toast.success(currentState ? 'Post unpublished' : 'Post published');
     } catch (err) {
-      toast.error('Failed to update publish state. Please make sure you are logged in as admin.');
+      toast.error('Failed to update publish state.');
     } finally {
       setTogglingId(null);
     }
@@ -71,12 +65,6 @@ export default function AdminPostsPage() {
     });
   };
 
-  const isAuthError = error && (
-    String(error).includes('Unauthorized') ||
-    String(error).includes('Only admins') ||
-    String(error).includes('trap')
-  );
-
   return (
     <div className="min-h-screen bg-background">
       <div className="max-w-6xl mx-auto px-4 py-8">
@@ -86,56 +74,14 @@ export default function AdminPostsPage() {
             <h1 className="text-3xl font-bold font-playfair text-foreground">Admin Dashboard</h1>
             <p className="text-muted-foreground mt-1">Manage your blog posts</p>
           </div>
-          <div className="flex gap-3">
-            {!isAuthenticated && (
-              <Button
-                variant="outline"
-                onClick={login}
-                disabled={isLoggingIn}
-                className="flex items-center gap-2"
-              >
-                <LogIn className="w-4 h-4" />
-                {isLoggingIn ? 'Logging in...' : 'Login for Full Access'}
-              </Button>
-            )}
-            <Button
-              onClick={() => navigate({ to: '/admin/create' })}
-              className="bg-primary hover:bg-primary/90 text-primary-foreground flex items-center gap-2"
-            >
-              <Plus className="w-4 h-4" />
-              New Post
-            </Button>
-          </div>
+          <Button
+            onClick={() => navigate({ to: '/admin/create' })}
+            className="bg-primary hover:bg-primary/90 text-primary-foreground flex items-center gap-2"
+          >
+            <Plus className="w-4 h-4" />
+            New Post
+          </Button>
         </div>
-
-        {/* Auth notice */}
-        {!isAuthenticated && (
-          <Alert className="mb-6 border-amber-200 bg-amber-50 dark:bg-amber-950/20 dark:border-amber-800">
-            <AlertCircle className="h-4 w-4 text-amber-600" />
-            <AlertDescription className="text-amber-700 dark:text-amber-400">
-              <strong>Note:</strong> Login is required to create, edit, delete, or publish posts. 
-              You can view all posts after logging in.
-            </AlertDescription>
-          </Alert>
-        )}
-
-        {/* Auth error */}
-        {isAuthError && (
-          <Alert variant="destructive" className="mb-6">
-            <AlertCircle className="h-4 w-4" />
-            <AlertDescription>
-              Admin access required to view all posts. Please{' '}
-              <button
-                onClick={login}
-                className="underline font-medium"
-                disabled={isLoggingIn}
-              >
-                {isLoggingIn ? 'logging in...' : 'login'}
-              </button>{' '}
-              to access the admin dashboard.
-            </AlertDescription>
-          </Alert>
-        )}
 
         {/* Loading */}
         {isLoading && (
@@ -145,8 +91,21 @@ export default function AdminPostsPage() {
           </div>
         )}
 
-        {/* Posts list */}
-        {!isLoading && !isAuthError && posts && posts.length === 0 && (
+        {/* Error state */}
+        {!isLoading && error && (
+          <Card className="text-center py-16">
+            <CardContent>
+              <p className="text-muted-foreground text-lg mb-4">Unable to load posts. Please try again.</p>
+              <Button onClick={() => navigate({ to: '/admin/create' })}>
+                <Plus className="w-4 h-4 mr-2" />
+                Create New Post
+              </Button>
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Empty state */}
+        {!isLoading && !error && posts && posts.length === 0 && (
           <Card className="text-center py-16">
             <CardContent>
               <p className="text-muted-foreground text-lg mb-4">No blog posts yet.</p>
@@ -158,7 +117,8 @@ export default function AdminPostsPage() {
           </Card>
         )}
 
-        {!isLoading && !isAuthError && posts && posts.length > 0 && (
+        {/* Posts list */}
+        {!isLoading && !error && posts && posts.length > 0 && (
           <div className="space-y-4">
             <p className="text-sm text-muted-foreground">{posts.length} post{posts.length !== 1 ? 's' : ''} total</p>
             {posts.map((post) => (
@@ -250,10 +210,7 @@ export default function AdminPostsPage() {
                         Published: {formatDate(post.publishedDate)}
                       </span>
                     )}
-                    <span className="capitalize bg-muted px-2 py-0.5 rounded text-xs">
-                      {post.category}
-                    </span>
-                    {post.tags.length > 0 && (
+                    {post.tags && post.tags.length > 0 && (
                       <span className="flex items-center gap-1">
                         <Tag className="w-3 h-3" />
                         {post.tags.slice(0, 3).join(', ')}

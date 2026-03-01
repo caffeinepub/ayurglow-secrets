@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { useNavigate } from '@tanstack/react-router';
-import { ImagePlus, X, Upload, Loader2, Image as ImageIcon } from 'lucide-react';
+import { X, Loader2, Image as ImageIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -23,7 +23,7 @@ interface InlineImageEntry {
   fit: ImageFit;
   size: ImageSize;
   previewUrl: string;
-  position: number; // index in the inlineImages array
+  position: number;
 }
 
 export default function CreateBlogPostPage() {
@@ -138,7 +138,6 @@ export default function CreateBlogPostPage() {
         const end = textarea.selectionEnd ?? content.length;
         const newContent = content.slice(0, start) + '\n' + marker + '\n' + content.slice(end);
         setContent(newContent);
-        // Restore cursor after marker
         setTimeout(() => {
           textarea.selectionStart = start + marker.length + 2;
           textarea.selectionEnd = start + marker.length + 2;
@@ -170,7 +169,6 @@ export default function CreateBlogPostPage() {
 
   const removeInlineImage = (index: number) => {
     setInlineImages((prev) => prev.filter((_, i) => i !== index));
-    // Remove marker from content
     const marker = `{{inline-image:${index}}}`;
     setContent((prev) => prev.replace(new RegExp(`\\n?${marker.replace(/[{}:]/g, '\\$&')}\\n?`, 'g'), '\n'));
   };
@@ -186,7 +184,6 @@ export default function CreateBlogPostPage() {
       const id = `${slug}-${Date.now()}`;
       const readTime = BigInt(Math.max(1, Math.ceil(content.split(' ').length / 200)));
 
-      // Build featured image meta with current fit/size
       let finalFeaturedImage: ImageMeta | null = null;
       if (featuredImageBlob) {
         finalFeaturedImage = {
@@ -196,7 +193,6 @@ export default function CreateBlogPostPage() {
         };
       }
 
-      // Build inline images array
       const finalInlineImages: InlineImage[] = inlineImages.map((img, idx) => ({
         image: { blob: img.blob, fit: img.fit, size: img.size },
         position: BigInt(idx),
@@ -222,7 +218,7 @@ export default function CreateBlogPostPage() {
       toast.success('Blog post created successfully!');
       navigate({ to: '/admin' });
     } catch (err) {
-      toast.error('Failed to create post. Make sure you are logged in as admin.');
+      toast.error('Failed to create post. Please try again.');
     } finally {
       setIsSubmitting(false);
     }
@@ -301,7 +297,6 @@ export default function CreateBlogPostPage() {
               <div className="flex items-center justify-between">
                 <CardTitle>Content *</CardTitle>
                 <div className="flex items-center gap-2">
-                  {/* Insert Inline Image Button */}
                   <Button
                     type="button"
                     variant="outline"
@@ -332,7 +327,7 @@ export default function CreateBlogPostPage() {
                 </div>
               </div>
               <p className="text-xs text-muted-foreground">
-                Click "Insert Image" to upload an image and insert it at the cursor position in your content.
+                Click "Insert Image" to upload an image and insert it at the cursor position.
               </p>
             </CardHeader>
             <CardContent>
@@ -340,7 +335,7 @@ export default function CreateBlogPostPage() {
                 ref={contentRef}
                 value={content}
                 onChange={(e) => setContent(e.target.value)}
-                placeholder="Write your blog post content here... Use the 'Insert Image' button to add images inline."
+                placeholder="Write your blog post content here..."
                 rows={16}
                 required
                 className="font-mono text-sm"
@@ -405,6 +400,34 @@ export default function CreateBlogPostPage() {
             </CardContent>
           </Card>
 
+          {/* Tags */}
+          <Card>
+            <CardHeader><CardTitle>Tags</CardTitle></CardHeader>
+            <CardContent className="space-y-3">
+              <div className="flex gap-2">
+                <Input
+                  value={tagInput}
+                  onChange={(e) => setTagInput(e.target.value)}
+                  placeholder="Add a tag"
+                  onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); addTag(); } }}
+                />
+                <Button type="button" variant="outline" onClick={addTag}>Add</Button>
+              </div>
+              {tags.length > 0 && (
+                <div className="flex flex-wrap gap-2">
+                  {tags.map((tag) => (
+                    <Badge key={tag} variant="secondary" className="flex items-center gap-1">
+                      {tag}
+                      <button type="button" onClick={() => removeTag(tag)} className="ml-1 hover:text-destructive">
+                        <X className="w-3 h-3" />
+                      </button>
+                    </Badge>
+                  ))}
+                </div>
+              )}
+            </CardContent>
+          </Card>
+
           {/* Featured Image */}
           <Card>
             <CardHeader><CardTitle>Featured Image</CardTitle></CardHeader>
@@ -440,12 +463,12 @@ export default function CreateBlogPostPage() {
                     {featuredUploading ? (
                       <>
                         <Loader2 className="w-8 h-8 animate-spin" />
-                        <p>Uploading... {featuredUploadProgress}%</p>
+                        <p className="text-sm">Uploading... {featuredUploadProgress}%</p>
                       </>
                     ) : (
                       <>
-                        <ImagePlus className="w-8 h-8" />
-                        <p>Click to upload featured image</p>
+                        <ImageIcon className="w-8 h-8" />
+                        <p className="text-sm">Click to upload featured image</p>
                         <p className="text-xs">PNG, JPG, WebP up to 10MB</p>
                       </>
                     )}
@@ -459,18 +482,13 @@ export default function CreateBlogPostPage() {
                 className="hidden"
                 onChange={handleFeaturedImageChange}
               />
-              {featuredImageBlob && (
+              {featuredImagePreview && (
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <Label>Image Fit</Label>
                     <Select
                       value={featuredImageFit}
-                      onValueChange={(v) => {
-                        setFeaturedImageFit(v as ImageFit);
-                        if (featuredImageBlob) {
-                          setFeaturedImageMeta({ blob: featuredImageBlob, fit: v as ImageFit, size: featuredImageSize });
-                        }
-                      }}
+                      onValueChange={(v) => setFeaturedImageFit(v as ImageFit)}
                     >
                       <SelectTrigger><SelectValue /></SelectTrigger>
                       <SelectContent>
@@ -484,12 +502,7 @@ export default function CreateBlogPostPage() {
                     <Label>Image Size</Label>
                     <Select
                       value={featuredImageSize}
-                      onValueChange={(v) => {
-                        setFeaturedImageSize(v as ImageSize);
-                        if (featuredImageBlob) {
-                          setFeaturedImageMeta({ blob: featuredImageBlob, fit: featuredImageFit, size: v as ImageSize });
-                        }
-                      }}
+                      onValueChange={(v) => setFeaturedImageSize(v as ImageSize)}
                     >
                       <SelectTrigger><SelectValue /></SelectTrigger>
                       <SelectContent>
@@ -504,54 +517,25 @@ export default function CreateBlogPostPage() {
             </CardContent>
           </Card>
 
-          {/* Tags */}
-          <Card>
-            <CardHeader><CardTitle>Tags</CardTitle></CardHeader>
-            <CardContent className="space-y-3">
-              <div className="flex gap-2">
-                <Input
-                  value={tagInput}
-                  onChange={(e) => setTagInput(e.target.value)}
-                  placeholder="Add a tag"
-                  onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); addTag(); } }}
-                />
-                <Button type="button" variant="outline" onClick={addTag}>Add</Button>
-              </div>
-              {tags.length > 0 && (
-                <div className="flex flex-wrap gap-2">
-                  {tags.map((tag) => (
-                    <Badge key={tag} variant="secondary" className="flex items-center gap-1">
-                      {tag}
-                      <button type="button" onClick={() => removeTag(tag)}>
-                        <X className="w-3 h-3" />
-                      </button>
-                    </Badge>
-                  ))}
-                </div>
-              )}
-            </CardContent>
-          </Card>
-
           {/* Publish Settings */}
           <Card>
             <CardHeader><CardTitle>Publish Settings</CardTitle></CardHeader>
             <CardContent>
-              <div className="flex items-center gap-3">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="font-medium text-foreground">Publish Immediately</p>
+                  <p className="text-sm text-muted-foreground">Make this post visible to readers right away</p>
+                </div>
                 <Switch
-                  id="publish"
                   checked={publishImmediately}
                   onCheckedChange={setPublishImmediately}
                 />
-                <Label htmlFor="publish">Publish immediately</Label>
               </div>
-              {!publishImmediately && (
-                <p className="text-sm text-muted-foreground mt-2">Post will be saved as draft.</p>
-              )}
             </CardContent>
           </Card>
 
-          {/* Actions */}
-          <div className="flex gap-3 justify-end">
+          {/* Submit */}
+          <div className="flex gap-3 justify-end pb-8">
             <Button
               type="button"
               variant="outline"
@@ -570,10 +554,7 @@ export default function CreateBlogPostPage() {
                   Creating...
                 </>
               ) : (
-                <>
-                  <Upload className="w-4 h-4 mr-2" />
-                  {publishImmediately ? 'Publish Post' : 'Save Draft'}
-                </>
+                'Create Post'
               )}
             </Button>
           </div>

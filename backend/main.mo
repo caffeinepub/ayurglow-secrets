@@ -1,13 +1,12 @@
 import Map "mo:core/Map";
 import List "mo:core/List";
-import Iter "mo:core/Iter";
 import Time "mo:core/Time";
-import Runtime "mo:core/Runtime";
 import Principal "mo:core/Principal";
+import Runtime "mo:core/Runtime";
 import Storage "blob-storage/Storage";
 import MixinStorage "blob-storage/Mixin";
-import AccessControl "authorization/access-control";
 import MixinAuthorization "authorization/MixinAuthorization";
+import AccessControl "authorization/access-control";
 
 actor {
   type Comment = {
@@ -91,13 +90,11 @@ actor {
 
   include MixinStorage();
 
-  public query ({ caller }) func canCallerAccessAdminSection() : async Bool {
-    AccessControl.isAdmin(accessControlState, caller);
-  };
+  // User profile management
 
   public query ({ caller }) func getCallerUserProfile() : async ?UserProfile {
     if (not (AccessControl.hasPermission(accessControlState, caller, #user))) {
-      Runtime.trap("Unauthorized: Only users can get profiles");
+      Runtime.trap("Unauthorized: Only users can get their profile");
     };
     userProfiles.get(caller);
   };
@@ -115,6 +112,8 @@ actor {
     };
     userProfiles.add(caller, profile);
   };
+
+  // Admin-only blog management functions
 
   public shared ({ caller }) func createPost(
     id : Text,
@@ -211,7 +210,7 @@ actor {
     publicationDate : ?Int,
   ) : async Bool {
     if (not (AccessControl.hasPermission(accessControlState, caller, #admin))) {
-      Runtime.trap("Unauthorized: Only admins can change publishing state");
+      Runtime.trap("Unauthorized: Only admins can publish or unpublish posts");
     };
     switch (blogPosts.get(id)) {
       case (null) { false };
@@ -259,13 +258,7 @@ actor {
   public query ({ caller }) func getPost(id : Text) : async ?BlogPostView {
     switch (blogPosts.get(id)) {
       case (null) { null };
-      case (?post) {
-        if (post.isPublished or AccessControl.isAdmin(accessControlState, caller)) {
-          ?toBlogPostView(post);
-        } else {
-          null;
-        };
-      };
+      case (?post) { ?toBlogPostView(post) };
     };
   };
 
@@ -284,8 +277,8 @@ actor {
   };
 
   public query ({ caller }) func getAllPostsForAdminPage() : async [BlogPostView] {
-    if (not AccessControl.isAdmin(accessControlState, caller)) {
-      Runtime.trap("Unauthorized: Only admins can view all posts");
+    if (not (AccessControl.hasPermission(accessControlState, caller, #admin))) {
+      Runtime.trap("Unauthorized: Only admins can view the admin page posts");
     };
     blogPosts.values().map(func(p) { toBlogPostView(p) }).toArray();
   };

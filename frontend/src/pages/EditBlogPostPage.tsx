@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate, useParams } from '@tanstack/react-router';
-import { ImagePlus, X, Upload, Loader2, Image as ImageIcon } from 'lucide-react';
+import { X, Loader2, Image as ImageIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -82,7 +82,6 @@ export default function EditBlogPostPage() {
         setFeaturedImageSize(post.featuredImage.size as ImageSize);
       }
 
-      // Load existing inline images
       if (post.inlineImages && post.inlineImages.length > 0) {
         const entries: InlineImageEntry[] = post.inlineImages.map((img, idx) => ({
           blob: img.image.blob,
@@ -152,7 +151,6 @@ export default function EditBlogPostPage() {
       };
       setInlineImages((prev) => [...prev, entry]);
 
-      // Insert marker at cursor position
       const marker = `{{inline-image:${index}}}`;
       const textarea = contentRef.current;
       if (textarea) {
@@ -239,7 +237,7 @@ export default function EditBlogPostPage() {
       toast.success('Post updated successfully!');
       navigate({ to: '/admin' });
     } catch (err) {
-      toast.error('Failed to update post. Make sure you are logged in as admin.');
+      toast.error('Failed to update post. Please try again.');
     } finally {
       setIsSubmitting(false);
     }
@@ -443,6 +441,34 @@ export default function EditBlogPostPage() {
             </CardContent>
           </Card>
 
+          {/* Tags */}
+          <Card>
+            <CardHeader><CardTitle>Tags</CardTitle></CardHeader>
+            <CardContent className="space-y-3">
+              <div className="flex gap-2">
+                <Input
+                  value={tagInput}
+                  onChange={(e) => setTagInput(e.target.value)}
+                  placeholder="Add a tag"
+                  onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); addTag(); } }}
+                />
+                <Button type="button" variant="outline" onClick={addTag}>Add</Button>
+              </div>
+              {tags.length > 0 && (
+                <div className="flex flex-wrap gap-2">
+                  {tags.map((tag) => (
+                    <Badge key={tag} variant="secondary" className="flex items-center gap-1">
+                      {tag}
+                      <button type="button" onClick={() => removeTag(tag)} className="ml-1 hover:text-destructive">
+                        <X className="w-3 h-3" />
+                      </button>
+                    </Badge>
+                  ))}
+                </div>
+              )}
+            </CardContent>
+          </Card>
+
           {/* Featured Image */}
           <Card>
             <CardHeader><CardTitle>Featured Image</CardTitle></CardHeader>
@@ -477,12 +503,13 @@ export default function EditBlogPostPage() {
                     {featuredUploading ? (
                       <>
                         <Loader2 className="w-8 h-8 animate-spin" />
-                        <p>Uploading... {featuredUploadProgress}%</p>
+                        <p className="text-sm">Uploading... {featuredUploadProgress}%</p>
                       </>
                     ) : (
                       <>
-                        <ImagePlus className="w-8 h-8" />
-                        <p>Click to replace featured image</p>
+                        <ImageIcon className="w-8 h-8" />
+                        <p className="text-sm">Click to upload featured image</p>
+                        <p className="text-xs">PNG, JPG, WebP up to 10MB</p>
                       </>
                     )}
                   </div>
@@ -495,7 +522,7 @@ export default function EditBlogPostPage() {
                 className="hidden"
                 onChange={handleFeaturedImageChange}
               />
-              {featuredImageBlob && (
+              {featuredImagePreview && (
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <Label>Image Fit</Label>
@@ -530,51 +557,25 @@ export default function EditBlogPostPage() {
             </CardContent>
           </Card>
 
-          {/* Tags */}
-          <Card>
-            <CardHeader><CardTitle>Tags</CardTitle></CardHeader>
-            <CardContent className="space-y-3">
-              <div className="flex gap-2">
-                <Input
-                  value={tagInput}
-                  onChange={(e) => setTagInput(e.target.value)}
-                  placeholder="Add a tag"
-                  onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); addTag(); } }}
-                />
-                <Button type="button" variant="outline" onClick={addTag}>Add</Button>
-              </div>
-              {tags.length > 0 && (
-                <div className="flex flex-wrap gap-2">
-                  {tags.map((tag) => (
-                    <Badge key={tag} variant="secondary" className="flex items-center gap-1">
-                      {tag}
-                      <button type="button" onClick={() => removeTag(tag)}>
-                        <X className="w-3 h-3" />
-                      </button>
-                    </Badge>
-                  ))}
-                </div>
-              )}
-            </CardContent>
-          </Card>
-
           {/* Publish Settings */}
           <Card>
             <CardHeader><CardTitle>Publish Settings</CardTitle></CardHeader>
             <CardContent>
-              <div className="flex items-center gap-3">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="font-medium text-foreground">Publish Immediately</p>
+                  <p className="text-sm text-muted-foreground">Make this post visible to readers right away</p>
+                </div>
                 <Switch
-                  id="publish"
                   checked={publishImmediately}
                   onCheckedChange={setPublishImmediately}
                 />
-                <Label htmlFor="publish">Published</Label>
               </div>
             </CardContent>
           </Card>
 
-          {/* Actions */}
-          <div className="flex gap-3 justify-end">
+          {/* Submit */}
+          <div className="flex gap-3 justify-end pb-8">
             <Button
               type="button"
               variant="outline"
@@ -590,13 +591,10 @@ export default function EditBlogPostPage() {
               {isSubmitting ? (
                 <>
                   <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                  Saving...
+                  Updating...
                 </>
               ) : (
-                <>
-                  <Upload className="w-4 h-4 mr-2" />
-                  Save Changes
-                </>
+                'Update Post'
               )}
             </Button>
           </div>

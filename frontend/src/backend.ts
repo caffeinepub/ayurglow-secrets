@@ -161,7 +161,6 @@ export interface backendInterface {
     _initializeAccessControlWithSecret(userSecret: string): Promise<void>;
     addComment(postId: string, author: string, content: string): Promise<boolean>;
     assignCallerUserRole(user: Principal, role: UserRole): Promise<void>;
-    canCallerAccessAdminSection(): Promise<boolean>;
     createPost(id: string, title: string, slug: string, category: string, content: string, excerpt: string, readTime: bigint, author: string, tags: Array<string>, featuredImage: ImageMeta | null, inlineImages: Array<InlineImage>, isPublished: boolean, publishImmediately: boolean, publicationDate: bigint | null): Promise<void>;
     deletePost(id: string): Promise<boolean>;
     getAllPosts(): Promise<Array<BlogPostView>>;
@@ -303,20 +302,6 @@ export class Backend implements backendInterface {
             }
         } else {
             const result = await this.actor.assignCallerUserRole(arg0, to_candid_UserRole_n8(this._uploadFile, this._downloadFile, arg1));
-            return result;
-        }
-    }
-    async canCallerAccessAdminSection(): Promise<boolean> {
-        if (this.processError) {
-            try {
-                const result = await this.actor.canCallerAccessAdminSection();
-                return result;
-            } catch (e) {
-                this.processError(e);
-                throw new Error("unreachable");
-            }
-        } else {
-            const result = await this.actor.canCallerAccessAdminSection();
             return result;
         }
     }

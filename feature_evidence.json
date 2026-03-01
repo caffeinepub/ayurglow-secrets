@@ -2,13 +2,10 @@
   "kind": "feature_evidence_report",
   "features": [
     {
-      "featureId": "feature-in-the-blog-post-create-and-edit-forms-createblogpostpage-tsx-and-editblogpostpage-tsx-add-an-insert-image-toolbar-button-within-the-content-editor-area-when-clicked-it-should-allow-the-user-to-upload-an-image-and-insert-an-inline-image-placeholder-tag-at-the-current-cursor-position-in-the-content-text-area-the-inserted-image-must-render-correctly-in-blogpostdetailpage-tsx-when-the-post-is-displayed",
-      "featureTitle": "In the blog post create and edit forms (CreateBlogPostPage.tsx and EditBlogPostPage.tsx), add an 'Insert Image' toolbar button within the content editor area. When clicked, it should allow the user to upload an image and insert an inline image placeholder/tag at the current cursor position in the content text area. The inserted image must render correctly in BlogPostDetailPage.tsx when the post is displayed.",
+      "featureId": "feature-remove-all-internet-identity-login-logout-ui-elements-from-the-navigation-component-so-no-login-button-or-user-authentication-controls-are-visible-to-any-user",
+      "featureTitle": "Remove all Internet Identity login/logout UI elements from the Navigation component so no login button or user authentication controls are visible to any user.",
       "files": [
-        "frontend/src/pages/BlogPostDetailPage.tsx",
-        "frontend/src/pages/CreateBlogPostPage.tsx",
-        "frontend/src/pages/EditBlogPostPage.tsx",
-        "frontend/src/utils/imageUtils.ts"
+        "frontend/src/components/Navigation.tsx"
       ],
       "components": [
         "core-infrastructure@1.0.2",
@@ -25,10 +22,12 @@
       "confidence": "high"
     },
     {
-      "featureId": "feature-remove-the-login-authentication-gate-from-the-admin-upload-flow-the-admin-page-for-creating-and-uploading-blog-posts-createblogpostpage-tsx-and-adminpostspage-tsx-should-be-directly-accessible-without-requiring-internet-identity-login-i-e-render-it-as-a-simple-open-admin-page-like-it-was-before-any-login-requirement-was-added-remove-or-bypass-any-adminroute-guard-or-authentication-check-that-currently-blocks-access-to-these-pages",
-      "featureTitle": "Remove the login/authentication gate from the admin upload flow. The admin page for creating and uploading blog posts (CreateBlogPostPage.tsx and AdminPostsPage.tsx) should be directly accessible without requiring Internet Identity login — i.e., render it as a simple open admin page like it was before any login requirement was added. Remove or bypass any AdminRoute guard or authentication check that currently blocks access to these pages.",
+      "featureId": "feature-make-the-admin-page-admin-create-blog-post-page-admin-create-and-edit-blog-post-page-admin-edit-id-fully-accessible-to-all-visitors-without-any-authentication-check-identity-guard-or-access-denied-redirect-remove-any-remaining-references-to-internet-identity-identity-checks-that-block-or-restrict-access-to-these-pages",
+      "featureTitle": "Make the Admin page (/admin), Create Blog Post page (/admin/create), and Edit Blog Post page (/admin/edit/:id) fully accessible to all visitors without any authentication check, identity guard, or access-denied redirect. Remove any remaining references to Internet Identity identity checks that block or restrict access to these pages.",
       "files": [
-        "frontend/src/components/AdminRoute.tsx"
+        "frontend/src/pages/AdminPostsPage.tsx",
+        "frontend/src/pages/CreateBlogPostPage.tsx",
+        "frontend/src/pages/EditBlogPostPage.tsx"
       ],
       "components": [
         "core-infrastructure@1.0.2",
@@ -41,27 +40,6 @@
       ],
       "testIds": [
         "REQ-2"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-fix-the-bug-where-the-blog-post-titled-best-ayurvedic-herbs-for-glowing-skin-does-not-appear-on-the-admin-page-adminpostspage-tsx-investigate-whether-the-issue-is-caused-by-a-data-fetch-problem-a-publish-draft-state-filter-or-a-backend-query-issue-and-ensure-all-existing-blog-posts-regardless-of-publish-state-are-listed-on-the-admin-page",
-      "featureTitle": "Fix the bug where the blog post titled 'Best Ayurvedic Herbs for Glowing Skin' does not appear on the admin page (AdminPostsPage.tsx). Investigate whether the issue is caused by a data fetch problem, a publish/draft state filter, or a backend query issue, and ensure all existing blog posts — regardless of publish state — are listed on the admin page.",
-      "files": [
-        "frontend/src/hooks/useQueries.ts",
-        "frontend/src/pages/AdminPostsPage.tsx"
-      ],
-      "components": [
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0",
-        "blob-storage@4.0.0",
-        "authorization@4.0.0"
-      ],
-      "testIds": [
-        "REQ-3"
       ],
       "confidence": "high"
     }

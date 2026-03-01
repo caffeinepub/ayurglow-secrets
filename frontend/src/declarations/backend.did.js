@@ -100,7 +100,6 @@ export const idlService = IDL.Service({
   '_initializeAccessControlWithSecret' : IDL.Func([IDL.Text], [], []),
   'addComment' : IDL.Func([IDL.Text, IDL.Text, IDL.Text], [IDL.Bool], []),
   'assignCallerUserRole' : IDL.Func([IDL.Principal, UserRole], [], []),
-  'canCallerAccessAdminSection' : IDL.Func([], [IDL.Bool], ['query']),
   'createPost' : IDL.Func(
       [
         IDL.Text,
@@ -255,7 +254,6 @@ export const idlFactory = ({ IDL }) => {
     '_initializeAccessControlWithSecret' : IDL.Func([IDL.Text], [], []),
     'addComment' : IDL.Func([IDL.Text, IDL.Text, IDL.Text], [IDL.Bool], []),
     'assignCallerUserRole' : IDL.Func([IDL.Principal, UserRole], [], []),
-    'canCallerAccessAdminSection' : IDL.Func([], [IDL.Bool], ['query']),
     'createPost' : IDL.Func(
         [
           IDL.Text,

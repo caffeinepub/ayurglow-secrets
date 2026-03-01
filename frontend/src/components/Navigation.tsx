@@ -1,9 +1,6 @@
 import { useState } from 'react';
-import { Link, useNavigate } from '@tanstack/react-router';
-import { Menu, X, ChevronDown, Leaf } from 'lucide-react';
-import { useInternetIdentity } from '../hooks/useInternetIdentity';
-import { useQueryClient } from '@tanstack/react-query';
-import { Button } from '@/components/ui/button';
+import { Link } from '@tanstack/react-router';
+import { Menu, X, ChevronDown } from 'lucide-react';
 
 const categories = [
   { name: 'Health Remedies', path: '/health-remedies' },
@@ -14,29 +11,6 @@ const categories = [
 export default function Navigation() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [categoriesOpen, setCategoriesOpen] = useState(false);
-  const { login, clear, loginStatus, identity } = useInternetIdentity();
-  const queryClient = useQueryClient();
-  const navigate = useNavigate();
-
-  const isAuthenticated = !!identity;
-  const isLoggingIn = loginStatus === 'logging-in';
-
-  const handleAuth = async () => {
-    if (isAuthenticated) {
-      await clear();
-      queryClient.clear();
-      navigate({ to: '/' });
-    } else {
-      try {
-        await login();
-      } catch (error: any) {
-        if (error.message === 'User is already authenticated') {
-          await clear();
-          setTimeout(() => login(), 300);
-        }
-      }
-    }
-  };
 
   return (
     <header className="sticky top-0 z-50 bg-background/95 backdrop-blur-sm border-b border-border shadow-soft">
@@ -99,24 +73,12 @@ export default function Navigation() {
               About
             </Link>
 
-            {isAuthenticated && (
-              <Link
-                to="/admin"
-                className="text-sm font-medium text-foreground hover:text-primary transition-colors"
-              >
-                Admin
-              </Link>
-            )}
-
-            <Button
-              onClick={handleAuth}
-              disabled={isLoggingIn}
-              variant={isAuthenticated ? 'outline' : 'default'}
-              size="sm"
-              className="ml-2"
+            <Link
+              to="/admin"
+              className="text-sm font-medium text-foreground hover:text-primary transition-colors"
             >
-              {isLoggingIn ? 'Logging in...' : isAuthenticated ? 'Logout' : 'Login'}
-            </Button>
+              Admin
+            </Link>
           </nav>
 
           {/* Mobile menu button */}
@@ -181,27 +143,13 @@ export default function Navigation() {
               About
             </Link>
 
-            {isAuthenticated && (
-              <Link
-                to="/admin"
-                className="block py-2 text-sm font-medium text-foreground hover:text-primary transition-colors"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                Admin
-              </Link>
-            )}
-
-            <div className="pt-2 border-t border-border">
-              <Button
-                onClick={() => { handleAuth(); setMobileMenuOpen(false); }}
-                disabled={isLoggingIn}
-                variant={isAuthenticated ? 'outline' : 'default'}
-                size="sm"
-                className="w-full"
-              >
-                {isLoggingIn ? 'Logging in...' : isAuthenticated ? 'Logout' : 'Login'}
-              </Button>
-            </div>
+            <Link
+              to="/admin"
+              className="block py-2 text-sm font-medium text-foreground hover:text-primary transition-colors"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              Admin
+            </Link>
           </div>
         </div>
       )}

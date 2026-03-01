@@ -81,7 +81,6 @@ export interface _SERVICE {
   '_initializeAccessControlWithSecret' : ActorMethod<[string], undefined>,
   'addComment' : ActorMethod<[string, string, string], boolean>,
   'assignCallerUserRole' : ActorMethod<[Principal, UserRole], undefined>,
-  'canCallerAccessAdminSection' : ActorMethod<[], boolean>,
   'createPost' : ActorMethod<
     [
       string,
