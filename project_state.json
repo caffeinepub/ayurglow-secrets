@@ -1,26 +1,17 @@
 {
   "schemaVersion": "1.0.0",
   "projectStateVersion": 3,
-  "summary": "Blog platform where the admin page is open to all users (no login required) for uploading blog posts.",
-  "architectural_notes": [
-    "No authentication required — admin page is publicly accessible to all users"
-  ],
+  "summary": "Building InnerLift Wellness website from scratch — a mental wellness blog/website with homepage (hero, categories, blog posts, affirmations, newsletter), About Us page, and three category sections (Stress Management, Motivational Stories, Work-Life Balance). User requested a new logo.",
+  "architectural_notes": [],
   "known_issues": [],
   "isFixRequest": false,
+  "imageRequirements": "## Required Images\n- InnerLift Wellness brand logo featuring a stylized upward-lift or lotus/leaf motif in soft sage green and warm teal tones, with clean modern sans-serif wordmark 'InnerLift Wellness' beside the icon (innerlift-logo.dim_300x80.png)\n- InnerLift Wellness favicon — minimal icon version of the logo mark only, no text, on transparent background (innerlift-favicon.dim_64x64.png)",
   "existing_features": [
     {
-      "id": "feature-remove-all-internet-identity-login-logout-ui-elements-from-the-navigation-component-so-no-login-button-or-user-authentication-controls-are-visible-to-any-user",
-      "title": "Remove all Internet Identity login/logout UI elements from the Navigation component so no login button or user authentication controls are visible to any user.",
+      "id": "feature-display-the-generated-innerlift-wellness-logo-image-innerlift-logo-dim-300x80-png-in-the-navigation-component-as-the-site-brand-logo-replacing-any-existing-logo-or-text-only-brand-mark",
+      "title": "Display the generated InnerLift Wellness logo image (innerlift-logo.dim_300x80.png) in the Navigation component as the site brand logo, replacing any existing logo or text-only brand mark.",
       "reqIds": [
         "REQ-1"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-make-the-admin-page-admin-create-blog-post-page-admin-create-and-edit-blog-post-page-admin-edit-id-fully-accessible-to-all-visitors-without-any-authentication-check-identity-guard-or-access-denied-redirect-remove-any-remaining-references-to-internet-identity-identity-checks-that-block-or-restrict-access-to-these-pages",
-      "title": "Make the Admin page (/admin), Create Blog Post page (/admin/create), and Edit Blog Post page (/admin/edit/:id) fully accessible to all visitors without any authentication check, identity guard, or access-denied redirect. Remove any remaining references to Internet Identity identity checks that block or restrict access to these pages.",
-      "reqIds": [
-        "REQ-2"
       ],
       "version": 1
     }
@@ -28,29 +19,19 @@
   "new_feature_requests": [
     {
       "id": "AR-1",
-      "summary": "Remove login option and make the admin page publicly accessible for all users to upload blog posts without authentication",
+      "summary": "Build InnerLift Wellness website from scratch with full homepage, About Us page, and three category sections",
       "reqIds": [],
       "status": "pending"
     },
     {
-      "id": "AR-4",
-      "summary": "Update all React Query hooks and mutations in useQueries.ts that pass an authenticated actor to instead use an anonymous actor for all admin operations (create post, update post, delete post, publish/unpublish post, upload images), so these operations work without Internet Identity login.",
-      "reqIds": [
-        "REQ-3"
-      ],
-      "status": "pending"
-    },
-    {
-      "id": "AR-5",
-      "summary": "Update the backend Motoko actor to remove any caller-based authorization checks on admin functions (createPost, updatePost, deletePost, publishPost, unpublishPost, uploadImage, and any other admin-only endpoints), so all callers including anonymous principals are permitted to perform these operations.",
-      "reqIds": [
-        "REQ-4"
-      ],
+      "id": "AR-2",
+      "summary": "Create a new logo for InnerLift Wellness",
+      "reqIds": [],
       "status": "pending"
     }
   ],
   "gameProjectType": "none",
-  "projectName": "AyurGlow Secrets",
+  "projectName": "InnerLift Wellness",
   "clarification_mode": "instant",
   "clarification_rounds": 0
 }

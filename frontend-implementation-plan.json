@@ -1,69 +1,32 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Remove login option and make admin page publicly accessible",
+  "title": "Add InnerLift Wellness Logo",
   "requirements": [
     {
       "id": "REQ-1",
-      "summary": "Remove all Internet Identity login/logout UI elements from the Navigation component so no login button or user authentication controls are visible to any user.",
+      "summary": "Display the generated InnerLift Wellness logo image in the Navigation and Footer components, replacing any existing logo or text-only brand mark",
       "acceptanceCriteria": [
-        "The Navigation bar has no login button, logout button, or any Internet Identity authentication controls",
-        "No authentication-related UI is visible on any page"
+        "The logo image appears in the top navigation bar on all pages",
+        "The logo links back to the homepage (/)",
+        "The logo is displayed at an appropriate size and does not overflow the navigation bar",
+        "The logo also appears in the Footer component's brand section"
       ],
       "file_operations": [
         {
           "path": "frontend/src/components/Navigation.tsx",
           "operation": "modify",
-          "description": "Remove the login/logout button and all Internet Identity UI elements from the navigation bar. Keep the InternetIdentityProvider wrapper intact (as per constraints), but remove all visible authentication controls including the login button, logout functionality, and any user status indicators. Preserve the logo, menu navigation, and categories dropdown."
-        }
-      ]
-    },
-    {
-      "id": "REQ-2",
-      "summary": "Make the Admin page (/admin), Create Blog Post page (/admin/create), and Edit Blog Post page (/admin/edit/:id) fully accessible to all visitors without any authentication check, identity guard, or access-denied redirect.",
-      "acceptanceCriteria": [
-        "Navigating directly to /admin shows the admin posts list without any login prompt or access-denied screen",
-        "Navigating to /admin/create shows the create post form without any authentication requirement",
-        "All admin actions (create, edit, delete, publish/unpublish) are available to all users without login",
-        "The AccessDeniedScreen component is never rendered for admin routes",
-        "No identity or principal checks gate any admin page or mutation"
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/components/AdminRoute.tsx",
-          "operation": "modify",
-          "description": "Confirm that AdminRoute is already a passthrough component (renders children directly without guards). If any authentication or authorization logic exists, remove it completely so the component unconditionally renders its children without checking identity, role, or admin status."
+          "description": "Replace the existing AyurGlow logo or text brand mark with the InnerLift Wellness logo image (frontend/public/assets/generated/innerlift-logo.dim_300x80.png). Update the <Link> element wrapping the brand to use an <img> tag displaying the logo at appropriate dimensions. Ensure the logo links to the homepage (/) and includes proper alt text ('InnerLift Wellness'). Maintain existing navigation structure and mobile menu functionality."
         },
         {
-          "path": "frontend/src/pages/AdminPostsPage.tsx",
+          "path": "frontend/src/components/Footer.tsx",
           "operation": "modify",
-          "description": "Remove any remaining authentication or identity checks that might block access to the admin posts page. Ensure the page renders the posts list and admin controls (create, delete, publish/unpublish) for all visitors without requiring login. Remove any conditional rendering based on authentication state or role."
+          "description": "Replace the existing AyurGlow logo or text brand mark in the footer's brand section with the InnerLift Wellness logo image (frontend/public/assets/generated/innerlift-logo.dim_300x80.png). Update the brand section to display the logo using an <img> tag with appropriate dimensions and alt text ('InnerLift Wellness'). Maintain existing footer layout, social links, and navigation columns."
         },
         {
-          "path": "frontend/src/pages/CreateBlogPostPage.tsx",
+          "path": "frontend/index.html",
           "operation": "modify",
-          "description": "Remove any authentication or identity checks that might block access to the create post form. Ensure the form and submission logic work for all visitors without requiring login. Remove any conditional rendering or guards based on authentication state."
-        },
-        {
-          "path": "frontend/src/pages/EditBlogPostPage.tsx",
-          "operation": "modify",
-          "description": "Remove any authentication or identity checks that might block access to the edit post form. Ensure the form pre-population and update submission work for all visitors without requiring login. Remove any conditional rendering or guards based on authentication state."
-        }
-      ]
-    },
-    {
-      "id": "REQ-3",
-      "summary": "Update all React Query hooks and mutations in useQueries.ts that pass an authenticated actor to instead use an anonymous actor for all admin operations (create post, update post, delete post, publish/unpublish post, upload images).",
-      "acceptanceCriteria": [
-        "Creating, editing, deleting, and publishing blog posts all succeed when the user is not authenticated",
-        "Image uploads for blog posts work without authentication",
-        "No mutation fails silently due to missing identity or principal"
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/hooks/useQueries.ts",
-          "operation": "modify",
-          "description": "Update all admin-related mutations (useCreatePost, useUpdatePost, useDeletePost, useSetPublishedState, useUploadImage, and any inline image upload logic) to use an anonymous actor instead of an authenticated actor. Ensure these mutations do not require or check for authentication/identity before executing. Verify all mutations work without a logged-in user by removing any identity-dependent logic."
+          "description": "Update the favicon link to use the InnerLift Wellness favicon (frontend/public/assets/generated/innerlift-favicon.dim_64x64.png). Update the <title> tag and meta description to reflect 'InnerLift Wellness' branding instead of 'AyurGlow Secrets'. Ensure the favicon is properly linked in the document head."
         }
       ]
     }

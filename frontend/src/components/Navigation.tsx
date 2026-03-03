@@ -19,8 +19,8 @@ export default function Navigation() {
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2 flex-shrink-0">
             <img
-              src="/assets/generated/ayurglow-logo.dim_400x120.png"
-              alt="AyurGlow Secrets"
+              src="/assets/generated/innerlift-logo.dim_300x80.png"
+              alt="InnerLift Wellness"
               className="h-10 w-auto"
             />
           </Link>

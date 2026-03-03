@@ -1,12 +1,11 @@
 # Specification
 
 ## Summary
-**Goal:** Remove all authentication/login UI and make the admin pages fully publicly accessible without any identity checks.
+**Goal:** Replace the existing logo/text brand mark in the Navigation and Footer with the new InnerLift Wellness logo image.
 
 **Planned changes:**
-- Remove the login button, logout button, and all Internet Identity authentication controls from the Navigation component
-- Remove all authentication guards, identity checks, and AccessDeniedScreen redirects from the Admin, Create Blog Post, and Edit Blog Post pages (/admin, /admin/create, /admin/edit/:id)
-- Update React Query hooks and mutations in useQueries.ts to use an anonymous actor instead of an authenticated actor for all admin operations (create, update, delete, publish/unpublish, image upload)
-- Update the backend Motoko actor to remove caller-based authorization checks on all admin functions so anonymous principals are permitted to perform all blog CRUD and image upload operations
+- Display `innerlift-logo.dim_300x80.png` in the Navigation component as the site brand logo, linking to the homepage (`/`)
+- Display the same logo in the Footer component's brand section
+- Add `innerlift-favicon.dim_64x64.png` as the site favicon
 
-**User-visible outcome:** Anyone can visit /admin and create, edit, delete, or publish blog posts without logging in. No login button or authentication prompt appears anywhere on the site.
+**User-visible outcome:** The InnerLift Wellness logo image appears in the top navigation bar and footer on all pages, replacing any previous text-only or placeholder brand mark.

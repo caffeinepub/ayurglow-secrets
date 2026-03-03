@@ -4,7 +4,7 @@ import { SiFacebook, SiInstagram, SiYoutube, SiX } from 'react-icons/si';
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
-  const appId = encodeURIComponent(typeof window !== 'undefined' ? window.location.hostname : 'ayurglow-secrets');
+  const appId = encodeURIComponent(typeof window !== 'undefined' ? window.location.hostname : 'innerlift-wellness');
 
   return (
     <footer className="bg-forest text-cream">
@@ -14,13 +14,13 @@ export default function Footer() {
           <div className="md:col-span-1">
             <div className="mb-4">
               <img
-                src="/assets/generated/ayurglow-logo.dim_400x400.png"
-                alt="AyurGlow Secrets"
-                className="h-16 w-16 object-contain invert brightness-200"
+                src="/assets/generated/innerlift-logo.dim_300x80.png"
+                alt="InnerLift Wellness"
+                className="h-10 w-auto brightness-200"
               />
             </div>
             <p className="text-sm text-cream/70 mb-4 leading-relaxed">
-              Discover the ancient wisdom of Ayurveda for modern wellness. Natural remedies for health, skin, and hair.
+              Balance Your Mind. Empower Your Life. Your safe space for mental clarity, emotional resilience, and personal growth.
             </p>
             <div className="flex gap-3">
               <a href="#" className="text-cream/60 hover:text-gold transition-colors" aria-label="Facebook">
@@ -103,7 +103,7 @@ export default function Footer() {
 
         <div className="mt-10 pt-6 border-t border-cream/20 flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="text-sm text-cream/60">
-            &copy; {currentYear} AyurGlow Secrets. All rights reserved.
+            &copy; {currentYear} InnerLift Wellness. All rights reserved.
           </p>
           <p className="text-sm text-cream/60 flex items-center gap-1">
             Built with <Heart className="h-4 w-4 text-gold fill-gold" /> using{' '}

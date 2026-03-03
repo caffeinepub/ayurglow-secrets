@@ -1,95 +1,42 @@
 {
   "kind": "build_request",
-  "title": "Remove login option and make admin page publicly accessible",
-  "projectName": "AyurGlow Secrets",
+  "title": "Add InnerLift Wellness Logo",
+  "projectName": "InnerLift Wellness",
   "priority": "normal",
   "requirements": [
     {
       "id": "REQ-1",
-      "text": "Remove all Internet Identity login/logout UI elements from the Navigation component so no login button or user authentication controls are visible to any user.",
+      "text": "Display the generated InnerLift Wellness logo image (innerlift-logo.dim_300x80.png) in the Navigation component as the site brand logo, replacing any existing logo or text-only brand mark.",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-8"
+          "msg-recent"
         ],
         "quotes": [
-          "remove login option and make the admin page open for all to upload blog post without any interruption"
+          "provide new logo"
         ]
       },
       "acceptanceCriteria": [
-        "The Navigation bar has no login button, logout button, or any Internet Identity authentication controls",
-        "No authentication-related UI is visible on any page"
-      ]
-    },
-    {
-      "id": "REQ-2",
-      "text": "Make the Admin page (/admin), Create Blog Post page (/admin/create), and Edit Blog Post page (/admin/edit/:id) fully accessible to all visitors without any authentication check, identity guard, or access-denied redirect. Remove any remaining references to Internet Identity identity checks that block or restrict access to these pages.",
-      "target": "frontend",
-      "source": {
-        "messageIds": [
-          "msg-8"
-        ],
-        "quotes": [
-          "make the admin page open for all to upload blog post without any interruption"
-        ]
-      },
-      "acceptanceCriteria": [
-        "Navigating directly to /admin shows the admin posts list without any login prompt or access-denied screen",
-        "Navigating to /admin/create shows the create post form without any authentication requirement",
-        "All admin actions (create, edit, delete, publish/unpublish) are available to all users without login",
-        "The AccessDeniedScreen component is never rendered for admin routes",
-        "No identity or principal checks gate any admin page or mutation"
-      ]
-    },
-    {
-      "id": "REQ-3",
-      "text": "Update all React Query hooks and mutations in useQueries.ts that pass an authenticated actor to instead use an anonymous actor for all admin operations (create post, update post, delete post, publish/unpublish post, upload images), so these operations work without Internet Identity login.",
-      "target": "frontend",
-      "source": {
-        "messageIds": [
-          "msg-8"
-        ],
-        "quotes": [
-          "make the admin page open for all to upload blog post without any interruption"
-        ]
-      },
-      "acceptanceCriteria": [
-        "Creating, editing, deleting, and publishing blog posts all succeed when the user is not authenticated",
-        "Image uploads for blog posts work without authentication",
-        "No mutation fails silently due to missing identity or principal"
-      ]
-    },
-    {
-      "id": "REQ-4",
-      "text": "Update the backend Motoko actor to remove any caller-based authorization checks on admin functions (createPost, updatePost, deletePost, publishPost, unpublishPost, uploadImage, and any other admin-only endpoints), so all callers including anonymous principals are permitted to perform these operations.",
-      "target": "backend",
-      "source": {
-        "messageIds": [
-          "msg-8"
-        ],
-        "quotes": [
-          "make the admin page open for all to upload blog post without any interruption"
-        ]
-      },
-      "acceptanceCriteria": [
-        "Admin backend functions no longer reject calls from anonymous principals",
-        "No #Unauthorized or access-denied error is returned for any admin operation",
-        "All blog CRUD and image upload operations succeed when called anonymously"
+        "The logo image appears in the top navigation bar on all pages",
+        "The logo links back to the homepage (/)",
+        "The logo is displayed at an appropriate size and does not overflow the navigation bar",
+        "The logo also appears in the Footer component's brand section"
       ]
     }
   ],
   "constraints": [
-    "Do not edit files under frontend/src/hooks/useInternetIdentity.ts or frontend/src/hooks/useActor.ts directly",
-    "Do not modify frontend/src/main.tsx",
-    "Do not remove the InternetIdentityProvider wrapper — only remove the login/logout UI elements and authentication guards"
+    "Do not modify files under frontend/src/hooks/ or frontend/src/components/ui",
+    "Logo image must be served from frontend/public/assets/generated/"
   ],
   "nonGoals": [
-    "Adding any new authentication or role-based access control system",
-    "Changing the visual design or branding of the site",
-    "Modifying public-facing blog pages or static content pages"
+    "Rebuilding the full InnerLift Wellness site from scratch in this request",
+    "Changing navigation structure or adding new pages"
   ],
   "imageRequirements": {
-    "required": [],
+    "required": [
+      "InnerLift Wellness brand logo featuring a stylized upward-lift or lotus/leaf motif in soft sage green and warm teal tones, with clean modern sans-serif wordmark 'InnerLift Wellness' beside the icon (innerlift-logo.dim_300x80.png)",
+      "InnerLift Wellness favicon — minimal icon version of the logo mark only, no text, on transparent background (innerlift-favicon.dim_64x64.png)"
+    ],
     "edits": []
   }
 }

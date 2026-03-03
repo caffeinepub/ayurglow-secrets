@@ -2,9 +2,11 @@
   "kind": "feature_evidence_report",
   "features": [
     {
-      "featureId": "feature-remove-all-internet-identity-login-logout-ui-elements-from-the-navigation-component-so-no-login-button-or-user-authentication-controls-are-visible-to-any-user",
-      "featureTitle": "Remove all Internet Identity login/logout UI elements from the Navigation component so no login button or user authentication controls are visible to any user.",
+      "featureId": "feature-display-the-generated-innerlift-wellness-logo-image-innerlift-logo-dim-300x80-png-in-the-navigation-component-as-the-site-brand-logo-replacing-any-existing-logo-or-text-only-brand-mark",
+      "featureTitle": "Display the generated InnerLift Wellness logo image (innerlift-logo.dim_300x80.png) in the Navigation component as the site brand logo, replacing any existing logo or text-only brand mark.",
       "files": [
+        "frontend/index.html",
+        "frontend/src/components/Footer.tsx",
         "frontend/src/components/Navigation.tsx"
       ],
       "components": [
@@ -18,28 +20,6 @@
       ],
       "testIds": [
         "REQ-1"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-make-the-admin-page-admin-create-blog-post-page-admin-create-and-edit-blog-post-page-admin-edit-id-fully-accessible-to-all-visitors-without-any-authentication-check-identity-guard-or-access-denied-redirect-remove-any-remaining-references-to-internet-identity-identity-checks-that-block-or-restrict-access-to-these-pages",
-      "featureTitle": "Make the Admin page (/admin), Create Blog Post page (/admin/create), and Edit Blog Post page (/admin/edit/:id) fully accessible to all visitors without any authentication check, identity guard, or access-denied redirect. Remove any remaining references to Internet Identity identity checks that block or restrict access to these pages.",
-      "files": [
-        "frontend/src/pages/AdminPostsPage.tsx",
-        "frontend/src/pages/CreateBlogPostPage.tsx",
-        "frontend/src/pages/EditBlogPostPage.tsx"
-      ],
-      "components": [
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0",
-        "blob-storage@4.0.0",
-        "authorization@4.0.0"
-      ],
-      "testIds": [
-        "REQ-2"
       ],
       "confidence": "high"
     }
